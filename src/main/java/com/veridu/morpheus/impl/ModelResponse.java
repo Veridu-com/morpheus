@@ -5,27 +5,17 @@ package com.veridu.morpheus.impl;
  */
 public class ModelResponse {
 
-    private String modelName;
-    private double score;
+    private boolean response;
 
-    public ModelResponse(String modelName, double score) {
-        this.modelName = modelName;
-        this.score = score;
+    public ModelResponse(boolean response) {
+        this.response = response;
     }
 
-    public String getModelName() {
-        return modelName;
+    public boolean isResponse() {
+        return response;
     }
 
-    public void setModelName(String modelName) {
-        this.modelName = modelName;
-    }
-
-    public double getScore() {
-        return score;
-    }
-
-    public void setScore(double score) {
-        this.score = score;
+    public void setResponse(boolean response) {
+        this.response = response;
     }
 }
