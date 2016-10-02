@@ -1,8 +1,13 @@
 package com.veridu.morpheus.controllers;
 
 import com.veridu.morpheus.impl.ModelResponse;
-import org.springframework.security.access.annotation.Secured;
+import com.veridu.morpheus.tasks.BirthdayTask;
+import com.veridu.morpheus.utils.BeanConfigurationManager;
+import com.veridu.morpheus.utils.BeanUtils;
+import com.veridu.morpheus.utils.Parameters;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -11,9 +16,28 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class BirthdayController {
 
+    private BeanUtils utils;
+    private BeanConfigurationManager beanManager;
+    private BirthdayTask birthdayTask;
+
+    @Autowired
+    public BirthdayController(BeanUtils utils, BeanConfigurationManager beanManager, BirthdayTask birthdayTask) {
+        this.utils = utils;
+        this.beanManager = beanManager;
+        this.birthdayTask = birthdayTask;
+    }
+
     @PostMapping("/morpheus/birthday")
-    public ModelResponse makePrediction() {
-        return new ModelResponse("birthday", 1.0);
+    public ModelResponse makePrediction(@RequestBody Parameters params) {
+
+        try {
+            this.birthdayTask.runTask(params);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return new ModelResponse(false);
+        }
+
+        return new ModelResponse(true);
     }
 
 }
