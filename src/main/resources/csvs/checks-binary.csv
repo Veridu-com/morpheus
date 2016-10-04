@@ -1,0 +1,13 @@
+check,isACommonName
+check,isActive
+check,isAddressVerified
+check,isCelebrityName
+check,isDLCVerified
+check,isDOBVerified
+check,isElectoralRollSource
+check,isFantasyName
+check,isListedName
+check,isPassportVerified
+check,isPEPName
+check,isSanctionedName
+check,isSillyName

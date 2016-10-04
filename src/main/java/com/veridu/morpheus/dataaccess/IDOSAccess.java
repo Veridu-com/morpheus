@@ -11,13 +11,14 @@ import com.veridu.idos.utils.IdOSAuthType;
 import com.veridu.idos.utils.SortFilterType;
 import com.veridu.morpheus.impl.Fact;
 import com.veridu.morpheus.impl.Profile;
+import com.veridu.morpheus.interfaces.beans.IDataSource;
 import com.veridu.morpheus.interfaces.facts.ICandidate;
 import com.veridu.morpheus.interfaces.facts.IFact;
 import com.veridu.morpheus.interfaces.users.IProfile;
 import com.veridu.morpheus.interfaces.users.IUser;
 import com.veridu.morpheus.utils.LocalUtils;
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -26,8 +27,8 @@ import java.util.HashMap;
 /**
  * Created by cassio on 10/2/16.
  */
-@Repository
-public class IDOSAccess implements com.veridu.morpheus.interfaces.beans.IDataSource {
+@Component("idosSQL")
+public class IDOSAccess implements IDataSource {
 
     static Logger logger = Logger.getLogger(IDOSAccess.class.getName());
 

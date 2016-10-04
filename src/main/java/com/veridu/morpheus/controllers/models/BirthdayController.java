@@ -1,7 +1,6 @@
-package com.veridu.morpheus.controllers;
+package com.veridu.morpheus.controllers.models;
 
 import com.veridu.morpheus.impl.ModelResponse;
-import com.veridu.morpheus.tasks.BirthdayTask;
 import com.veridu.morpheus.utils.BeanConfigurationManager;
 import com.veridu.morpheus.utils.BeanUtils;
 import com.veridu.morpheus.utils.Parameters;
@@ -18,20 +17,20 @@ public class BirthdayController {
 
     private BeanUtils utils;
     private BeanConfigurationManager beanManager;
-    private BirthdayTask birthdayTask;
+    private BirthDayTask birthDayTask;
 
     @Autowired
-    public BirthdayController(BeanUtils utils, BeanConfigurationManager beanManager, BirthdayTask birthdayTask) {
+    public BirthdayController(BeanUtils utils, BeanConfigurationManager beanManager, BirthDayTask birthDayTask) {
         this.utils = utils;
         this.beanManager = beanManager;
-        this.birthdayTask = birthdayTask;
+        this.birthDayTask = birthDayTask;
     }
 
     @PostMapping("/morpheus/birthday")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 
         try {
-            this.birthdayTask.runTask(params);
+            this.birthDayTask.runTask(params);
         } catch (InterruptedException e) {
             e.printStackTrace();
             return new ModelResponse(false);

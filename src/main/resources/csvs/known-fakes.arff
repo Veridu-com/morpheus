@@ -1,0 +1,101 @@
+@relation FakeAndRealProfiles
+
+@attribute first-name-features:isamazonFirstNameMatchestwitterFirstName {0,1}
+@attribute first-name-features:isamazonFirstNameMatchespaypalFirstName {0,1}
+@attribute first-name-features:isamazonFirstNameMatcheslinkedinFirstName {0,1}
+@attribute first-name-features:isamazonFirstNameMatchesgoogleFirstName {0,1}
+@attribute first-name-features:isamazonFirstNameMatchesfacebookFirstName {0,1}
+@attribute first-name-features:istwitterFirstNameMatchespaypalFirstName {0,1}
+@attribute first-name-features:istwitterFirstNameMatcheslinkedinFirstName {0,1}
+@attribute first-name-features:istwitterFirstNameMatchesgoogleFirstName {0,1}
+@attribute first-name-features:istwitterFirstNameMatchesfacebookFirstName {0,1}
+@attribute first-name-features:ispaypalFirstNameMatcheslinkedinFirstName {0,1}
+@attribute first-name-features:ispaypalFirstNameMatchesgoogleFirstName {0,1}
+@attribute first-name-features:ispaypalFirstNameMatchesfacebookFirstName {0,1}
+@attribute first-name-features:islinkedinFirstNameMatchesgoogleFirstName {0,1}
+@attribute first-name-features:islinkedinFirstNameMatchesfacebookFirstName {0,1}
+@attribute first-name-features:isgoogleFirstNameMatchesfacebookFirstName {0,1}
+@attribute first-name-features:isFacebookFirstNameMatchEmail {0,1}
+@attribute facebook:numOfCheckinsAtFirstMostRecentEducationLastYear numeric
+@attribute facebook:numOfCheckinsAtFirstMostRecentEducationThisYear numeric
+@attribute facebook:numOfCheckinsAtSecondMostRecentEducationLastYear numeric
+@attribute facebook:numOfCheckinsAtSecondMostRecentEducationThisYear numeric
+@attribute facebook:numOfCheckinsAtThirdMostRecentEducationLastYear numeric
+@attribute facebook:numOfCheckinsAtThirdMostRecentEducationThisYear numeric
+@attribute facebook:numOfCloseFriends numeric
+@attribute facebook:numOfCollegeFriends numeric
+@attribute facebook:numOfCoworkers numeric
+@attribute facebook:numOfEvents numeric
+@attribute facebook:numOfEventsAttended numeric
+@attribute facebook:numOfFamilyMembers numeric
+@attribute facebook:numOfFriends numeric
+@attribute facebook:numOfFriendsBirthWithinFiveYears numeric
+@attribute facebook:numOfFriendsBirthWithinFourYears numeric
+@attribute facebook:numOfFriendsBirthWithinOneYear numeric
+@attribute facebook:numOfFriendsBirthWithinThreeYears numeric
+@attribute facebook:numOfFriendsBirthWithinTwoYears numeric
+@attribute facebook:numOfFriendsFromFirstMostRecentEducation numeric
+@attribute facebook:numOfFriendsFromFirstMostRecentEducationWithSameGraduationYear numeric
+@attribute facebook:numOfFriendsFromSecondMostRecentEducation numeric
+@attribute facebook:numOfFriendsFromSecondMostRecentEducationWithSameGraduationYear numeric
+@attribute facebook:numOfFriendsFromThirdMostRecentEducation numeric
+@attribute facebook:numOfFriendsFromThirdMostRecentEducationWithSameGraduationYear numeric
+@attribute facebook:numOfFriendsWorkingAtFirstMostRecentEducation numeric
+@attribute facebook:numOfFriendsWorkingAtSecondMostRecentEducation numeric
+@attribute facebook:numOfFriendsWorkingAtThirdMostRecentEducation numeric
+@attribute facebook:numOfGroups numeric
+@attribute facebook:numOfGroupsAdministrating numeric
+@attribute facebook:numOfLikes numeric
+@attribute facebook:numOfLinks numeric
+@attribute facebook:numOfLocations numeric
+@attribute facebook:numOfPhotos numeric
+@attribute facebook:numOfPosts numeric
+@attribute facebook:numOfReceivedComments numeric
+@attribute facebook:numOfReceivedLikes numeric
+@attribute facebook:numOfSchoolFriends numeric
+@attribute facebook:numOfStatuses numeric
+@attribute facebook:numOfStudentFriends numeric
+@attribute facebook:numOfStudentFriendsWithinOneYearAgeDifference numeric
+@attribute facebook:numOfStudentFriendsWithinThreeYearsAgeDifference numeric
+@attribute facebook:numOfStudentFriendsWithinTwoYearsAgeDifference numeric
+@attribute facebook:numOfStudentFriendsWithSameAge numeric
+@attribute facebook:numOfTagged numeric
+@attribute linkedin:numOfCompanies numeric
+@attribute linkedin:numOfConnections numeric
+@attribute linkedin:numOfCoworkers numeric
+@attribute linkedin:numOfFriendsFromFirstMostRecentEducation numeric
+@attribute linkedin:numOfFriendsFromFirstMostRecentEducationWithSameGraduationYear numeric
+@attribute linkedin:numOfFriendsFromSecondMostRecentEducation numeric
+@attribute linkedin:numOfFriendsFromSecondMostRecentEducationWithSameGraduationYear numeric
+@attribute linkedin:numOfFriendsFromThirdMostRecentEducation numeric
+@attribute linkedin:numOfFriendsFromThirdMostRecentEducationWithSameGraduationYear numeric
+@attribute linkedin:numOfFriendsWorkingAtFirstMostRecentEducation numeric
+@attribute linkedin:numOfFriendsWorkingAtSecondMostRecentEducation numeric
+@attribute linkedin:numOfFriendsWorkingAtThirdMostRecentEducation numeric
+@attribute linkedin:numOfLinkedTwitterAccounts numeric
+@attribute linkedin:numOfPositions numeric
+@attribute linkedin:numOfRecommendationsReceived numeric
+@attribute linkedin:numOfSchoolFriends numeric
+@attribute linkedin:numOfStudentFriends numeric
+@attribute twitter:numOfFavoritedTweets numeric
+@attribute twitter:numOfFollowers numeric
+@attribute twitter:numOfFriends numeric
+@attribute twitter:numOfReceivedFavorites numeric
+@attribute twitter:numOfReceivedRetweets numeric
+@attribute twitter:numOfRetweetedTweets numeric
+@attribute twitter:numOfTweets numeric
+@attribute skynet:isEverythingEmpty {0,1}
+@attribute class {fake,real}
+
+@data
+?,?,?,?,?,?,1,?,1,?,?,?,?,1,?,0,0,0,0,0,0,0,2,0,0,0,0,0,71,7,2,0,1,0,0,0,0,0,0,0,0,0,0,0,0,16,3,0,0,13,2,7,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,40,2,0,0,1,0,fake
+?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,0,0,0,0,0,0,0,0,0,0,0,25,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,0,0,0,0,1,0,0,0,0,0,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,fake
+?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,0,0,?,?,?,?,10,0,0,0,?,0,212,4,3,2,3,3,0,0,?,?,?,?,0,?,?,0,?,?,?,?,0,?,2,13,0,?,1,0,0,0,0,0,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,fake
+?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,0,0,?,?,?,?,3,2,1,0,?,0,271,8,8,6,7,7,0,0,?,?,?,?,0,?,?,0,?,?,?,?,0,?,2,16,3,?,1,0,0,0,0,0,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,fake
+?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,0,0,?,?,?,?,0,1,0,0,?,0,23,7,6,5,6,6,0,0,?,?,?,?,0,?,?,0,?,?,?,?,0,?,0,0,2,?,1,0,0,0,0,0,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,fake
+?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,0,0,?,?,?,?,1,0,2,0,?,0,61,8,6,6,6,6,0,0,?,?,?,?,0,?,?,0,?,?,?,?,6,?,2,2,0,?,2,0,0,0,0,3,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,fake
+?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1,0,0,?,?,?,?,12,0,1,0,?,0,500,7,5,5,5,5,0,0,?,?,?,?,0,?,?,0,?,?,?,?,1,?,4,18,2,?,2,0,0,0,0,0,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,fake
+?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,0,0,?,?,?,?,5,0,0,0,?,0,113,3,3,2,3,2,0,0,?,?,?,?,0,?,?,0,?,?,?,?,0,?,4,5,0,?,1,0,0,0,0,0,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,fake
+?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,0,0,?,?,?,?,7,0,0,0,?,0,174,3,3,0,3,2,0,0,?,?,?,?,0,?,?,0,?,?,?,?,1,?,4,26,0,?,1,0,1,0,0,0,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,fake
+1,0,1,0,1,0,1,0,1,0,0,0,0,1,0,?,0,0,0,0,0,0,4,0,0,0,0,0,71,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9,1,0,1,4,0,0,0,1,2,0,0,0,0,0,1,11,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,2,13,0,0,0,2,0,fake
+?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,?,0,0,0,0,0,0,4,0,0,0,0,0,71,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,9,1,0,1,4,0,0,0,1,2,0,0,0,0,0,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,fake

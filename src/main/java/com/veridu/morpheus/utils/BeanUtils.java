@@ -2,13 +2,12 @@ package com.veridu.morpheus.utils;
 
 import com.veridu.idos.IdOSAPIFactory;
 import com.veridu.morpheus.impl.Fact;
-import com.veridu.morpheus.interfaces.beans.IDataSource;
 import com.veridu.morpheus.interfaces.beans.IUtils;
 import com.veridu.morpheus.interfaces.facts.IFact;
 import com.veridu.morpheus.interfaces.models.IModel;
-import com.veridu.morpheus.interfaces.users.IAcceptRejectUser;
 import com.veridu.morpheus.interfaces.users.IProfile;
-import com.veridu.morpheus.interfaces.users.IUser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.supercsv.cellprocessor.constraint.NotNull;
 import org.supercsv.cellprocessor.ift.CellProcessor;
@@ -24,19 +23,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-//@Startup
-//@Singleton
-//@ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
-//@Lock(LockType.READ)
-//@Local(IUtils.class)
 @Service
+@Scope("singleton")
 public class BeanUtils implements IUtils {
 
-    //@EJB
     private BeanConfigurationManager configBean;
 
-    //@EJB(beanName = "idosSQL")
-    private IDataSource dao;
+    //private IDataSource dao;
 
     private ArrayList<IFact> uniqueNumericBinaryFacts;
 
@@ -56,26 +49,31 @@ public class BeanUtils implements IUtils {
 
     private HashSet<String> temporaryEmailsList;
 
+    @Autowired
+    public BeanUtils(BeanConfigurationManager configBean) {
+        this.configBean = configBean;
+    }
+
     @PostConstruct
     private void init() {
         // read unique and binary facts
-//        this.uniqueNumericBinaryFacts = readFacts("/csvs/unique-provider-facts-numeric-boolean.csv");
-        //        this.googleBinaryFacts = readFacts("/csvs/google-binary.csv");
-        //        this.googleNumericFacts = readFacts("/csvs/google-numeric.csv");
-        //        this.facebookNumericFacts = readFacts("/csvs/facebook-numeric.csv");
-        //        this.checksBinaryFacts = readFacts("/csvs/checks-binary.csv");
-        //        this.linkedinNumericFacts = readFacts("/csvs/linkedin-numeric.csv");
-        //        this.twitterNumericFacts = readFacts("/csvs/twitter-numeric.csv");
-        //        this.temporaryEmailsList = readTemporaryEmailDomains("/csvs/temporary-emails.csv");
-        //        this.paypalBinaryFacts = readFacts("/csvs/paypal-binary.csv");
+        this.uniqueNumericBinaryFacts = readFacts("/csvs/unique-provider-facts-numeric-boolean.csv");
+        this.googleBinaryFacts = readFacts("/csvs/google-binary.csv");
+        this.googleNumericFacts = readFacts("/csvs/google-numeric.csv");
+        this.facebookNumericFacts = readFacts("/csvs/facebook-numeric.csv");
+        this.checksBinaryFacts = readFacts("/csvs/checks-binary.csv");
+        this.linkedinNumericFacts = readFacts("/csvs/linkedin-numeric.csv");
+        this.twitterNumericFacts = readFacts("/csvs/twitter-numeric.csv");
+        this.temporaryEmailsList = readTemporaryEmailDomains("/csvs/temporary-emails.csv");
+        this.paypalBinaryFacts = readFacts("/csvs/paypal-binary.csv");
     }
 
     @Override
     public HashMap<String, String> generateCredentials(String credentialPubKey, String username) {
         HashMap<String, String> credentials = new HashMap<>();
         credentials.put("credentialPublicKey", credentialPubKey);
-        credentials.put("servicePrivateKey", "213b83392b80ee98c8eb2a9fed9bb84d");//configBean.getHandlerPrivateKey());
-        credentials.put("servicePublicKey", "ef970ffad1f1253a2182a88667233991"); //configBean.getHandlerPublicKey());
+        credentials.put("servicePrivateKey", configBean.getHandlerPrivateKey());
+        credentials.put("servicePublicKey", configBean.getHandlerPublicKey());
         credentials.put("username", username);
         return credentials;
     }
@@ -314,77 +312,77 @@ public class BeanUtils implements IUtils {
         return attList;
     }
 
-    @Override
-    public Instance createInstance(IdOSAPIFactory factory, Instances dataset, ArrayList<IFact> facts, IUser user) {
-
-        // depending from where createInstance is called we may already have the profiles
-        if ((user.getProfiles() == null) || (user.getProfiles().size() == 0))
-            dao.obtainSingleUserProfiles(factory, user);
-
-        HashMap<IFact, String> userFacts = dao.obtainFactsForUser(factory, user);
-
-        Instance inst = new DenseInstance(dataset.numAttributes());
-        inst.setDataset(dataset);
-
-        // go through the list of features, either filling them with user data
-        // or a missing value if it doesnt exist.
-
-        int attIndex = 0;
-
-        for (IFact fact : facts) {
-
-            boolean userHasFact = userFacts.containsKey(fact);
-
-            if (userHasFact) {
-
-                // System.out.println(provider + ":" + fact + " => " + userProvFacts.get(provider).get(fact));
-
-                // the slicing starting from 2 is due to the php
-                // serialize format
-                // of using i: d: b:, etc
-                String factValue = userFacts.get(fact);
-
-                int indexTotalCount = factValue.indexOf("total_count");
-
-                if (indexTotalCount != -1)
-                    /*
-                     * these instances have a serialized php array instead of a number for number of friends, because
-                     * facebook changed its output. Sample of that format:
-                     *
-                     * a:2:{s:4:"data";a:0:{}s:7:"summary";a:1:{s:11:"total_count";i:900;}}
-                     *
-                     * What we want is the total count amount.
-                     *
-                     * Lets have fun with string slicing. Always remember the substring is a range of the form [a,b)
-                     */
-                    factValue = factValue.substring(indexTotalCount + 15, factValue.length() - 3);
-                else // no shenanigans happened, just good ol' php serialize...
-                    factValue = factValue.substring(2, factValue.length() - 1);
-
-                if (fact.getName().startsWith("is")) // this is a binary attribute
-                    inst.setValue(attIndex, factValue);
-                else // this is a numeric attribute
-                    inst.setValue(attIndex, Double.parseDouble(factValue));
-            } else // user either doesn't have provider or doesn't have fact
-                inst.setValue(attIndex, weka.core.Utils.missingValue());
-
-            attIndex++;
-        }
-
-        // add the isempty attribute:
-        String isEmpty = userFacts.size() == 0 ? "1" : "0";
-        inst.setValue(attIndex, isEmpty);
-
-        attIndex++;
-
-        if (user instanceof IAcceptRejectUser) {
-            String supervision = ((IAcceptRejectUser) user).isReal() ? "real" : "fake";
-            inst.setValue(attIndex, supervision);
-        } else
-            inst.setValue(attIndex, weka.core.Utils.missingValue());
-
-        return inst;
-    }
+    //    @Override
+    //    public Instance createInstance(IdOSAPIFactory factory, Instances dataset, ArrayList<IFact> facts, IUser user) {
+    //
+    //        // depending from where createInstance is called we may already have the profiles
+    //        if ((user.getProfiles() == null) || (user.getProfiles().size() == 0))
+    //            dao.obtainSingleUserProfiles(factory, user);
+    //
+    //        HashMap<IFact, String> userFacts = dao.obtainFactsForUser(factory, user);
+    //
+    //        Instance inst = new DenseInstance(dataset.numAttributes());
+    //        inst.setDataset(dataset);
+    //
+    //        // go through the list of features, either filling them with user data
+    //        // or a missing value if it doesnt exist.
+    //
+    //        int attIndex = 0;
+    //
+    //        for (IFact fact : facts) {
+    //
+    //            boolean userHasFact = userFacts.containsKey(fact);
+    //
+    //            if (userHasFact) {
+    //
+    //                // System.out.println(provider + ":" + fact + " => " + userProvFacts.get(provider).get(fact));
+    //
+    //                // the slicing starting from 2 is due to the php
+    //                // serialize format
+    //                // of using i: d: b:, etc
+    //                String factValue = userFacts.get(fact);
+    //
+    //                int indexTotalCount = factValue.indexOf("total_count");
+    //
+    //                if (indexTotalCount != -1)
+    //                    /*
+    //                     * these instances have a serialized php array instead of a number for number of friends, because
+    //                     * facebook changed its output. Sample of that format:
+    //                     *
+    //                     * a:2:{s:4:"data";a:0:{}s:7:"summary";a:1:{s:11:"total_count";i:900;}}
+    //                     *
+    //                     * What we want is the total count amount.
+    //                     *
+    //                     * Lets have fun with string slicing. Always remember the substring is a range of the form [a,b)
+    //                     */
+    //                    factValue = factValue.substring(indexTotalCount + 15, factValue.length() - 3);
+    //                else // no shenanigans happened, just good ol' php serialize...
+    //                    factValue = factValue.substring(2, factValue.length() - 1);
+    //
+    //                if (fact.getName().startsWith("is")) // this is a binary attribute
+    //                    inst.setValue(attIndex, factValue);
+    //                else // this is a numeric attribute
+    //                    inst.setValue(attIndex, Double.parseDouble(factValue));
+    //            } else // user either doesn't have provider or doesn't have fact
+    //                inst.setValue(attIndex, weka.core.Utils.missingValue());
+    //
+    //            attIndex++;
+    //        }
+    //
+    //        // add the isempty attribute:
+    //        String isEmpty = userFacts.size() == 0 ? "1" : "0";
+    //        inst.setValue(attIndex, isEmpty);
+    //
+    //        attIndex++;
+    //
+    //        if (user instanceof IAcceptRejectUser) {
+    //            String supervision = ((IAcceptRejectUser) user).isReal() ? "real" : "fake";
+    //            inst.setValue(attIndex, supervision);
+    //        } else
+    //            inst.setValue(attIndex, weka.core.Utils.missingValue());
+    //
+    //        return inst;
+    //    }
 
     /**
      * Helper function to make a hard class prediction given class probabilities for an instance
