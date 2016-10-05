@@ -4,7 +4,6 @@ import com.veridu.idos.IdOSAPIFactory;
 import com.veridu.morpheus.interfaces.facts.IFact;
 import com.veridu.morpheus.interfaces.models.IModel;
 import com.veridu.morpheus.interfaces.users.IProfile;
-import com.veridu.morpheus.interfaces.users.IUser;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -54,7 +53,7 @@ public interface IUtils {
      *
      * @return created instance
      */
-    public Instance createInstance(IdOSAPIFactory factory, Instances dataset, ArrayList<IFact> facts, IUser user);
+    //    public Instance createInstance(IdOSAPIFactory factory, Instances dataset, ArrayList<IFact> facts, IUser user);
 
     /**
      * Returns 0 if p0 is greater than p1

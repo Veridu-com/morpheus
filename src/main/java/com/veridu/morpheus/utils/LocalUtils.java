@@ -20,6 +20,11 @@ import java.util.*;
  */
 public class LocalUtils {
 
+    public static boolean validateRequestParams(Parameters params) {
+        return params.userName != null && params.userName.length() > 0 && params.publicKey != null
+                && params.publicKey.length() > 0;
+    }
+
     public static boolean okResponse(JsonObject response) {
         return response.get("status").getAsBoolean();
     }
