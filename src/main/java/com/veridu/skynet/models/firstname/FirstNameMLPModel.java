@@ -1,16 +1,17 @@
 package com.veridu.skynet.models.firstname;
 
-import java.io.Serializable;
-
 import com.veridu.morpheus.impl.GenericModel;
 import com.veridu.morpheus.impl.Prediction;
 import com.veridu.morpheus.interfaces.models.IPrediction;
-
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instance;
 
+import java.io.Serializable;
+
 public class FirstNameMLPModel extends GenericModel implements Serializable {
+
+    private static final long serialVersionUID = -5208216279564860489L;
 
     private MultilayerPerceptron mlpClassifier;
 

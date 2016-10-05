@@ -1,6 +1,7 @@
 package com.veridu.morpheus.utils;
 
 import com.veridu.idos.IdOSAPIFactory;
+import com.veridu.morpheus.impl.Constants;
 import com.veridu.morpheus.impl.Fact;
 import com.veridu.morpheus.interfaces.beans.IUtils;
 import com.veridu.morpheus.interfaces.facts.IFact;
@@ -49,6 +50,8 @@ public class BeanUtils implements IUtils {
 
     private HashSet<String> temporaryEmailsList;
 
+    private HashMap<String, IModel> serializedModels;
+
     @Autowired
     public BeanUtils(BeanConfigurationManager configBean) {
         this.configBean = configBean;
@@ -66,6 +69,14 @@ public class BeanUtils implements IUtils {
         this.twitterNumericFacts = readFacts("/csvs/twitter-numeric.csv");
         this.temporaryEmailsList = readTemporaryEmailDomains("/csvs/temporary-emails.csv");
         this.paypalBinaryFacts = readFacts("/csvs/paypal-binary.csv");
+
+        // FIXME speed improvements should come from this
+        //    preloadSerializedModels();
+    }
+
+    private void preloadSerializedModels() {
+        for (String modelName : Constants.MODEL_NAMES)
+            this.serializedModels.put(modelName, this.readModel("/models/" + modelName));
     }
 
     @Override

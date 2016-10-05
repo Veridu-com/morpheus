@@ -1,7 +1,9 @@
-package com.veridu.morpheus.controllers.candidates;
+package com.veridu.morpheus.controllers.models;
 
 import com.veridu.morpheus.impl.ModelResponse;
 import com.veridu.morpheus.interfaces.models.ITask;
+import com.veridu.morpheus.utils.BeanConfigurationManager;
+import com.veridu.morpheus.utils.BeanUtils;
 import com.veridu.morpheus.utils.LocalUtils;
 import com.veridu.morpheus.utils.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,25 +13,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Created by cassio on 10/4/16.
+ * Created by cassio on 10/2/16.
  */
 @RestController
-public class BirthMonthCandidateController {
+public class CountryController {
 
-    private ITask birthMonthCandidatesTask;
+    private BeanUtils utils;
+    private BeanConfigurationManager beanManager;
+    private ITask countryTask;
 
     @Autowired
-    public BirthMonthCandidateController(@Qualifier("birthmonth-candidates") ITask birthMonthCandidatesTask) {
-        this.birthMonthCandidatesTask = birthMonthCandidatesTask;
+    public CountryController(BeanUtils utils, BeanConfigurationManager beanManager,
+            @Qualifier("country-mlp") ITask countryTask) {
+        this.utils = utils;
+        this.beanManager = beanManager;
+        this.countryTask = countryTask;
     }
 
-    @PostMapping("/morpheus/birthmonth-candidates")
+    @PostMapping("/morpheus/country-mlp")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 
         if (!LocalUtils.validateRequestParams(params))
             return new ModelResponse(false);
 
-        this.birthMonthCandidatesTask.runTask(params);
+        this.countryTask.runTask(params);
 
         return new ModelResponse(true);
     }

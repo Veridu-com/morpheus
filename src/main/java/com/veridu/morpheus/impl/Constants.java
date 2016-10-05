@@ -6,9 +6,6 @@ public class Constants {
 
     public static final boolean DEBUG = false;
 
-    // HTTP auth token:
-    public static final String HTTP_BASIC_AUTH_TOKEN = "Basic aWRvcy1tYW5hZ2VyOmlkb3MtbWFuYWdlcg==";
-
     // generic file system constants:
 
     public static final String WORK_DIR = System.getProperty("user.dir");
@@ -66,6 +63,11 @@ public class Constants {
     public static final String STREET_MLP_MODEL_NAME = "street-mlp" + MODEL_SUFFIX;
 
     public static final String GENDER_MLP_MODEL_NAME = "gender-mlp" + MODEL_SUFFIX;
+
+    public static final String[] MODEL_NAMES = { EMAIL_MLP_MODEL_NAME, COUNTRY_MLP_MODEL_NAME,
+            BIRTH_YEAR_MLP_MODEL_NAME, BIRTH_DAY_MLP_MODEL_NAME, BIRTH_MONTH_MLP_MODEL_NAME, FIRST_NAME_MLP_MODEL_NAME,
+            LAST_NAME_MLP_MODEL_NAME, OVERALL_MLP_MODEL_NAME, OVERALL_COST_SENSITIVE_NB_MODEL_NAME, CITY_MLP_MODEL_NAME,
+            ZIPCODE_MLP_MODEL_NAME, PHONE_MLP_MODEL_NAME, STREET_MLP_MODEL_NAME, GENDER_MLP_MODEL_NAME };
 
     // flags
 
