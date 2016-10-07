@@ -9,6 +9,7 @@ import com.veridu.morpheus.interfaces.models.IModel;
 import com.veridu.morpheus.interfaces.users.IProfile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Service;
 import org.supercsv.cellprocessor.constraint.NotNull;
 import org.supercsv.cellprocessor.ift.CellProcessor;
@@ -77,6 +78,15 @@ public class BeanUtils implements IUtils {
     private void preloadSerializedModels() {
         for (String modelName : Constants.MODEL_NAMES)
             this.serializedModels.put(modelName, this.readModel("/models/" + modelName));
+    }
+
+    public DriverManagerDataSource getFakeUsDataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(configBean.getObjectStringProperty("db", "classname"));
+        dataSource.setUrl(configBean.getObjectStringProperty("db", "url"));
+        dataSource.setUsername(configBean.getObjectStringProperty("db", "username"));
+        dataSource.setPassword(configBean.getObjectStringProperty("db", "password"));
+        return dataSource;
     }
 
     @Override
