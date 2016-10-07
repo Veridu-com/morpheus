@@ -1,0 +1,10 @@
+{
+  "handlerPrivateKey": "XXX",
+  "handlerPublicKey": "XXX",
+  "db": {
+    "classname": "org.postgresql.Driver",
+    "url": "jdbc:postgresql://localhost:5432/fakeus-db",
+    "username": "XXX",
+    "password": "XXX"
+  }
+}
