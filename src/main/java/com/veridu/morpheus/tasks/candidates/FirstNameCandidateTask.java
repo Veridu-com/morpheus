@@ -104,7 +104,7 @@ public class FirstNameCandidateTask implements ITask {
 
         // save to the database the best candidate value
         if (candidates.size() > 0) {
-            dataSource.insertAttributeCandidatesForUser(factory, user, "first-name", candidates);
+            dataSource.insertAttributeCandidatesForUser(factory, user, "firstName", candidates);
             if (verbose)
                 logger.info(String.format(
                         "First name candidate extractor found best candidate: %s with support %.2f for user %s",

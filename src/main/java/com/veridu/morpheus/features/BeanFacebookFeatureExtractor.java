@@ -53,35 +53,37 @@ public class BeanFacebookFeatureExtractor implements IFeatureExtractor {
 
         Instance inst = new DenseInstance(dataset.numAttributes());
 
-        HashMap<IFact, Double> numericFactsMap = this.dataSource
-                .obtainNumericFactsForProfile(factory, user, "facebook");
+        if (1 == 0) { // FIXME disabling due to facebook loss
+            HashMap<IFact, Double> numericFactsMap = this.dataSource
+                    .obtainNumericFactsForProfile(factory, user, "facebook");
 
-        int attPos = 0;
+            int attPos = 0;
 
-        for (IFact fact : this.numericFacts) {
-            if (numericFactsMap.containsKey(fact)) {
-                Double value = numericFactsMap.get(fact);
-                inst.setValue(attPos, value);
+            for (IFact fact : this.numericFacts) {
+                if (numericFactsMap.containsKey(fact)) {
+                    Double value = numericFactsMap.get(fact);
+                    inst.setValue(attPos, value);
+                }
+                attPos++;
             }
+
+            // get the facebook email fact:
+            String fbkEmail = this.dataSource.obtainFacebookEmail(factory, user);
+
+            if (fbkEmail != null) {
+                String unserializedEmail = fbkEmail;
+                String domain = LocalUtils.extractDomain(unserializedEmail);
+                boolean isTemp = this.utils.isDomainInTemporaryDomainsList(domain);
+                // System.err.println(
+                // "got facebook email domain => " + domain + " for user " + user.getId() + " isTemp = " + isTemp);
+                if (isTemp)
+                    inst.setValue(attPos, 1);
+                else
+                    inst.setValue(attPos, 0);
+            } else
+                inst.setValue(attPos, 0);
             attPos++;
         }
-
-        // get the facebook email fact:
-        String fbkEmail = this.dataSource.obtainFacebookEmail(factory, user);
-
-        if (fbkEmail != null) {
-            String unserializedEmail = fbkEmail;
-            String domain = LocalUtils.extractDomain(unserializedEmail);
-            boolean isTemp = this.utils.isDomainInTemporaryDomainsList(domain);
-            // System.err.println(
-            // "got facebook email domain => " + domain + " for user " + user.getId() + " isTemp = " + isTemp);
-            if (isTemp)
-                inst.setValue(attPos, 1);
-            else
-                inst.setValue(attPos, 0);
-        } else
-            inst.setValue(attPos, 0);
-        attPos++;
 
         return inst;
     }

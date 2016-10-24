@@ -71,54 +71,56 @@ public class BeanFacebookBirthdayFactsExtractor implements IFeatureExtractor {
         Instance inst = new DenseInstance(dataset.numAttributes());
         inst.setDataset(dataset);
 
-        HashMap<IFact, String> numericFactsMap = dataSource.obtainSpecificFactForUser(factory, user, "*birth*");
+        if (1 == 0) { // FIXME ignoring facebook for now
 
-        int attPos = 0;
+            HashMap<IFact, String> numericFactsMap = dataSource.obtainSpecificFactForUser(factory, user, "*birth*");
 
-        for (IFact fact : this.numericFacts) {
-            if (numericFactsMap.containsKey(fact)) {
-                Integer value = Integer.parseInt(numericFactsMap.get(fact));
-                inst.setValue(attPos, value);
+            int attPos = 0;
+
+            for (IFact fact : this.numericFacts) {
+                if (numericFactsMap.containsKey(fact)) {
+                    Integer value = Integer.parseInt(numericFactsMap.get(fact));
+                    inst.setValue(attPos, value);
+                }
+                attPos++;
             }
-            attPos++;
+
+            // mongodb features:
+            int fbkPostsBirthday = 0;
+            int fbkTagsBirthday = 0;
+            int fbkStatusBirthday = 0;
+            int fbkPhotosBirthday = 0;
+            int fbkLikesBirthday = 0;
+            int fbkEventsBirthday = 0;
+
+            Boolean fbkEmailMatchFirstName = null;
+            Date facebookBirthday = this.mongo.getFacebookBirthday(factory, user);
+
+            if (facebookBirthday != null) {
+                fbkPostsBirthday = this.mongo.getNumberOfFacebookPostsOnBirthday(factory, user, facebookBirthday);
+                fbkTagsBirthday = this.mongo.getNumberOfFacebookTagsOnBirthday(factory, user, facebookBirthday);
+                fbkStatusBirthday = this.mongo.getNumberOfFacebookStatusOnBirthday(factory, user, facebookBirthday);
+                fbkPhotosBirthday = this.mongo.getNumberOfFacebookPhotosOnBirthday(factory, user, facebookBirthday);
+                fbkLikesBirthday = this.mongo.getNumberOfFacebookLikesOnBirthday(factory, user, facebookBirthday);
+                fbkEventsBirthday = this.mongo.getNumberOfFacebookEventsOnBirthday(factory, user, facebookBirthday);
+            }
+
+            fbkEmailMatchFirstName = this.mongo.doesFacebookFirstNameMatchEmail(factory, user);
+
+            inst.setValue(attPos++, fbkPostsBirthday);
+            inst.setValue(attPos++, fbkTagsBirthday);
+            inst.setValue(attPos++, fbkStatusBirthday);
+            inst.setValue(attPos++, fbkPhotosBirthday);
+            inst.setValue(attPos++, fbkLikesBirthday);
+            inst.setValue(attPos++, fbkEventsBirthday);
+
+            if (fbkEmailMatchFirstName == null)
+                inst.setValue(attPos++, Utils.missingValue());
+            else if (fbkEmailMatchFirstName)
+                inst.setValue(attPos++, "1");
+            else
+                inst.setValue(attPos++, "0");
         }
-
-        // mongodb features:
-        int fbkPostsBirthday = 0;
-        int fbkTagsBirthday = 0;
-        int fbkStatusBirthday = 0;
-        int fbkPhotosBirthday = 0;
-        int fbkLikesBirthday = 0;
-        int fbkEventsBirthday = 0;
-
-        Boolean fbkEmailMatchFirstName = null;
-        Date facebookBirthday = this.mongo.getFacebookBirthday(factory, user);
-
-        if (facebookBirthday != null) {
-            fbkPostsBirthday = this.mongo.getNumberOfFacebookPostsOnBirthday(factory, user, facebookBirthday);
-            fbkTagsBirthday = this.mongo.getNumberOfFacebookTagsOnBirthday(factory, user, facebookBirthday);
-            fbkStatusBirthday = this.mongo.getNumberOfFacebookStatusOnBirthday(factory, user, facebookBirthday);
-            fbkPhotosBirthday = this.mongo.getNumberOfFacebookPhotosOnBirthday(factory, user, facebookBirthday);
-            fbkLikesBirthday = this.mongo.getNumberOfFacebookLikesOnBirthday(factory, user, facebookBirthday);
-            fbkEventsBirthday = this.mongo.getNumberOfFacebookEventsOnBirthday(factory, user, facebookBirthday);
-        }
-
-        fbkEmailMatchFirstName = this.mongo.doesFacebookFirstNameMatchEmail(factory, user);
-
-        inst.setValue(attPos++, fbkPostsBirthday);
-        inst.setValue(attPos++, fbkTagsBirthday);
-        inst.setValue(attPos++, fbkStatusBirthday);
-        inst.setValue(attPos++, fbkPhotosBirthday);
-        inst.setValue(attPos++, fbkLikesBirthday);
-        inst.setValue(attPos++, fbkEventsBirthday);
-
-        if (fbkEmailMatchFirstName == null)
-            inst.setValue(attPos++, Utils.missingValue());
-        else if (fbkEmailMatchFirstName)
-            inst.setValue(attPos++, "1");
-        else
-            inst.setValue(attPos++, "0");
-
         return inst;
     }
 

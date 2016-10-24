@@ -72,7 +72,7 @@ public class CityCandidateTask implements ITask {
 
         // save to the database the best birth year candidate value
         if (candidates.size() > 0) {
-            dataSource.insertAttributeCandidatesForUser(factory, user, "city-name", candidates);
+            dataSource.insertAttributeCandidatesForUser(factory, user, "cityName", candidates);
             if (verbose)
                 logger.info(
                         String.format("City candidate extractor found best candidate: %s with support %.2f for user %s",
