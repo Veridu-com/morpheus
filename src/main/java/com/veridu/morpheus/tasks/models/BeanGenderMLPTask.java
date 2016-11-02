@@ -75,7 +75,10 @@ public class BeanGenderMLPTask implements ITask {
             realUserProb = pred.realUserProbability();
 
             dao.upsertScore(factory, user, "gender-score-series-s-model-m", "gender", realUserProb);
-            dao.upsertGate(factory, user, "gender-gate", realUserProb >= 0.5);
+
+            dao.upsertGate(factory, user, "gender-gate-low", realUserProb >= 0.9960107);
+            dao.upsertGate(factory, user, "gender-gate-med", realUserProb >= 0.9998139);
+            dao.upsertGate(factory, user, "gender-gate-high", realUserProb >= 0.9999970);
 
             time2 = System.currentTimeMillis();
             timediff = time2 - time1;

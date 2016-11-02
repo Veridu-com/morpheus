@@ -71,16 +71,14 @@ public class BeanFirstNameMLPTask implements ITask {
         double realUserProb = -1;
 
         try {
-            System.out.println("---- first name model header ---");
-            System.out.println(datasetHeader);
-            System.out.println("---- generated instance: ----");
-            System.out.println(inst);
-            System.out.println("---- end instance --- ");
             pred = model.predict(inst);
             realUserProb = pred.realUserProbability();
 
             dao.upsertScore(factory, user, "first-name-score-series-s-model-m", "first-name", realUserProb);
-            dao.upsertGate(factory, user, "first-name-gate", realUserProb >= 0.5);
+
+            dao.upsertGate(factory, user, "first-name-gate-low", realUserProb >= 0.9967113);
+            dao.upsertGate(factory, user, "first-name-gate-med", realUserProb >= 0.9999180);
+            dao.upsertGate(factory, user, "first-name-gate-high", realUserProb >= 0.9999990);
 
             time2 = System.currentTimeMillis();
             timediff = time2 - time1;

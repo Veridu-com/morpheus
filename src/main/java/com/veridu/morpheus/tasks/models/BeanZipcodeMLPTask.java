@@ -75,7 +75,10 @@ public class BeanZipcodeMLPTask implements ITask {
             realUserProb = pred.realUserProbability();
 
             dao.upsertScore(factory, user, "zipcode-score-series-s-model-m", "zipcode", realUserProb);
-            dao.upsertGate(factory, user, "zipcode-gate", realUserProb >= 0.5);
+
+            dao.upsertGate(factory, user, "zipcode-gate-low", realUserProb >= 0.9972565);
+            dao.upsertGate(factory, user, "zipcode-gate-medium", realUserProb >= 0.9998905);
+            dao.upsertGate(factory, user, "zipcode-gate-high", realUserProb >= 0.9999990);
 
             time2 = System.currentTimeMillis();
             timediff = time2 - time1;

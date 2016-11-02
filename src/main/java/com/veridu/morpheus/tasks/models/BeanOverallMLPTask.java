@@ -75,7 +75,10 @@ public class BeanOverallMLPTask implements ITask {
             realUserProb = pred.realUserProbability();
 
             dao.upsertScore(factory, user, "overall-score-series-m-model-m", "profile", realUserProb);
-            dao.upsertGate(factory, user, "overall-gate", realUserProb >= 0.5);
+
+            dao.upsertGate(factory, user, "overall-gate-low", realUserProb >= 0.9985818);
+            dao.upsertGate(factory, user, "overall-gate-med", realUserProb >= 0.9999787);
+            dao.upsertGate(factory, user, "overall-gate-high", realUserProb >= 0.9999997);
 
             time2 = System.currentTimeMillis();
             timediff = time2 - time1;

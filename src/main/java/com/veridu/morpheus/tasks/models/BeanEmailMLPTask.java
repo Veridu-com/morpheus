@@ -72,7 +72,10 @@ public class BeanEmailMLPTask implements ITask {
             realUserProb = pred.realUserProbability();
 
             dao.upsertScore(factory, user, "email-score-series-s-model-m", "email", realUserProb);
-            dao.upsertGate(factory, user, "email-gate", realUserProb >= 0.5);
+
+            dao.upsertGate(factory, user, "email-gate-low", realUserProb >= 0.9965578);
+            dao.upsertGate(factory, user, "email-gate-med", realUserProb >= 0.9994281);
+            dao.upsertGate(factory, user, "email-gate-high", realUserProb >= 0.9998348);
 
             time2 = System.currentTimeMillis();
             timediff = time2 - time1;

@@ -76,7 +76,10 @@ public class BeanLastNameMLPTask implements ITask {
             realUserProb = pred.realUserProbability();
 
             dao.upsertScore(factory, user, "last-name-score-series-s-model-m", "last-name", realUserProb);
-            dao.upsertGate(factory, user, "last-name-gate", realUserProb >= 0.5);
+
+            dao.upsertGate(factory, user, "last-name-gate-low", realUserProb >= 0.9812162);
+            dao.upsertGate(factory, user, "last-name-gate-med", realUserProb >= 0.9970168);
+            dao.upsertGate(factory, user, "last-name-gate-high", realUserProb >= 0.9999275);
 
             time2 = System.currentTimeMillis();
             timediff = time2 - time1;

@@ -1,6 +1,5 @@
 package com.veridu.morpheus.tasks.models;
 
-import com.google.gson.JsonObject;
 import com.veridu.idos.IdOSAPIFactory;
 import com.veridu.morpheus.impl.Constants;
 import com.veridu.morpheus.impl.User;
@@ -34,6 +33,8 @@ public class BeanOverallCostSensitiveNaiveBayesTask implements ITask {
 
     private static final Logger log = Logger.getLogger(BeanOverallCostSensitiveNaiveBayesTask.class);
 
+    private static final boolean DEBUG = false;
+
     @Autowired
     public BeanOverallCostSensitiveNaiveBayesTask(IUtils utils, IDataSource dao,
             @Qualifier("overallExtractor") IFeatureExtractor overallExtractor) {
@@ -51,52 +52,80 @@ public class BeanOverallCostSensitiveNaiveBayesTask implements ITask {
         String pubKey = params.publicKey;
         boolean verbose = params.verbose;
 
-        IBinaryModel model = (IBinaryModel) utils
-                .readModel("/models/" + Constants.OVERALL_COST_SENSITIVE_NB_MODEL_NAME);
+        IBinaryModel modelLow = (IBinaryModel) utils
+                .readModel("/models/" + Constants.OVERALL_COST_SENSITIVE_NB_LOW_MODEL_NAME);
+
+        IBinaryModel modelMed = (IBinaryModel) utils
+                .readModel("/models/" + Constants.OVERALL_COST_SENSITIVE_NB_MED_MODEL_NAME);
+
+        IBinaryModel modelHigh = (IBinaryModel) utils
+                .readModel("/models/" + Constants.OVERALL_COST_SENSITIVE_NB_HIGH_MODEL_NAME);
 
         Instances datasetHeader = this.utils.generateDatasetHeader(this.overallExtractor.obtainFactList());
 
         long time2, timediff = 0;
 
         IUser user = new User(userId);
-        double realUserProb = -1;
 
         try {
             IdOSAPIFactory factory = utils.getIdOSAPIFactory(utils.generateCredentials(pubKey, userId));
 
             Instance inst = this.overallExtractor.createInstance(factory, datasetHeader, user);
-            System.out.println("---------------------------------------");
-            System.out.println("Header:");
-            System.out.println(datasetHeader);
-            System.out.println("generated instance:");
-            System.out.println(inst);
-            System.out.println("---------------------------------------");
 
-            double score = model.getClassifier().distributionForInstance(inst)[1];
-            realUserProb = model.binaryPrediction(inst);
+            if (DEBUG) {
+                System.out.println("---------------------------------------");
+                System.out.println("Header:");
+                System.out.println(datasetHeader);
+                System.out.println("generated instance:");
+                System.out.println(inst);
+                System.out.println("---------------------------------------");
+            }
 
-            dao.upsertScore(factory, user, "overall-score-series-s-model-csnb", "profile", score);
-            dao.upsertGate(factory, user, "chargeback", realUserProb > 0.99);
+            // low
+            double score = modelLow.getClassifier().distributionForInstance(inst)[1];
+            double realUserProbLow = modelLow.binaryPrediction(inst);
+            dao.upsertScore(factory, user, "overall-score-series-s-model-csnb-low", "profile", score);
+            dao.upsertGate(factory, user, "chargeback-low", realUserProbLow > 0.99);
+
+            // med
+            score = modelMed.getClassifier().distributionForInstance(inst)[1];
+            double realUserProbMed = modelMed.binaryPrediction(inst);
+            dao.upsertScore(factory, user, "overall-score-series-s-model-csnb-med", "profile", score);
+            dao.upsertGate(factory, user, "chargeback-med", realUserProbMed > 0.99);
+
+            // high
+            score = modelHigh.getClassifier().distributionForInstance(inst)[1];
+            double realUserProbHigh = modelHigh.binaryPrediction(inst);
+            dao.upsertScore(factory, user, "overall-score-series-s-model-csnb-high", "profile", score);
+            dao.upsertGate(factory, user, "chargeback-high", realUserProbHigh > 0.99);
 
             time2 = System.currentTimeMillis();
             timediff = time2 - time1;
 
-            log.info(String.format(
-                    "Overall Cost Sensitive Naive Bayes model predicted for user %s => %.2f with probability %.2f in %d ms",
-                    userId, realUserProb, score, time2 - time1));
+            if (params.verbose) {
+                log.info(String.format(
+                        "Overall Cost Sensitive Naive Bayes LOW model predicted for user %s => %.2f with probability %.2f in %d ms",
+                        userId, realUserProbLow, score, time2 - time1));
+                log.info(String.format(
+                        "Overall Cost Sensitive Naive Bayes MED model predicted for user %s => %.2f with probability %.2f in %d ms",
+                        userId, realUserProbMed, score, time2 - time1));
+                log.info(String.format(
+                        "Overall Cost Sensitive Naive Bayes HIGH model predicted for user %s => %.2f with probability %.2f in %d ms",
+                        userId, realUserProbHigh, score, time2 - time1));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        JsonObject responseBuilder = new JsonObject();
-
-        responseBuilder.addProperty(Constants.MODEL_NAME_RESPONSE_STR, Constants.OVERALL_COST_SENSITIVE_NB_MODEL_NAME);
-        responseBuilder.addProperty(Constants.USER_ID_RESPONSE_STR, userId);
-        responseBuilder.addProperty(Constants.REAL_USR_PROB_RESPONSE_STR, realUserProb);
-        responseBuilder.addProperty(Constants.TIME_TAKEN_RESPONSE_STR, timediff);
-
-        if (params.verbose)
-            System.out.println(responseBuilder);
+        //        JsonObject responseBuilder = new JsonObject();
+        //
+        //        responseBuilder.addProperty(Constants.MODEL_NAME_RESPONSE_STR, Constants.OVERALL_COST_SENSITIVE_NB_MODEL_NAME);
+        //        responseBuilder.addProperty(Constants.USER_ID_RESPONSE_STR, userId);
+        //        responseBuilder.addProperty(Constants.REAL_USR_PROB_RESPONSE_STR, realUserProb);
+        //        responseBuilder.addProperty(Constants.TIME_TAKEN_RESPONSE_STR, timediff);
+        //
+        //        if (params.verbose)
+        //            System.out.println(responseBuilder);
     }
 }
