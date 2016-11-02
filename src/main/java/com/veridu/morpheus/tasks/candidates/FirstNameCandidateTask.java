@@ -42,6 +42,7 @@ public class FirstNameCandidateTask implements ITask {
     private static final IFact linFirstNameFact = new Fact(firstNameFactName, Constants.LINKEDIN_PROVIDER_NAME);
     private static final IFact gooFirstNameFact = new Fact(firstNameFactName, Constants.GOOGLE_PROVIDER_NAME);
     private static final IFact fbkFirstNameFact = new Fact(firstNameFactName, Constants.FACEBOOK_PROVIDER_NAME);
+    private static final IFact dropFirstNameFact = new Fact(firstNameFactName, Constants.DROPBOX_PROVIDER_NAME);
 
     Logger logger = Logger.getLogger(FirstNameCandidateTask.class);
 
@@ -68,7 +69,7 @@ public class FirstNameCandidateTask implements ITask {
 
         HashMap<IFact, String> firstNameFacts = dataSource.obtainSpecificFactForUser(factory, user, firstNameFactName);
 
-        String[] firstNameList = { "-1", "-1", "-1", "-1", "-1", "-1" };
+        String[] firstNameList = { "-1", "-1", "-1", "-1", "-1", "-1", "-1" };
 
         firstNameList[0] = firstNameFacts.containsKey(amaFirstNameFact) ? firstNameFacts.get(amaFirstNameFact) : null;
         firstNameList[1] = firstNameFacts.containsKey(twiFirstNameFact) ?
@@ -85,6 +86,9 @@ public class FirstNameCandidateTask implements ITask {
                 null;
         firstNameList[5] = firstNameFacts.containsKey(fbkFirstNameFact) ?
                 firstNameFacts.get(fbkFirstNameFact).toString() :
+                null;
+        firstNameList[6] = firstNameFacts.containsKey(dropFirstNameFact) ?
+                firstNameFacts.get(dropFirstNameFact).toString() :
                 null;
 
         // unify candidates

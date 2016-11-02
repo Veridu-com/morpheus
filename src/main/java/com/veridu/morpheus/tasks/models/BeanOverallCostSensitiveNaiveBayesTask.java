@@ -118,14 +118,5 @@ public class BeanOverallCostSensitiveNaiveBayesTask implements ITask {
             e.printStackTrace();
         }
 
-        //        JsonObject responseBuilder = new JsonObject();
-        //
-        //        responseBuilder.addProperty(Constants.MODEL_NAME_RESPONSE_STR, Constants.OVERALL_COST_SENSITIVE_NB_MODEL_NAME);
-        //        responseBuilder.addProperty(Constants.USER_ID_RESPONSE_STR, userId);
-        //        responseBuilder.addProperty(Constants.REAL_USR_PROB_RESPONSE_STR, realUserProb);
-        //        responseBuilder.addProperty(Constants.TIME_TAKEN_RESPONSE_STR, timediff);
-        //
-        //        if (params.verbose)
-        //            System.out.println(responseBuilder);
     }
 }

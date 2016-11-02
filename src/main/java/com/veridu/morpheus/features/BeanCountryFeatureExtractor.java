@@ -72,12 +72,13 @@ public class BeanCountryFeatureExtractor implements IFeatureExtractor {
     private static final boolean DEBUG = false;
 
     @Autowired
-    public BeanCountryFeatureExtractor(IUtils utils, IMongoDataSource mongo,
+    public BeanCountryFeatureExtractor(IDataSource dataSource, IUtils utils, IMongoDataSource mongo,
             @Qualifier("facebookExtractor") IFeatureExtractor facebookFeatureExtractor,
             @Qualifier("linkedinExtractor") IFeatureExtractor linkedinFeatureExtractor,
             @Qualifier("twitterExtractor") IFeatureExtractor twitterFeatureExtractor,
             @Qualifier("googleExtractor") IFeatureExtractor googleFeatureExtractor,
             @Qualifier("paypalExtractor") IFeatureExtractor paypalFeatureExtractor) {
+        this.dataSource = dataSource;
         this.utils = utils;
         this.mongo = mongo;
         this.facebookFeatureExtractor = facebookFeatureExtractor;
@@ -139,6 +140,7 @@ public class BeanCountryFeatureExtractor implements IFeatureExtractor {
 
         // get provider facts
         HashMap<IFact, String> userFacts = dataSource.obtainSpecificFactForUser(factory, user, countryFactName);
+
         ArrayList<String> factValues = new ArrayList<>();
 
         for (IFact provFact : providerFacts)

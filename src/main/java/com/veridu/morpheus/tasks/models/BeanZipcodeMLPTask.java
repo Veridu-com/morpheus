@@ -1,6 +1,5 @@
 package com.veridu.morpheus.tasks.models;
 
-import com.google.gson.JsonObject;
 import com.veridu.idos.IdOSAPIFactory;
 import com.veridu.morpheus.impl.Constants;
 import com.veridu.morpheus.impl.Fact;
@@ -76,15 +75,16 @@ public class BeanZipcodeMLPTask implements ITask {
 
             dao.upsertScore(factory, user, "zipcode-score-series-s-model-m", "zipcode", realUserProb);
 
-            dao.upsertGate(factory, user, "zipcode-gate-low", realUserProb >= 0.9972565);
+            dao.upsertGate(factory, user, "zipcode-gate-low", realUserProb >= 0.99);
             dao.upsertGate(factory, user, "zipcode-gate-medium", realUserProb >= 0.9998905);
             dao.upsertGate(factory, user, "zipcode-gate-high", realUserProb >= 0.9999990);
 
             time2 = System.currentTimeMillis();
             timediff = time2 - time1;
 
-            log.info(String.format("Zipcode MLP model predicted real probability for user %s => %.2f in %d ms", userId,
-                    pred.realUserProbability(), time2 - time1));
+            if (params.verbose)
+                log.info(String.format("Zipcode MLP model predicted real probability for user %s => %.2f in %d ms",
+                        userId, pred.realUserProbability(), time2 - time1));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,14 +93,5 @@ public class BeanZipcodeMLPTask implements ITask {
         if (pred == null)
             log.error("Zipcode MLP model could not make prediction");
 
-        JsonObject responseBuilder = new JsonObject();
-
-        responseBuilder.addProperty(Constants.MODEL_NAME_RESPONSE_STR, Constants.ZIPCODE_MLP_MODEL_NAME);
-        responseBuilder.addProperty(Constants.USER_ID_RESPONSE_STR, userId);
-        responseBuilder.addProperty(Constants.REAL_USR_PROB_RESPONSE_STR, realUserProb);
-        responseBuilder.addProperty(Constants.TIME_TAKEN_RESPONSE_STR, timediff);
-
-        if (params.verbose)
-            System.out.println(responseBuilder);
     }
 }
