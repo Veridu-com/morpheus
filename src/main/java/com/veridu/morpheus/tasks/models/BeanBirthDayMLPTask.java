@@ -78,9 +78,9 @@ public class BeanBirthDayMLPTask implements ITask {
             time2 = System.currentTimeMillis();
             timediff = time2 - time1;
 
-            if (params.verbose)
-                log.info(String.format("Birthday MLP model predicted real probability for user %s => %.2f in %d ms",
-                        userId, pred.realUserProbability(), time2 - time1));
+            //            if (params.verbose)
+            log.info(String.format("Birthday MLP model predicted real probability for user %s => %.2f in %d ms", userId,
+                    pred.realUserProbability(), time2 - time1));
 
         } catch (Exception e) {
             e.printStackTrace();

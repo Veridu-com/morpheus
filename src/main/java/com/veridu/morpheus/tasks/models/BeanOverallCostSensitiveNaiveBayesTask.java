@@ -102,17 +102,17 @@ public class BeanOverallCostSensitiveNaiveBayesTask implements ITask {
             time2 = System.currentTimeMillis();
             timediff = time2 - time1;
 
-            if (params.verbose) {
-                log.info(String.format(
-                        "Overall Cost Sensitive Naive Bayes LOW model predicted for user %s => %.2f with probability %.2f in %d ms",
-                        userId, realUserProbLow, score, time2 - time1));
-                log.info(String.format(
-                        "Overall Cost Sensitive Naive Bayes MED model predicted for user %s => %.2f with probability %.2f in %d ms",
-                        userId, realUserProbMed, score, time2 - time1));
-                log.info(String.format(
-                        "Overall Cost Sensitive Naive Bayes HIGH model predicted for user %s => %.2f with probability %.2f in %d ms",
-                        userId, realUserProbHigh, score, time2 - time1));
-            }
+            //            if (params.verbose) {
+            log.info(String.format(
+                    "Overall Cost Sensitive Naive Bayes LOW model predicted for user %s => %.2f with probability %.2f in %d ms",
+                    userId, realUserProbLow, score, time2 - time1));
+            log.info(String.format(
+                    "Overall Cost Sensitive Naive Bayes MED model predicted for user %s => %.2f with probability %.2f in %d ms",
+                    userId, realUserProbMed, score, time2 - time1));
+            log.info(String.format(
+                    "Overall Cost Sensitive Naive Bayes HIGH model predicted for user %s => %.2f with probability %.2f in %d ms",
+                    userId, realUserProbHigh, score, time2 - time1));
+            //            }
 
         } catch (Exception e) {
             e.printStackTrace();

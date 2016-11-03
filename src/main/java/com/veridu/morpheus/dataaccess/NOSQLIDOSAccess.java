@@ -23,7 +23,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
     @Override
     public Date getFacebookBirthday(IdOSAPIFactory factory, IUser user) {
         JsonObject profile = this.getFacebookProfile(factory, user);
-        if (profile != null)
+        if (profile != null && !profile.get("birthday").isJsonNull())
             return LocalUtils.parseFacebookDate(profile.get("birthday").getAsString());
         return null;
     }
@@ -88,7 +88,8 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
     @Override
     public Boolean doesFacebookFirstNameMatchEmail(IdOSAPIFactory factory, IUser user) {
         JsonObject facebookProfile = getFacebookProfile(factory, user);
-        if (facebookProfile != null) {
+        if (facebookProfile != null && !facebookProfile.get("email").isJsonNull() && !facebookProfile.get("first_name")
+                .isJsonNull()) {
             String email = facebookProfile.get("email").getAsString();
             String firstName = facebookProfile.get("first_name").getAsString();
             if ((email != null) && (firstName != null)) {
@@ -144,13 +145,15 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
             if (arr != null)
                 for (int i = 0; i < arr.size(); i++) {
                     JsonObject jobj = arr.get(i).getAsJsonObject();
-                    String createdTime = jobj.get(timeTag).getAsString();
-                    if (createdTime != null) {
-                        Date postDate = LocalUtils.parseFacebookRFC822Date(createdTime);
-                        if ((postDate != null) && LocalUtils.checkDayMonthMatch(facebookBday, postDate)) {
-                            count++;
-                        }
+                    if (!jobj.get(timeTag).isJsonNull()) {
+                        String createdTime = jobj.get(timeTag).getAsString();
+                        if (createdTime != null) {
+                            Date postDate = LocalUtils.parseFacebookRFC822Date(createdTime);
+                            if ((postDate != null) && LocalUtils.checkDayMonthMatch(facebookBday, postDate)) {
+                                count++;
+                            }
 
+                        }
                     }
                 }
         }
