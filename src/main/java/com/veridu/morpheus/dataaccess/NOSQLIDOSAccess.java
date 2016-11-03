@@ -46,7 +46,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
 
     private JsonElement getResponseDataContent(JsonObject response) {
         JsonArray jobj = LocalUtils.getResponseData(response);
-        if (jobj.size() > 0)
+        if (jobj.size() > 0 && !jobj.get(0).getAsJsonObject().get("data").isJsonNull())
             return jobj.get(0).getAsJsonObject().get("data");
         return null;
     }

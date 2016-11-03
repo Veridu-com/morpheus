@@ -18,8 +18,11 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
  * Created by cassio on 10/3/16.
@@ -39,6 +42,18 @@ public class BeanTwitterFeatureExtractor implements IFeatureExtractor {
 
     private static final boolean DEBUG = false;
 
+    private static final IFact numTweetsFact = new Fact("numOfTweets", "twitter");
+
+    private static final IFact numRetweetsFact = new Fact("numOfRetweetedTweets", "twitter");
+
+    private static final IFact numFriendsFact = new Fact("numOfFriends", "twitter");
+
+    private static final IFact numOfFollowersFact = new Fact("numOfFollowers", "twitter");
+
+    private static HashSet<String> automatedTools = new HashSet<>();
+
+    private static final Pattern quoteBotsPattern = Pattern.compile("\\d+.(“|\")+(.+)(\"|”)+\\s*(-|–)+\\s*.+");
+
     @Autowired
     public BeanTwitterFeatureExtractor(IDataSource dataSource, IUtils utils, IMongoDataSource mongo) {
         this.dataSource = dataSource;
@@ -51,17 +66,92 @@ public class BeanTwitterFeatureExtractor implements IFeatureExtractor {
         this.basicNumericFacts = this.utils.getTwitterNumericFacts();
         this.facts = new ArrayList<>(basicNumericFacts);
 
-        IFact numOfFollowTrain = new Fact("numOfFollowTrain", "skynet");
-        IFact numOfRetweetsMentions = new Fact("numOfRetweetsMentions", "skynet");
-        IFact numOfFollowersMentions = new Fact("numOfFollowersMentions", "skynet");
-        IFact numOfFollowBacksMentions = new Fact("numOfFollowBacksMentions", "skynet");
-        IFact numOfFollowTrickMentions = new Fact("numOfFollowTrickMentions", "skynet");
+        IFact numOfRatioFollowTricks = new Fact("numOfRatioFollowTricks", "skynet");
+        IFact numOfConsecutiveTweetsInASec = new Fact("numOfConsecutiveTweetsInASec", "skynet");
+        IFact numOfFracRetweetOverTweet = new Fact("numOfFracRetweetOverTweet", "skynet");
+        IFact numOfTweetsFromAutomated = new Fact("numOfTweetsFromAutomated", "skynet");
+        IFact numOfFracQuoteBotsPatterns = new Fact("numOfFracQuoteBotsPatterns", "skynet");
+        //IFact numOfRatioFollowersFollowing = new Fact("numOfRatioFollowersFollowing", "skynet");
 
-        this.facts.add(numOfFollowTrain);
-        this.facts.add(numOfRetweetsMentions);
-        this.facts.add(numOfFollowersMentions);
-        this.facts.add(numOfFollowBacksMentions);
-        this.facts.add(numOfFollowTrickMentions);
+        this.facts.add(numOfRatioFollowTricks);
+        this.facts.add(numOfConsecutiveTweetsInASec);
+        this.facts.add(numOfFracRetweetOverTweet);
+        this.facts.add(numOfTweetsFromAutomated);
+        this.facts.add(numOfFracQuoteBotsPatterns);
+        //this.facts.add(numOfRatioFollowersFollowing);
+
+        populateAutomatedTweetingTools();
+    }
+
+    private void populateAutomatedTweetingTools() {
+        automatedTools.add("hootsuite");
+        automatedTools.add("cotweet");
+        automatedTools.add("socialoomph");
+        automatedTools.add("twuffer");
+        automatedTools.add("su.pr");
+        automatedTools.add("twaitter");
+        automatedTools.add("taweet");
+        automatedTools.add("tweet-u-later");
+        automatedTools.add("tweetfunnel");
+        automatedTools.add("futuretweets");
+    }
+
+    private static Date parseTwitterUTC(String date) {
+
+        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+
+        // Important note. Only ENGLISH Locale works.
+        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+        sf.setLenient(true);
+
+        try {
+            return sf.parse(date);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    /**
+     * computes the time difference in seconds
+     *
+     * @param date1
+     * @param date2
+     * @return
+     */
+    private static long getDateDiff(Date date1, Date date2) {
+        long diffInMillies = date2.getTime() - date1.getTime();
+        return Math.abs(TimeUnit.SECONDS.convert(diffInMillies, TimeUnit.MILLISECONDS));
+    }
+
+    private static int countNumFollowsTricks(String txtMessage) {
+
+        int numFollowTricks = 0;
+
+        if (txtMessage.contains("retweet"))
+            numFollowTricks++;
+        if (txtMessage.contains("followtrain"))
+            numFollowTricks++;
+        if (txtMessage.contains("followers"))
+            numFollowTricks++;
+        if (txtMessage.contains("followback"))
+            numFollowTricks++;
+        if (txtMessage.contains("followtrick"))
+            numFollowTricks++;
+        if (txtMessage.contains("mgwv"))
+            numFollowTricks++;
+        if (txtMessage.contains("siguemeytesigo"))
+            numFollowTricks++;
+        if (txtMessage.contains("seguime"))
+            numFollowTricks++;
+
+        return numFollowTricks;
+    }
+
+    private boolean isFromAutomatedSource(String source) {
+        for (String key : automatedTools)
+            if (source.contains(key))
+                return true;
+        return false;
     }
 
     @Override
@@ -84,42 +174,90 @@ public class BeanTwitterFeatureExtractor implements IFeatureExtractor {
 
         JsonArray tweets = this.mongo.getTweets(factory, user);
 
-        int numFollowTrain = 0;
-        int numRetweetsMentions = 0;
-        int numFollowersMentions = 0;
-        int numFollowBacksMentions = 0;
-        int numFollowTrickMentions = 0;
+        int numFollowTricks = 0;
+        int numOfConsecutiveTweetsInASec = 0;
+        int numOfTweetsFromAutomated = 0;
+        int numOfQuoteBotsPatterns = 0;
+
+        Date lastDate = null;
 
         if (tweets != null) {
             for (int i = 0; i < tweets.size(); i++) {
                 JsonObject tweet = tweets.get(i).getAsJsonObject();
                 String txtMessage = tweet.get("text").getAsString().toLowerCase().replaceAll("\\s+", "");
-                if (txtMessage.contains("retweet"))
-                    numRetweetsMentions++;
-                if (txtMessage.contains("followtrain"))
-                    numFollowTrain++;
-                if (txtMessage.contains("followers"))
-                    numFollowersMentions++;
-                if (txtMessage.contains("followback"))
-                    numFollowBacksMentions++;
-                if (txtMessage.contains("followtrick"))
-                    numFollowTrickMentions++;
+                String rawText = tweet.get("text").getAsString();
+
+                if (quoteBotsPattern.matcher(rawText).matches())
+                    numOfQuoteBotsPatterns++;
+
+                Date currDate = parseTwitterUTC(tweet.get("created_at").getAsString());
+                String source = tweet.get("source").getAsString().toLowerCase();
+
+                numFollowTricks += countNumFollowsTricks(txtMessage);
+
+                if (lastDate != null) {
+                    long diffInSeconds = getDateDiff(lastDate, currDate);
+                    if (diffInSeconds <= 1)
+                        numOfConsecutiveTweetsInASec++;
+                }
+
+                lastDate = currDate;
+
+                if (isFromAutomatedSource(source))
+                    numOfTweetsFromAutomated++;
             }
         }
 
-        inst.setValue(attPos++, numFollowTrain);
-        inst.setValue(attPos++, numRetweetsMentions);
-        inst.setValue(attPos++, numFollowersMentions);
-        inst.setValue(attPos++, numFollowBacksMentions);
-        inst.setValue(attPos++, numFollowTrickMentions);
+        double numTweets = 0;
+        double numRetweets = 0;
+        double fracRetweetsOverTweets = 0;
+
+        double numOfFollowers = 0;
+        double numOfFriends = 0;
+
+        double fracQuoteBotsPatterns = 0;
+        double ratioFollowersFollowing = 0;
+
+        double ratioFollowTricks = 0;
+
+        if (numericFacts.containsKey(numTweetsFact))
+            numTweets = numericFacts.get(numTweetsFact);
+
+        if (numericFacts.containsKey(numRetweetsFact))
+            numRetweets = numericFacts.get(numRetweetsFact);
+
+        if (numTweets > 0)
+            fracRetweetsOverTweets = numRetweets / numTweets;
+
+        if (numericFacts.containsKey(numOfFollowersFact))
+            numOfFollowers = numericFacts.get(numOfFollowersFact);
+
+        if (numericFacts.containsKey(numFriendsFact))
+            numOfFriends = numericFacts.get(numFriendsFact);
+
+        if (numTweets > 0)
+            fracQuoteBotsPatterns = numOfQuoteBotsPatterns / numTweets;
+
+        if (numOfFriends > 0)
+            ratioFollowersFollowing = numOfFollowers / numOfFriends;
+
+        if (numTweets > 0)
+            ratioFollowTricks = numFollowTricks / numTweets;
+
+        inst.setValue(attPos++, ratioFollowTricks);
+        inst.setValue(attPos++, numOfConsecutiveTweetsInASec);
+        inst.setValue(attPos++, fracRetweetsOverTweets);
+        inst.setValue(attPos++, numOfTweetsFromAutomated);
+        inst.setValue(attPos++, fracQuoteBotsPatterns);
+        //inst.setValue(attPos++, ratioFollowersFollowing);
 
         if (DEBUG) {
-            System.out.println("-------");
-            System.out.println("twitter header:");
-            System.out.println(dataset);
-            System.out.println("generated twitter instance:");
+            System.out.println("-------------------");
+            System.out.println("header:");
+            System.out.println(dataset.toString());
+            System.out.println("generated instance:");
             System.out.println(inst);
-            System.out.println("-------");
+            System.out.println("-------------------");
         }
 
         return inst;

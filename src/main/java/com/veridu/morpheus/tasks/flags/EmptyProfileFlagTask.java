@@ -176,7 +176,7 @@ public class EmptyProfileFlagTask implements ITask {
                 int nStatuses = Integer.parseInt(facebookFacts.get(facebookNumOfStatuses));
 
                 if (fName.equals("") || lName.equals("") || (nLikes < 14) || (nPosts < 18) || (nComments < 6) || (
-                        nReceivedLikes < 16) || (nStatuses < 3))
+                        nReceivedLikes < 16))
                     facebookEmpty = true;
             } else
                 facebookEmpty = true;

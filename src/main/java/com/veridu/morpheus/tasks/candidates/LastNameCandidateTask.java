@@ -159,7 +159,7 @@ public class LastNameCandidateTask implements ITask {
 
         // save to the database the best candidate value
         if (candidates.size() > 0) {
-            dataSource.insertAttributeCandidatesForUser(factory, user, "last-name", candidates);
+            dataSource.insertAttributeCandidatesForUser(factory, user, "lastName", candidates);
             if (verbose)
                 logger.info(String.format(
                         "Last name candidate extractor found best candidate: %s with support %.2f for user %s",

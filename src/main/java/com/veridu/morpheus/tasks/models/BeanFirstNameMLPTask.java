@@ -1,6 +1,5 @@
 package com.veridu.morpheus.tasks.models;
 
-import com.google.gson.JsonObject;
 import com.veridu.idos.IdOSAPIFactory;
 import com.veridu.morpheus.impl.Constants;
 import com.veridu.morpheus.impl.Fact;
@@ -71,38 +70,27 @@ public class BeanFirstNameMLPTask implements ITask {
         double realUserProb = -1;
 
         try {
-            System.out.println("---- first name model header ---");
-            System.out.println(datasetHeader);
-            System.out.println("---- generated instance: ----");
-            System.out.println(inst);
-            System.out.println("---- end instance --- ");
             pred = model.predict(inst);
             realUserProb = pred.realUserProbability();
 
             dao.upsertScore(factory, user, "first-name-score-series-s-model-m", "first-name", realUserProb);
-            dao.upsertGate(factory, user, "first-name-gate", realUserProb >= 0.5);
+
+            dao.upsertGate(factory, user, "first-name-gate-low", realUserProb >= 0.99);
+            dao.upsertGate(factory, user, "first-name-gate-med", realUserProb >= 0.9999180);
+            dao.upsertGate(factory, user, "first-name-gate-high", realUserProb >= 0.9999990);
 
             time2 = System.currentTimeMillis();
             timediff = time2 - time1;
 
-            log.info(String.format("First name MLP model predicted real probability for user %s => %.2f in %d ms",
-                    userId, pred.realUserProbability(), time2 - time1));
+            if (params.verbose)
+                log.info(String.format("First name MLP model predicted real probability for user %s => %.2f in %d ms",
+                        userId, pred.realUserProbability(), time2 - time1));
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         if (pred == null)
-            log.error("First name MLP model could not make prediction");
-
-        JsonObject responseBuilder = new JsonObject();
-
-        responseBuilder.addProperty(Constants.MODEL_NAME_RESPONSE_STR, Constants.FIRST_NAME_MLP_MODEL_NAME);
-        responseBuilder.addProperty(Constants.USER_ID_RESPONSE_STR, userId);
-        responseBuilder.addProperty(Constants.REAL_USR_PROB_RESPONSE_STR, realUserProb);
-        responseBuilder.addProperty(Constants.TIME_TAKEN_RESPONSE_STR, timediff);
-
-        if (params.verbose)
-            System.out.println(responseBuilder);
+            log.error("First name MLP model could not make prediction for user " + user.getId());
     }
 }

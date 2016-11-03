@@ -1,6 +1,5 @@
 package com.veridu.morpheus.tasks.models;
 
-import com.google.gson.JsonObject;
 import com.veridu.idos.IdOSAPIFactory;
 import com.veridu.morpheus.impl.Constants;
 import com.veridu.morpheus.impl.User;
@@ -71,29 +70,23 @@ public class BeanBirthDayMLPTask implements ITask {
             realUserProb = pred.realUserProbability();
 
             dao.upsertScore(factory, user, "birth-day-score-series-s-model-m", "birth-day", realUserProb);
-            dao.upsertGate(factory, user, "birth-day-gate", realUserProb >= 0.5);
+
+            dao.upsertGate(factory, user, "birth-day-gate-low", realUserProb >= 0.7958683); // low gate
+            dao.upsertGate(factory, user, "birth-day-gate-med", realUserProb >= 0.9949294); // med gate
+            dao.upsertGate(factory, user, "birth-day-gate-high", realUserProb >= 0.9991777); // high gate
 
             time2 = System.currentTimeMillis();
             timediff = time2 - time1;
 
-            log.info(String.format("Birthday MLP model predicted real probability for user %s => %.2f in %d ms", userId,
-                    pred.realUserProbability(), time2 - time1));
+            if (params.verbose)
+                log.info(String.format("Birthday MLP model predicted real probability for user %s => %.2f in %d ms",
+                        userId, pred.realUserProbability(), time2 - time1));
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         if (pred == null)
-            log.error("Birthday MLP model could not make prediction");
-
-        JsonObject responseBuilder = new JsonObject();
-
-        responseBuilder.addProperty(Constants.MODEL_NAME_RESPONSE_STR, Constants.BIRTH_DAY_MLP_MODEL_NAME);
-        responseBuilder.addProperty(Constants.USER_ID_RESPONSE_STR, userId);
-        responseBuilder.addProperty(Constants.REAL_USR_PROB_RESPONSE_STR, realUserProb);
-        responseBuilder.addProperty(Constants.TIME_TAKEN_RESPONSE_STR, timediff);
-
-        if (params.verbose)
-            System.out.println(responseBuilder);
+            log.error("Birthday MLP model could not make prediction for user " + user.getId());
     }
 }

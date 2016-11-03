@@ -5,17 +5,17 @@ package com.veridu.morpheus.impl;
  */
 public class ModelResponse {
 
-    private boolean response;
+    private boolean status;
 
-    public ModelResponse(boolean response) {
-        this.response = response;
+    public ModelResponse(boolean status) {
+        this.status = status;
     }
 
-    public boolean isResponse() {
-        return response;
+    public boolean isStatus() {
+        return status;
     }
 
-    public void setResponse(boolean response) {
-        this.response = response;
+    public void setStatus(boolean status) {
+        this.status = status;
     }
 }

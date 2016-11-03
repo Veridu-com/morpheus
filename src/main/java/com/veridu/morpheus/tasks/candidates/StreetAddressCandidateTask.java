@@ -75,7 +75,7 @@ public class StreetAddressCandidateTask implements ITask {
 
         // save to the database the best birth year candidate value
         if (candidates.size() > 0) {
-            dataSource.insertAttributeCandidatesForUser(factory, user, "street-address", candidates);
+            dataSource.insertAttributeCandidatesForUser(factory, user, "streetAddress", candidates);
             if (verbose)
                 logger.info(String.format(
                         "Street address candidate extractor found best candidate: %s with support %.2f for user %s",

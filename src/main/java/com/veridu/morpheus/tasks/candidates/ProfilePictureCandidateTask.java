@@ -1,10 +1,10 @@
 package com.veridu.morpheus.tasks.candidates;
 
 import com.veridu.idos.IdOSAPIFactory;
+import com.veridu.morpheus.impl.Constants;
 import com.veridu.morpheus.impl.Fact;
 import com.veridu.morpheus.impl.User;
 import com.veridu.morpheus.interfaces.beans.IDataSource;
-import com.veridu.morpheus.interfaces.beans.IMongoDataSource;
 import com.veridu.morpheus.interfaces.beans.IUtils;
 import com.veridu.morpheus.interfaces.facts.ICandidate;
 import com.veridu.morpheus.interfaces.facts.IFact;
@@ -24,26 +24,26 @@ import java.util.HashMap;
 /**
  * Created by cassio on 10/4/16.
  */
-@Component("birthmonth-candidates")
-public class BirthMonthCandidateTask implements ITask {
-
-    private IDataSource dataSource;
+@Component("profilepic-candidates")
+public class ProfilePictureCandidateTask implements ITask {
 
     private IUtils utils;
 
-    private IMongoDataSource mongo;
+    private IDataSource dataSource;
 
-    private static final IFact candidateFact = new Fact("bestCandidateBirthMonth", "skynet");
+    private static final String profilePicFactName = "profilePicture";
 
-    private static final String bMonthFactName = "birthMonth";
+    private static final Logger logger = Logger.getLogger(ProfilePictureCandidateTask.class);
 
-    private static final Logger logger = Logger.getLogger(BirthMonthCandidateTask.class);
+    private static final IFact fbkPic = new Fact(profilePicFactName, Constants.FACEBOOK_PROVIDER_NAME);
+    private static final IFact linPic = new Fact(profilePicFactName, Constants.LINKEDIN_PROVIDER_NAME);
+    private static final IFact gooPic = new Fact(profilePicFactName, Constants.GOOGLE_PROVIDER_NAME);
+    private static final IFact twiPic = new Fact(profilePicFactName, Constants.TWITTER_PROVIDER_NAME);
 
     @Autowired
-    public BirthMonthCandidateTask(IDataSource dataSource, IUtils utils, IMongoDataSource mongo) {
-        this.dataSource = dataSource;
+    public ProfilePictureCandidateTask(IUtils utils, IDataSource dataSource) {
         this.utils = utils;
-        this.mongo = mongo;
+        this.dataSource = dataSource;
     }
 
     @Async
@@ -59,33 +59,30 @@ public class BirthMonthCandidateTask implements ITask {
 
         IUser user = new User(userId);
 
-        HashMap<IFact, String> userFacts = dataSource.obtainSpecificFactForUser(factory, user, "*birth*");
+        HashMap<IFact, String> userFacts = dataSource.obtainSpecificFactForUser(factory, user, "profilePicture");
 
         HashMap<String, Double> cands = new HashMap<>();
 
-        for (IFact fact : userFacts.keySet())
-            if (fact.getName().equals(bMonthFactName)) {
-                String value = userFacts.get(fact);
-                if (value.equals("0"))
-                    continue;
-                if (!cands.containsKey(value))
-                    cands.put(value, 1.0);
-                else
-                    cands.put(value, cands.get(value) + 1.0);
-            }
+        if (userFacts.containsKey(fbkPic))
+            cands.put(userFacts.get(fbkPic), 4.0);
+        if (userFacts.containsKey(linPic))
+            cands.put(userFacts.get(linPic), 3.0);
+        if (userFacts.containsKey(gooPic))
+            cands.put(userFacts.get(gooPic), 2.0);
+        if (userFacts.containsKey(twiPic))
+            cands.put(userFacts.get(twiPic), 1.0);
 
         candidates = LocalUtils.normalizeCandidatesScores(cands);
 
         // save to the database the best birth year candidate value
         if (candidates.size() > 0) {
-            dataSource.insertAttributeCandidatesForUser(factory, user, "birthMonth", candidates);
+            dataSource.insertAttributeCandidatesForUser(factory, user, profilePicFactName, candidates);
             if (verbose)
                 logger.info(String.format(
-                        "Birth month candidate extractor found best candidate: %s with support %.2f for user %s",
+                        "Profile picture candidate extractor found best candidate: %s with support %.2f for user %s",
                         candidates.get(0).getValue(), candidates.get(0).getSupportScore(), userId));
         } else if (verbose)
-            logger.info(String.format("Birth month candidate extractor found no candidates for user %s", userId));
+            logger.info(String.format("Profile picture candidate extractor found no candidates for user %s", userId));
 
     }
-
 }

@@ -40,7 +40,8 @@ public class IDOSAccess implements IDataSource {
                             .addSortFilter(SortFilterType.DESC).addLimitFilter(1));
             if (LocalUtils.okResponse(response)) {
                 JsonArray data = LocalUtils.getResponseData(response);
-                return data.get(0).getAsJsonObject().get("id").getAsInt();
+                if (data.size() > 0 && !data.get(0).getAsJsonObject().get("id").isJsonNull())
+                    return data.get(0).getAsJsonObject().get("id").getAsInt();
             } else
                 logger.error("Could not get latest source id for source " + provider + " for user " + userId);
         } catch (SDKException e) {
@@ -62,8 +63,12 @@ public class IDOSAccess implements IDataSource {
                 JsonArray data = LocalUtils.getResponseData(response);
                 data.forEach(k -> {
                     JsonObject jobj = k.getAsJsonObject();
-                    String sourceName = jobj.get("source").getAsString();
-                    facts.put(new Fact(jobj.get("name").getAsString(), sourceName), String.valueOf(jobj.get("value")));
+                    if (!jobj.get("source").isJsonNull()) {
+                        String sourceName = jobj.get("source").getAsString();
+                        if (!jobj.get("name").isJsonNull() && !jobj.get("value").isJsonNull())
+                            facts.put(new Fact(jobj.get("name").getAsString(), sourceName),
+                                    String.valueOf(jobj.get("value")));
+                    }
                 });
             } else
                 logger.error("API error on obtain provider facts for user " + user.getId());
@@ -95,11 +100,12 @@ public class IDOSAccess implements IDataSource {
         //JsonObject response = null;
 
         try {
-            factory.getAttribute().setAuthType(IdOSAuthType.HANDLER);
-            factory.getAttribute().deleteAll(user.getId(), Filter.createFilter().addNameFilter(attName));
+            factory.getCandidates().setAuthType(IdOSAuthType.HANDLER);
+            factory.getCandidates()
+                    .deleteAll(user.getId(), Filter.createFilter().addCandidateAttributeNameFilter(attName));
             candidates.parallelStream().forEach(k -> {
                 try {
-                    factory.getAttribute().create(user.getId(), attName, k.getValue(), k.getSupportScore());
+                    factory.getCandidates().create(user.getId(), attName, k.getValue(), k.getSupportScore());
                 } catch (SDKException e) {
                     e.printStackTrace();
                 } catch (UnsupportedEncodingException e) {
@@ -181,8 +187,10 @@ public class IDOSAccess implements IDataSource {
                 data.forEach(k -> {
                     JsonObject jobj = k.getAsJsonObject();
                     JsonObject source = jobj.get("source").getAsJsonObject();
-                    facts.put(new Fact(jobj.get("name").getAsString(), source.get("source").getAsString()),
-                            String.valueOf(jobj.get("value")));
+                    if (!source.isJsonNull() && !jobj.get("name").isJsonNull() && !source.get("source").isJsonNull()
+                            && !jobj.get("value").isJsonNull())
+                        facts.put(new Fact(jobj.get("name").getAsString(), source.get("source").getAsString()),
+                                String.valueOf(jobj.get("value")));
                 });
             } else
                 logger.error("Could not obtain facts for user " + user.getId());
@@ -204,8 +212,10 @@ public class IDOSAccess implements IDataSource {
                 JsonArray data = LocalUtils.getResponseData(response);
                 data.forEach(k -> {
                     JsonObject obj = k.getAsJsonObject();
-                    IProfile profile = new Profile(obj.get("name").getAsString(), obj.get("id").getAsString());
-                    profiles.add(profile);
+                    if (!obj.get("name").isJsonNull() && !obj.get("id").isJsonNull()) {
+                        IProfile profile = new Profile(obj.get("name").getAsString(), obj.get("id").getAsString());
+                        profiles.add(profile);
+                    }
                 });
             } else
                 logger.error("Could not obtain single user profiles for user " + user.getId());
@@ -229,7 +239,8 @@ public class IDOSAccess implements IDataSource {
                 JsonArray data = LocalUtils.getResponseData(response);
                 data.forEach(k -> {
                     JsonObject jobj = k.getAsJsonObject();
-                    facts.put(new Fact(jobj.get("name").getAsString(), provider), jobj.get("value").getAsDouble());
+                    if (!jobj.get("name").isJsonNull() && !jobj.get("value").isJsonNull())
+                        facts.put(new Fact(jobj.get("name").getAsString(), provider), jobj.get("value").getAsDouble());
                 });
             }
 
@@ -255,8 +266,9 @@ public class IDOSAccess implements IDataSource {
                 JsonArray data = LocalUtils.getResponseData(response);
                 data.forEach(k -> {
                     JsonObject jobj = k.getAsJsonObject();
-                    facts.put(new Fact(jobj.get("name").getAsString(), provider),
-                            parseBoolAsDouble(jobj.get("value").getAsBoolean()));
+                    if (!jobj.get("name").isJsonNull() && !jobj.get("value").isJsonNull())
+                        facts.put(new Fact(jobj.get("name").getAsString(), provider),
+                                parseBoolAsDouble(jobj.get("value").getAsBoolean()));
                 });
             }
 
@@ -336,8 +348,10 @@ public class IDOSAccess implements IDataSource {
                 JsonArray data = LocalUtils.getResponseData(response);
                 data.forEach(k -> {
                     JsonObject jobj = k.getAsJsonObject();
-                    facts.put(new Fact(jobj.get("name").getAsString(), jobj.get("source").getAsString()),
-                            jobj.get("value").getAsString());
+                    if (!jobj.get("name").isJsonNull() && !jobj.get("source").isJsonNull() && !jobj.get("value")
+                            .isJsonNull())
+                        facts.put(new Fact(jobj.get("name").getAsString(), jobj.get("source").getAsString()),
+                                jobj.get("value").getAsString());
                 });
             } else
                 logger.error("Could not get specific fact " + factName + " for user " + user.getId());
@@ -356,8 +370,8 @@ public class IDOSAccess implements IDataSource {
     @Override
     public void deleteWarning(IdOSAPIFactory factory, IUser user, String warningName) {
         try {
-            factory.getWarning().setAuthType(IdOSAuthType.HANDLER);
-            factory.getWarning().deleteAll(user.getId(), Filter.createFilter().addSlugFilter(warningName));
+            factory.getFlags().setAuthType(IdOSAuthType.HANDLER);
+            factory.getFlags().deleteAll(user.getId(), Filter.createFilter().addSlugFilter(warningName));
         } catch (SDKException e) {
             e.printStackTrace();
         }
@@ -366,8 +380,8 @@ public class IDOSAccess implements IDataSource {
     @Override
     public void insertWarning(IdOSAPIFactory factory, IUser user, String warningName, String attribute) {
         try {
-            factory.getWarning().setAuthType(IdOSAuthType.HANDLER);
-            factory.getWarning().create(user.getId(), warningName, attribute);
+            factory.getFlags().setAuthType(IdOSAuthType.HANDLER);
+            factory.getFlags().create(user.getId(), warningName, attribute);
         } catch (SDKException e) {
             e.printStackTrace();
         }

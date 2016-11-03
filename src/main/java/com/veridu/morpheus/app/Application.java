@@ -1,9 +1,5 @@
 package com.veridu.morpheus.app;
 
-import com.veridu.morpheus.impl.Constants;
-import com.veridu.morpheus.interfaces.models.IModel;
-import com.veridu.morpheus.utils.BeanConfigurationManager;
-import com.veridu.morpheus.utils.BeanUtils;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
@@ -23,10 +19,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class Application extends AsyncConfigurerSupport {
 
     public static void main(String[] args) {
-        BeanConfigurationManager bm = new BeanConfigurationManager();
-        BeanUtils utils = new BeanUtils(bm);
-        IModel model = utils.readModel("/models/" + Constants.COUNTRY_MLP_MODEL_NAME);
-
         SpringApplication.run(Application.class, args);
     }
 

@@ -1,6 +1,5 @@
 package com.veridu.morpheus.tasks.models;
 
-import com.google.gson.JsonObject;
 import com.veridu.idos.IdOSAPIFactory;
 import com.veridu.morpheus.impl.Constants;
 import com.veridu.morpheus.impl.User;
@@ -72,29 +71,25 @@ public class BeanPhoneMLPTask implements ITask {
             realUserProb = pred.realUserProbability();
 
             dao.upsertScore(factory, user, "phone-score-series-s-model-m", "phone", realUserProb);
-            dao.upsertGate(factory, user, "phone-gate", realUserProb >= 0.5);
+
+            dao.upsertGate(factory, user, "phone-gate-low", realUserProb >= 0.99);
+            dao.upsertGate(factory, user, "phone-gate-med", realUserProb >= 0.9960656);
+            dao.upsertGate(factory, user, "phone-gate-high", realUserProb >= 0.9998200);
 
             time2 = System.currentTimeMillis();
             timediff = time2 - time1;
 
-            log.info(String.format("Phone MLP model predicted real probability for user %s => %.2f in %d ms", userId,
-                    pred.realUserProbability(), time2 - time1));
+            if (params.verbose)
+                log.info(
+                        String.format("Phone MLP model predicted real probability for user %s => %.2f in %d ms", userId,
+                                pred.realUserProbability(), time2 - time1));
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         if (pred == null)
-            log.error("Phone MLP model could not make prediction");
+            log.error("Phone MLP model could not make prediction for user " + user.getId());
 
-        JsonObject responseBuilder = new JsonObject();
-
-        responseBuilder.addProperty(Constants.MODEL_NAME_RESPONSE_STR, Constants.PHONE_MLP_MODEL_NAME);
-        responseBuilder.addProperty(Constants.USER_ID_RESPONSE_STR, userId);
-        responseBuilder.addProperty(Constants.REAL_USR_PROB_RESPONSE_STR, realUserProb);
-        responseBuilder.addProperty(Constants.TIME_TAKEN_RESPONSE_STR, timediff);
-
-        if (params.verbose)
-            System.out.println(responseBuilder);
     }
 }

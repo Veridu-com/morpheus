@@ -71,7 +71,7 @@ public class BirthDayCandidateTask implements ITask {
 
         // save to the database the best birth year candidate value
         if (candidates.size() > 0) {
-            dataSource.insertAttributeCandidatesForUser(factory, user, "birth-day", candidates);
+            dataSource.insertAttributeCandidatesForUser(factory, user, "birthDay", candidates);
             if (verbose)
                 logger.info(String.format(
                         "Birth day candidate extractor found best candidate: %s with support %.2f for user %s",

@@ -89,9 +89,9 @@ public class BeanBirthDayFeatureExtractor implements IFeatureExtractor {
         for (int i = 0; i < (basicFacebookInst.numAttributes() - 2); i++)
             inst.setValue(attPosCounter++, basicFacebookInst.value(i));
 
-        // Instance fbkInst = this.facebookBirthdayExtractor.createInstance(this.facebookBirthdayHeader, user);
-        // for (int i = 0; i < (fbkInst.numAttributes() - 2); i++)
-        // inst.setValue(attPosCounter++, fbkInst.value(i));
+        //        Instance fbkInst = this.facebookBirthdayExtractor.createInstance(this.facebookBirthdayHeader, user);
+        //        for (int i = 0; i < (fbkInst.numAttributes() - 2); i++)
+        //            inst.setValue(attPosCounter++, fbkInst.value(i));
 
         // get birth facts:
         HashMap<IFact, String> userFacts = dataSource.obtainSpecificFactForUser(factory, user, "*birth*");
@@ -105,6 +105,7 @@ public class BeanBirthDayFeatureExtractor implements IFeatureExtractor {
 
         // apply rules
         double[] values = rulesEngine.applyRules(factValues);
+
         for (int i = 0; i < values.length; i++)
             inst.setValue(attPosCounter++, values[i]);
 

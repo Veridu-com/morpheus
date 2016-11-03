@@ -1,6 +1,5 @@
 package com.veridu.morpheus.tasks.models;
 
-import com.google.gson.JsonObject;
 import com.veridu.idos.IdOSAPIFactory;
 import com.veridu.morpheus.impl.Constants;
 import com.veridu.morpheus.impl.Fact;
@@ -76,30 +75,23 @@ public class BeanLastNameMLPTask implements ITask {
             realUserProb = pred.realUserProbability();
 
             dao.upsertScore(factory, user, "last-name-score-series-s-model-m", "last-name", realUserProb);
-            dao.upsertGate(factory, user, "last-name-gate", realUserProb >= 0.5);
+
+            dao.upsertGate(factory, user, "last-name-gate-low", realUserProb >= 0.9812162);
+            dao.upsertGate(factory, user, "last-name-gate-med", realUserProb >= 0.9970168);
+            dao.upsertGate(factory, user, "last-name-gate-high", realUserProb >= 0.9999275);
 
             time2 = System.currentTimeMillis();
             timediff = time2 - time1;
 
-            log.info(
-                    String.format("Last name MLP model predicted real probability for user %s => %.2f in %d ms", userId,
-                            pred.realUserProbability(), time2 - time1));
+            if (params.verbose)
+                log.info(String.format("Last name MLP model predicted real probability for user %s => %.2f in %d ms",
+                        userId, pred.realUserProbability(), time2 - time1));
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         if (pred == null)
-            log.error("Last name MLP model could not make prediction");
-
-        JsonObject responseBuilder = new JsonObject();
-
-        responseBuilder.addProperty(Constants.MODEL_NAME_RESPONSE_STR, Constants.LAST_NAME_MLP_MODEL_NAME);
-        responseBuilder.addProperty(Constants.USER_ID_RESPONSE_STR, userId);
-        responseBuilder.addProperty(Constants.REAL_USR_PROB_RESPONSE_STR, realUserProb);
-        responseBuilder.addProperty(Constants.TIME_TAKEN_RESPONSE_STR, timediff);
-
-        if (params.verbose)
-            System.out.println(responseBuilder);
+            log.error("Last name MLP model could not make prediction for user " + user.getId());
     }
 }
