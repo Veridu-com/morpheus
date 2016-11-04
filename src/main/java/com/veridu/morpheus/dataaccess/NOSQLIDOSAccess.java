@@ -88,8 +88,9 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
     @Override
     public Boolean doesFacebookFirstNameMatchEmail(IdOSAPIFactory factory, IUser user) {
         JsonObject facebookProfile = getFacebookProfile(factory, user);
-        if (facebookProfile != null && !facebookProfile.isJsonNull() && !facebookProfile.get("email").isJsonNull()
-                && !facebookProfile.get("first_name").isJsonNull()) {
+        if (facebookProfile != null && !facebookProfile.isJsonNull() && facebookProfile.has("email") && !facebookProfile
+                .get("email").isJsonNull() && facebookProfile.has("first_name") && !facebookProfile.get("first_name")
+                .isJsonNull()) {
             String email = facebookProfile.get("email").getAsString();
             String firstName = facebookProfile.get("first_name").getAsString();
             if ((email != null) && (firstName != null)) {
