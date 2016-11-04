@@ -26,6 +26,8 @@ public class LocalUtils {
     }
 
     public static boolean okResponse(JsonObject response) {
+        if (response == null)
+            return false;
         return response.get("status").getAsBoolean();
     }
 
