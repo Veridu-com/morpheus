@@ -55,42 +55,48 @@ public class BeanBirthMonthMLPTask implements ITask {
         String pubKey = params.publicKey;
         boolean verbose = params.verbose;
 
-        IModel model = utils.readModel("/models/" + Constants.BIRTH_MONTH_MLP_MODEL_NAME);
-        Instances datasetHeader = this.utils.generateDatasetHeader(this.birthMonthFeatureExtractor.obtainFactList());
-
         IdOSAPIFactory factory = utils.getIdOSAPIFactory(utils.generateCredentials(pubKey, userId));
-
-        long time2, timediff = 0;
-
         IUser user = new User(userId);
 
-        Instance inst = this.birthMonthFeatureExtractor.createInstance(factory, datasetHeader, user);
+        if (utils.checkIfCandidatesExist(factory, user, "birthMonth")) {
 
-        IPrediction pred = null;
-        double realUserProb = -1;
+            IModel model = utils.readModel("/models/" + Constants.BIRTH_MONTH_MLP_MODEL_NAME);
+            Instances datasetHeader = this.utils
+                    .generateDatasetHeader(this.birthMonthFeatureExtractor.obtainFactList());
 
-        try {
-            pred = model.predict(inst);
-            realUserProb = pred.realUserProbability();
+            long time2, timediff = 0;
 
-            dao.upsertScore(factory, user, "birth-month-score-series-s-model-m", "birth-month", realUserProb);
+            Instance inst = this.birthMonthFeatureExtractor.createInstance(factory, datasetHeader, user);
 
-            dao.upsertGate(factory, user, "birth-month-gate-low", realUserProb >= 0.7290693); // low
-            dao.upsertGate(factory, user, "birth-month-gate-med", realUserProb >= 0.9994298); // med
-            dao.upsertGate(factory, user, "birth-month-gate-high", realUserProb >= 0.9999658); // high
+            IPrediction pred = null;
+            double realUserProb = -1;
 
-            time2 = System.currentTimeMillis();
-            timediff = time2 - time1;
+            try {
+                pred = model.predict(inst);
+                realUserProb = pred.realUserProbability();
 
-            //            if (params.verbose)
-            log.info(String.format("Birthmonth MLP model predicted real probability for user %s => %.2f in %d ms",
-                    userId, pred.realUserProbability(), time2 - time1));
+                dao.upsertScore(factory, user, "birth-month-score-series-s-model-m", "birth-month", realUserProb);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+                dao.upsertGate(factory, user, "birth-month-gate-low", realUserProb >= 0.7290693); // low
+                dao.upsertGate(factory, user, "birth-month-gate-med", realUserProb >= 0.9994298); // med
+                dao.upsertGate(factory, user, "birth-month-gate-high", realUserProb >= 0.9999658); // high
+
+                time2 = System.currentTimeMillis();
+                timediff = time2 - time1;
+
+                //            if (params.verbose)
+                log.info(String.format("Birthmonth MLP model predicted real probability for user %s => %.2f in %d ms",
+                        userId, pred.realUserProbability(), time2 - time1));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (pred == null)
+                log.error("Birthmonth MLP model could not make prediction for user " + user.getId());
+
+        } else {
+            log.info(String.format("Birthmonth MLP model found no candidates to score for user %s", userId));
         }
-
-        if (pred == null)
-            log.error("Birthmonth MLP model could not make prediction for user " + user.getId());
     }
 }
