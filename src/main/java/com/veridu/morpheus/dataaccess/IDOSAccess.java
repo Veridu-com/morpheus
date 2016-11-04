@@ -295,7 +295,7 @@ public class IDOSAccess implements IDataSource {
 
             if (LocalUtils.okResponse(response)) {
                 JsonArray data = LocalUtils.getResponseData(response);
-                if (data.size() > 0) {
+                if (data.size() > 0 && !data.get(0).getAsJsonObject().isJsonNull()) {
                     JsonElement elem = data.get(0).getAsJsonObject().get("value");
                     return elem;
                 }
@@ -312,21 +312,21 @@ public class IDOSAccess implements IDataSource {
 
     private Boolean obtainBooleanFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName) {
         JsonElement element = obtainFeatureValue(factory, user, provider, featureName);
-        if (element != null)
+        if (element != null && !element.isJsonNull())
             return element.getAsBoolean();
         return null;
     }
 
     private double obtainDoubleFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName) {
         JsonElement element = obtainFeatureValue(factory, user, provider, featureName);
-        if (element != null)
+        if (element != null && !element.isJsonNull())
             return element.getAsDouble();
         return Double.NaN;
     }
 
     private String obtainStringFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName) {
         JsonElement element = obtainFeatureValue(factory, user, provider, featureName);
-        if (element != null)
+        if (element != null && !element.isJsonNull())
             return element.getAsString();
         return "";
     }
