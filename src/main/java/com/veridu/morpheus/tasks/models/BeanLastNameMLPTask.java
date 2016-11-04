@@ -56,43 +56,46 @@ public class BeanLastNameMLPTask implements ITask {
         String pubKey = params.publicKey;
         boolean verbose = params.verbose;
 
-        IModel model = utils.readModel("/models/" + Constants.LAST_NAME_MLP_MODEL_NAME);
-        Instances datasetHeader = this.utils.generateDatasetHeader(this.lastNameFeatureExtractor.obtainFactList());
-
         IdOSAPIFactory factory = utils.getIdOSAPIFactory(utils.generateCredentials(pubKey, userId));
-
-        long time2, timediff = 0;
-
         IUser user = new User(userId);
 
-        Instance inst = this.lastNameFeatureExtractor.createInstance(factory, datasetHeader, user);
+        if (utils.checkIfCandidatesExist(factory, user, "lastName")) {
 
-        IPrediction pred = null;
-        double realUserProb = -1;
+            IModel model = utils.readModel("/models/" + Constants.LAST_NAME_MLP_MODEL_NAME);
+            Instances datasetHeader = this.utils.generateDatasetHeader(this.lastNameFeatureExtractor.obtainFactList());
 
-        try {
-            pred = model.predict(inst);
-            realUserProb = pred.realUserProbability();
+            long time2, timediff = 0;
 
-            dao.upsertScore(factory, user, "last-name-score-series-s-model-m", "last-name", realUserProb);
+            Instance inst = this.lastNameFeatureExtractor.createInstance(factory, datasetHeader, user);
 
-            dao.upsertGate(factory, user, "last-name-gate-low", realUserProb >= 0.9812162);
-            dao.upsertGate(factory, user, "last-name-gate-med", realUserProb >= 0.9970168);
-            dao.upsertGate(factory, user, "last-name-gate-high", realUserProb >= 0.9999275);
+            IPrediction pred = null;
+            double realUserProb = -1;
 
-            time2 = System.currentTimeMillis();
-            timediff = time2 - time1;
+            try {
+                pred = model.predict(inst);
+                realUserProb = pred.realUserProbability();
 
-            //            if (params.verbose)
-            log.info(
-                    String.format("Last name MLP model predicted real probability for user %s => %.2f in %d ms", userId,
-                            pred.realUserProbability(), time2 - time1));
+                dao.upsertScore(factory, user, "last-name-score-series-s-model-m", "last-name", realUserProb);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+                dao.upsertGate(factory, user, "last-name-gate-low", realUserProb >= 0.9812162);
+                dao.upsertGate(factory, user, "last-name-gate-med", realUserProb >= 0.9970168);
+                dao.upsertGate(factory, user, "last-name-gate-high", realUserProb >= 0.9999275);
+
+                time2 = System.currentTimeMillis();
+                timediff = time2 - time1;
+
+                //            if (params.verbose)
+                log.info(String.format("Last name MLP model predicted real probability for user %s => %.2f in %d ms",
+                        userId, pred.realUserProbability(), time2 - time1));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (pred == null)
+                log.error("Last name MLP model could not make prediction for user " + user.getId());
+        } else {
+            log.info(String.format("Last name MLP model found no candidates to score for user %s", userId));
         }
-
-        if (pred == null)
-            log.error("Last name MLP model could not make prediction for user " + user.getId());
     }
 }

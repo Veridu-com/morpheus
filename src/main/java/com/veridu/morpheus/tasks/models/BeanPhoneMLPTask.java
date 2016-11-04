@@ -51,44 +51,48 @@ public class BeanPhoneMLPTask implements ITask {
         String pubKey = params.publicKey;
         boolean verbose = params.verbose;
 
-        IModel model = utils.readModel("/models/" + Constants.PHONE_MLP_MODEL_NAME);
-        Instances datasetHeader = this.utils.generateDatasetHeader(this.phoneFeatureExtractor.obtainFactList());
-
         IdOSAPIFactory factory = utils.getIdOSAPIFactory(utils.generateCredentials(pubKey, userId));
-
-        long time2, timediff = 0;
-
         IUser user = new User(userId);
 
-        Instance inst = this.phoneFeatureExtractor.createInstance(factory, datasetHeader, user);
+        if (utils.checkIfCandidatesExist(factory, user, "phone")) {
 
-        IPrediction pred = null;
+            IModel model = utils.readModel("/models/" + Constants.PHONE_MLP_MODEL_NAME);
+            Instances datasetHeader = this.utils.generateDatasetHeader(this.phoneFeatureExtractor.obtainFactList());
 
-        double realUserProb = -1;
+            long time2, timediff = 0;
 
-        try {
-            pred = model.predict(inst);
-            realUserProb = pred.realUserProbability();
+            Instance inst = this.phoneFeatureExtractor.createInstance(factory, datasetHeader, user);
 
-            dao.upsertScore(factory, user, "phone-score-series-s-model-m", "phone", realUserProb);
+            IPrediction pred = null;
 
-            dao.upsertGate(factory, user, "phone-gate-low", realUserProb >= 0.99);
-            dao.upsertGate(factory, user, "phone-gate-med", realUserProb >= 0.9960656);
-            dao.upsertGate(factory, user, "phone-gate-high", realUserProb >= 0.9998200);
+            double realUserProb = -1;
 
-            time2 = System.currentTimeMillis();
-            timediff = time2 - time1;
+            try {
+                pred = model.predict(inst);
+                realUserProb = pred.realUserProbability();
 
-            //            if (params.verbose)
-            log.info(String.format("Phone MLP model predicted real probability for user %s => %.2f in %d ms", userId,
-                    pred.realUserProbability(), time2 - time1));
+                dao.upsertScore(factory, user, "phone-score-series-s-model-m", "phone", realUserProb);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+                dao.upsertGate(factory, user, "phone-gate-low", realUserProb >= 0.99);
+                dao.upsertGate(factory, user, "phone-gate-med", realUserProb >= 0.9960656);
+                dao.upsertGate(factory, user, "phone-gate-high", realUserProb >= 0.9998200);
+
+                time2 = System.currentTimeMillis();
+                timediff = time2 - time1;
+
+                //            if (params.verbose)
+                log.info(
+                        String.format("Phone MLP model predicted real probability for user %s => %.2f in %d ms", userId,
+                                pred.realUserProbability(), time2 - time1));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (pred == null)
+                log.error("Phone MLP model could not make prediction for user " + user.getId());
+        } else {
+            log.info(String.format("Phone MLP model found no candidates to score for user %s", userId));
         }
-
-        if (pred == null)
-            log.error("Phone MLP model could not make prediction for user " + user.getId());
-
     }
 }

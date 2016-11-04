@@ -1,12 +1,19 @@
 package com.veridu.morpheus.utils;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.veridu.idos.IdOSAPIFactory;
+import com.veridu.idos.exceptions.InvalidToken;
+import com.veridu.idos.exceptions.SDKException;
+import com.veridu.idos.utils.Filter;
+import com.veridu.idos.utils.IdOSAuthType;
 import com.veridu.morpheus.impl.Constants;
 import com.veridu.morpheus.impl.Fact;
 import com.veridu.morpheus.interfaces.beans.IUtils;
 import com.veridu.morpheus.interfaces.facts.IFact;
 import com.veridu.morpheus.interfaces.models.IModel;
 import com.veridu.morpheus.interfaces.users.IProfile;
+import com.veridu.morpheus.interfaces.users.IUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -87,6 +94,29 @@ public class BeanUtils implements IUtils {
         dataSource.setUsername(configBean.getObjectStringProperty("db", "username"));
         dataSource.setPassword(configBean.getObjectStringProperty("db", "password"));
         return dataSource;
+    }
+
+    @Override
+    public boolean checkIfCandidatesExist(IdOSAPIFactory factory, IUser user, String attributeName) {
+        try {
+
+            factory.getCandidates().setAuthType(IdOSAuthType.HANDLER);
+            JsonObject response = factory.getCandidates()
+                    .listAll(user.getId(), Filter.createFilter().addCandidateAttributeNameFilter(attributeName));
+
+            if (response != null && LocalUtils.okResponse(response)) {
+                JsonArray data = LocalUtils.getResponseData(response);
+                if (data != null && data.size() > 0)
+                    return true;
+            }
+
+        } catch (InvalidToken invalidToken) {
+            invalidToken.printStackTrace();
+        } catch (SDKException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     @Override

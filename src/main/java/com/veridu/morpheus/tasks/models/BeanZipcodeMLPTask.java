@@ -55,43 +55,47 @@ public class BeanZipcodeMLPTask implements ITask {
         String pubKey = params.publicKey;
         boolean verbose = params.verbose;
 
-        IModel model = utils.readModel("/models/" + Constants.ZIPCODE_MLP_MODEL_NAME);
-        Instances datasetHeader = this.utils.generateDatasetHeader(this.zipcodeFeatureExtractor.obtainFactList());
-
         IdOSAPIFactory factory = utils.getIdOSAPIFactory(utils.generateCredentials(pubKey, userId));
-
-        long time2, timediff = 0;
-
         IUser user = new User(userId);
 
-        Instance inst = this.zipcodeFeatureExtractor.createInstance(factory, datasetHeader, user);
+        if (utils.checkIfCandidatesExist(factory, user, "zipcode")) {
 
-        IPrediction pred = null;
-        double realUserProb = -1;
+            IModel model = utils.readModel("/models/" + Constants.ZIPCODE_MLP_MODEL_NAME);
+            Instances datasetHeader = this.utils.generateDatasetHeader(this.zipcodeFeatureExtractor.obtainFactList());
 
-        try {
-            pred = model.predict(inst);
-            realUserProb = pred.realUserProbability();
+            long time2, timediff = 0;
 
-            dao.upsertScore(factory, user, "zipcode-score-series-s-model-m", "zipcode", realUserProb);
+            Instance inst = this.zipcodeFeatureExtractor.createInstance(factory, datasetHeader, user);
 
-            dao.upsertGate(factory, user, "zipcode-gate-low", realUserProb >= 0.99);
-            dao.upsertGate(factory, user, "zipcode-gate-medium", realUserProb >= 0.9998905);
-            dao.upsertGate(factory, user, "zipcode-gate-high", realUserProb >= 0.9999990);
+            IPrediction pred = null;
+            double realUserProb = -1;
 
-            time2 = System.currentTimeMillis();
-            timediff = time2 - time1;
+            try {
+                pred = model.predict(inst);
+                realUserProb = pred.realUserProbability();
 
-            //            if (params.verbose)
-            log.info(String.format("Zipcode MLP model predicted real probability for user %s => %.2f in %d ms", userId,
-                    pred.realUserProbability(), time2 - time1));
+                dao.upsertScore(factory, user, "zipcode-score-series-s-model-m", "zipcode", realUserProb);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+                dao.upsertGate(factory, user, "zipcode-gate-low", realUserProb >= 0.99);
+                dao.upsertGate(factory, user, "zipcode-gate-medium", realUserProb >= 0.9998905);
+                dao.upsertGate(factory, user, "zipcode-gate-high", realUserProb >= 0.9999990);
+
+                time2 = System.currentTimeMillis();
+                timediff = time2 - time1;
+
+                //            if (params.verbose)
+                log.info(String.format("Zipcode MLP model predicted real probability for user %s => %.2f in %d ms",
+                        userId, pred.realUserProbability(), time2 - time1));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (pred == null)
+                log.error("Zipcode MLP model could not make prediction");
+        } else {
+            log.info(String.format("Zipcode MLP model found no candidates to score for user %s", userId));
         }
-
-        if (pred == null)
-            log.error("Zipcode MLP model could not make prediction");
 
     }
 }

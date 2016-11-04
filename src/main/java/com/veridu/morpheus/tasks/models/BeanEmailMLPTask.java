@@ -51,44 +51,49 @@ public class BeanEmailMLPTask implements ITask {
         String pubKey = params.publicKey;
         boolean verbose = params.verbose;
 
-        IModel model = utils.readModel("/models/" + Constants.EMAIL_MLP_MODEL_NAME);
-        Instances datasetHeader = this.utils.generateDatasetHeader(this.emailFeatureExtractor.obtainFactList());
-
         IdOSAPIFactory factory = utils.getIdOSAPIFactory(utils.generateCredentials(pubKey, userId));
-
-        long time2, timediff = 0;
-
         IUser user = new User(userId);
 
-        Instance inst = this.emailFeatureExtractor.createInstance(factory, datasetHeader, user);
+        if (utils.checkIfCandidatesExist(factory, user, "email")) {
 
-        IPrediction pred = null;
+            IModel model = utils.readModel("/models/" + Constants.EMAIL_MLP_MODEL_NAME);
+            Instances datasetHeader = this.utils.generateDatasetHeader(this.emailFeatureExtractor.obtainFactList());
 
-        double realUserProb = -1;
+            long time2, timediff = 0;
 
-        try {
-            pred = model.predict(inst);
-            realUserProb = pred.realUserProbability();
+            Instance inst = this.emailFeatureExtractor.createInstance(factory, datasetHeader, user);
 
-            dao.upsertScore(factory, user, "email-score-series-s-model-m", "email", realUserProb);
+            IPrediction pred = null;
 
-            dao.upsertGate(factory, user, "email-gate-low", realUserProb >= 0.99);
-            dao.upsertGate(factory, user, "email-gate-med", realUserProb >= 0.9994281);
-            dao.upsertGate(factory, user, "email-gate-high", realUserProb >= 0.9998348);
+            double realUserProb = -1;
 
-            time2 = System.currentTimeMillis();
-            timediff = time2 - time1;
+            try {
+                pred = model.predict(inst);
+                realUserProb = pred.realUserProbability();
 
-            //            if (params.verbose)
-            log.info(String.format("Email MLP model predicted real probability for user %s => %.2f in %d ms", userId,
-                    pred.realUserProbability(), time2 - time1));
+                dao.upsertScore(factory, user, "email-score-series-s-model-m", "email", realUserProb);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+                dao.upsertGate(factory, user, "email-gate-low", realUserProb >= 0.99);
+                dao.upsertGate(factory, user, "email-gate-med", realUserProb >= 0.9994281);
+                dao.upsertGate(factory, user, "email-gate-high", realUserProb >= 0.9998348);
+
+                time2 = System.currentTimeMillis();
+                timediff = time2 - time1;
+
+                //            if (params.verbose)
+                log.info(
+                        String.format("Email MLP model predicted real probability for user %s => %.2f in %d ms", userId,
+                                pred.realUserProbability(), time2 - time1));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (pred == null)
+                log.error("Email MLP model could not make prediction for user " + user.getId());
+
+        } else {
+            log.info(String.format("Email MLP model found no candidates to score for user %s", userId));
         }
-
-        if (pred == null)
-            log.error("Email MLP model could not make prediction for user " + user.getId());
-
     }
 }

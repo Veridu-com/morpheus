@@ -4,6 +4,7 @@ import com.veridu.idos.IdOSAPIFactory;
 import com.veridu.morpheus.interfaces.facts.IFact;
 import com.veridu.morpheus.interfaces.models.IModel;
 import com.veridu.morpheus.interfaces.users.IProfile;
+import com.veridu.morpheus.interfaces.users.IUser;
 import weka.core.Attribute;
 import weka.core.Instance;
 import weka.core.Instances;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface IUtils {
+
+    public boolean checkIfCandidatesExist(IdOSAPIFactory factory, IUser user, String attributeName);
 
     public HashMap<String, String> generateCredentials(String credentialPubKey, String username);
 

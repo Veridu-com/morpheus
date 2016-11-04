@@ -55,42 +55,46 @@ public class BeanCityMLPTask implements ITask {
         String pubKey = params.publicKey;
         boolean verbose = params.verbose;
 
-        IModel model = utils.readModel("/models/" + Constants.CITY_MLP_MODEL_NAME);
-        Instances datasetHeader = this.utils.generateDatasetHeader(this.cityFeatureExtractor.obtainFactList());
-
         IdOSAPIFactory factory = utils.getIdOSAPIFactory(utils.generateCredentials(pubKey, userId));
-
-        long time2, timediff = 0;
-
         IUser user = new User(userId);
 
-        Instance inst = this.cityFeatureExtractor.createInstance(factory, datasetHeader, user);
+        if (utils.checkIfCandidatesExist(factory, user, "cityName")) {
 
-        IPrediction pred = null;
-        double realUserProb = -1;
+            IModel model = utils.readModel("/models/" + Constants.CITY_MLP_MODEL_NAME);
+            Instances datasetHeader = this.utils.generateDatasetHeader(this.cityFeatureExtractor.obtainFactList());
 
-        try {
-            pred = model.predict(inst);
-            realUserProb = pred.realUserProbability();
+            long time2, timediff = 0;
 
-            dao.upsertScore(factory, user, "city-name-score-series-s-model-m", "city-name", realUserProb);
+            Instance inst = this.cityFeatureExtractor.createInstance(factory, datasetHeader, user);
 
-            dao.upsertGate(factory, user, "city-name-gate-low", realUserProb >= 0.99);
-            dao.upsertGate(factory, user, "city-name-gate-med", realUserProb >= 0.9998442);
-            dao.upsertGate(factory, user, "city-name-gate-high", realUserProb >= 0.9999955);
+            IPrediction pred = null;
+            double realUserProb = -1;
 
-            time2 = System.currentTimeMillis();
-            timediff = time2 - time1;
+            try {
+                pred = model.predict(inst);
+                realUserProb = pred.realUserProbability();
 
-            //            if (params.verbose)
-            log.info(String.format("City MLP model predicted real probability for user %s => %.2f in %d ms", userId,
-                    pred.realUserProbability(), time2 - time1));
+                dao.upsertScore(factory, user, "city-name-score-series-s-model-m", "city-name", realUserProb);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+                dao.upsertGate(factory, user, "city-name-gate-low", realUserProb >= 0.99);
+                dao.upsertGate(factory, user, "city-name-gate-med", realUserProb >= 0.9998442);
+                dao.upsertGate(factory, user, "city-name-gate-high", realUserProb >= 0.9999955);
+
+                time2 = System.currentTimeMillis();
+                timediff = time2 - time1;
+
+                //            if (params.verbose)
+                log.info(String.format("City MLP model predicted real probability for user %s => %.2f in %d ms", userId,
+                        pred.realUserProbability(), time2 - time1));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (pred == null)
+                log.error("City MLP model could not make prediction for user " + user.getId());
+        } else {
+            log.info(String.format("City MLP model found no candidates to score for user %s", userId));
         }
-
-        if (pred == null)
-            log.error("City MLP model could not make prediction for user " + user.getId());
     }
 }
