@@ -1,5 +1,6 @@
 package com.veridu.morpheus.utils;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.veridu.morpheus.impl.Candidate;
 import com.veridu.morpheus.impl.Fact;
@@ -20,6 +21,18 @@ import java.util.*;
  */
 public class LocalUtils {
 
+    public static boolean validateJsonElement(JsonElement elem) {
+        return elem != null && !elem.isJsonNull();
+    }
+
+    public static boolean validateJsonObject(JsonObject jobj) {
+        return jobj != null && !jobj.isJsonNull();
+    }
+
+    public static boolean validateJsonField(JsonObject jobj, String fieldName) {
+        return validateJsonObject(jobj) && jobj.has(fieldName) && !jobj.get(fieldName).isJsonNull();
+    }
+
     public static boolean validateRequestParams(Parameters params) {
         return params.userName != null && params.userName.length() > 0 && params.publicKey != null
                 && params.publicKey.length() > 0;
@@ -39,7 +52,7 @@ public class LocalUtils {
     //    }
 
     public static com.google.gson.JsonArray getResponseData(JsonObject response) {
-        return response.get("data").getAsJsonArray();
+        return LocalUtils.validateJsonField(response, "data") ? response.get("data").getAsJsonArray() : null;
     }
 
     public static boolean checkDayMonthMatch(Date date1, Date date2) {
