@@ -57,11 +57,11 @@ public class LastNameCandidateTask implements ITask {
         if (fbkFamily != null) {
             fbkFamily.forEach(k -> {
                 JsonObject jobj = k.getAsJsonObject();
-                if (!jobj.isJsonNull() && !jobj.get("relationship").isJsonNull()) {
+                if (LocalUtils.validateJsonObject(jobj) && LocalUtils.validateJsonField(jobj, "relationship")) {
                     String relationShip = jobj.get("relationship").getAsString();
                     if (relationShip.equals("sister") || relationShip.equals("brother") || relationShip.equals("father")
                             || relationShip.equals("mother"))
-                        if (!jobj.get("last_name").isJsonNull())
+                        if (LocalUtils.validateJsonField(jobj, "last_name"))
                             lastNames.add(jobj.get("last_name").getAsString());
                 }
             });
@@ -113,50 +113,44 @@ public class LastNameCandidateTask implements ITask {
         }
 
         JsonObject fbkProfile = this.mongo.getFacebookProfile(factory, user);
-        if (fbkProfile != null && !fbkProfile.isJsonNull() && fbkProfile.has("email") && !fbkProfile.get("email")
-                .isJsonNull()) {
+        if (LocalUtils.validateJsonField(fbkProfile, "email")) {
             String fbkEmail = fbkProfile.get("email").getAsString();
             searchForStringInCandidates(cands, fbkEmail);
         }
 
         JsonObject amzProfile = this.mongo.getAmazonProfile(factory, user);
-        if (amzProfile != null && !amzProfile.isJsonNull() && amzProfile.has("email") && !amzProfile.get("email")
-                .isJsonNull()) {
+        if (LocalUtils.validateJsonField(amzProfile, "email")) {
             String amzEmail = amzProfile.get("email").getAsString();
             searchForStringInCandidates(cands, amzEmail);
         }
 
         JsonObject dropboxProfile = this.mongo.getDropboxProfile(factory, user);
-        if (dropboxProfile != null && !dropboxProfile.isJsonNull() && dropboxProfile.has("email") && !dropboxProfile
-                .get("email").isJsonNull()) {
+        if (LocalUtils.validateJsonField(dropboxProfile, "email")) {
             String dropboxEmail = dropboxProfile.get("email").getAsString();
             searchForStringInCandidates(cands, dropboxEmail);
         }
 
         JsonObject googleProfile = this.mongo.getGoogleProfile(factory, user);
-        if (googleProfile != null && !googleProfile.isJsonNull() && googleProfile.has("email") && !googleProfile
-                .get("email").isJsonNull()) {
+        if (LocalUtils.validateJsonField(googleProfile, "email")) {
             String googleEmail = googleProfile.get("email").getAsString();
             searchForStringInCandidates(cands, googleEmail);
         }
 
         JsonObject linkedinProfile = this.mongo.getLinkedinProfile(factory, user);
-        if (linkedinProfile != null && !linkedinProfile.isJsonNull() && linkedinProfile.has("emailAddress")
-                && !linkedinProfile.get("emailAddress").isJsonNull()) {
+        if (LocalUtils.validateJsonField(linkedinProfile, "emailAddress")) {
             String linkedinEmail = linkedinProfile.get("emailAddress").getAsString();
             searchForStringInCandidates(cands, linkedinEmail);
         }
 
         JsonObject twitterProfile = this.mongo.getTwitterProfile(factory, user);
-        if (twitterProfile != null && !twitterProfile.isJsonNull() && twitterProfile.has("screen_name")
-                && !twitterProfile.get("screen_name").isJsonNull()) {
+        if (LocalUtils.validateJsonField(twitterProfile, "screen_name")) {
             String twitterScreenName = twitterProfile.get("screen_name").getAsString();
             searchForStringInCandidates(cands, twitterScreenName);
         }
 
         JsonObject paypalProfile = this.mongo.getPaypalProfile(factory, user);
-        if (paypalProfile != null && !paypalProfile.isJsonNull() && paypalProfile.has("name") && !paypalProfile
-                .get("name").isJsonNull() && paypalProfile.has("email") && !paypalProfile.get("email").isJsonNull()) {
+        if (LocalUtils.validateJsonField(paypalProfile, "name") && LocalUtils
+                .validateJsonField(paypalProfile, "email")) {
             String paypalName = paypalProfile.get("name").getAsString();
             // break the name:
             String[] parts = paypalName.split(" ");

@@ -23,7 +23,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
     @Override
     public Date getFacebookBirthday(IdOSAPIFactory factory, IUser user) {
         JsonObject profile = this.getFacebookProfile(factory, user);
-        if (profile != null && !profile.get("birthday").isJsonNull())
+        if (LocalUtils.validateJsonField(profile, "birthday"))
             return LocalUtils.parseFacebookDate(profile.get("birthday").getAsString());
         return null;
     }
@@ -46,7 +46,8 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
 
     private JsonElement getResponseDataContent(JsonObject response) {
         JsonArray jobj = LocalUtils.getResponseData(response);
-        if (jobj.size() > 0 && !jobj.get(0).getAsJsonObject().get("data").isJsonNull())
+        if (jobj != null && !jobj.isJsonNull() && jobj.size() > 0 && !jobj.get(0).getAsJsonObject().get("data")
+                .isJsonNull())
             return jobj.get(0).getAsJsonObject().get("data");
         return null;
     }
@@ -88,9 +89,8 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
     @Override
     public Boolean doesFacebookFirstNameMatchEmail(IdOSAPIFactory factory, IUser user) {
         JsonObject facebookProfile = getFacebookProfile(factory, user);
-        if (facebookProfile != null && !facebookProfile.isJsonNull() && facebookProfile.has("email") && !facebookProfile
-                .get("email").isJsonNull() && facebookProfile.has("first_name") && !facebookProfile.get("first_name")
-                .isJsonNull()) {
+        if (LocalUtils.validateJsonField(facebookProfile, "email") && LocalUtils
+                .validateJsonField(facebookProfile, "first_name")) {
             String email = facebookProfile.get("email").getAsString();
             String firstName = facebookProfile.get("first_name").getAsString();
             if ((email != null) && (firstName != null)) {
@@ -146,7 +146,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
             if (arr != null)
                 for (int i = 0; i < arr.size(); i++) {
                     JsonObject jobj = arr.get(i).getAsJsonObject();
-                    if (!jobj.get(timeTag).isJsonNull()) {
+                    if (LocalUtils.validateJsonField(jobj, timeTag)) {
                         String createdTime = jobj.get(timeTag).getAsString();
                         if (createdTime != null) {
                             Date postDate = LocalUtils.parseFacebookRFC822Date(createdTime);
@@ -211,9 +211,10 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
 
         if (LocalUtils.okResponse(response)) {
             JsonElement elem = getResponseDataContent(response);
-            if (elem != null)
+            if (LocalUtils.validateJsonElement(elem) && elem.isJsonArray())
                 return elem.getAsJsonArray().size();
         }
+
         return 0;
     }
 

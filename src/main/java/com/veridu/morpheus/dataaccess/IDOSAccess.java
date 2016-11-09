@@ -63,9 +63,9 @@ public class IDOSAccess implements IDataSource {
                 JsonArray data = LocalUtils.getResponseData(response);
                 data.forEach(k -> {
                     JsonObject jobj = k.getAsJsonObject();
-                    if (!jobj.get("source").isJsonNull()) {
+                    if (LocalUtils.validateJsonField(jobj, "source")) {
                         String sourceName = jobj.get("source").getAsString();
-                        if (!jobj.get("name").isJsonNull() && !jobj.get("value").isJsonNull())
+                        if (LocalUtils.validateJsonField(jobj, "name") && LocalUtils.validateJsonField(jobj, "value"))
                             facts.put(new Fact(jobj.get("name").getAsString(), sourceName),
                                     String.valueOf(jobj.get("value")));
                     }
@@ -97,7 +97,6 @@ public class IDOSAccess implements IDataSource {
     @Override
     public int insertAttributeCandidatesForUser(IdOSAPIFactory factory, IUser user, String attName,
             ArrayList<ICandidate> candidates) {
-        //JsonObject response = null;
 
         try {
             factory.getCandidates().setAuthType(IdOSAuthType.HANDLER);
@@ -186,11 +185,13 @@ public class IDOSAccess implements IDataSource {
                 JsonArray data = LocalUtils.getResponseData(response);
                 data.forEach(k -> {
                     JsonObject jobj = k.getAsJsonObject();
-                    JsonObject source = jobj.get("source").getAsJsonObject();
-                    if (!source.isJsonNull() && !jobj.get("name").isJsonNull() && !source.get("source").isJsonNull()
-                            && !jobj.get("value").isJsonNull())
-                        facts.put(new Fact(jobj.get("name").getAsString(), source.get("source").getAsString()),
-                                String.valueOf(jobj.get("value")));
+                    if (LocalUtils.validateJsonField(jobj, "source")) {
+                        JsonObject source = jobj.get("source").getAsJsonObject();
+                        if (LocalUtils.validateJsonField(jobj, "name") && LocalUtils.validateJsonField(source, "source")
+                                && LocalUtils.validateJsonField(jobj, "value"))
+                            facts.put(new Fact(jobj.get("name").getAsString(), source.get("source").getAsString()),
+                                    String.valueOf(jobj.get("value")));
+                    }
                 });
             } else
                 logger.error("Could not obtain facts for user " + user.getId());
@@ -212,7 +213,7 @@ public class IDOSAccess implements IDataSource {
                 JsonArray data = LocalUtils.getResponseData(response);
                 data.forEach(k -> {
                     JsonObject obj = k.getAsJsonObject();
-                    if (!obj.get("name").isJsonNull() && !obj.get("id").isJsonNull()) {
+                    if (LocalUtils.validateJsonField(obj, "name") && LocalUtils.validateJsonField(obj, "id")) {
                         IProfile profile = new Profile(obj.get("name").getAsString(), obj.get("id").getAsString());
                         profiles.add(profile);
                     }
@@ -239,7 +240,7 @@ public class IDOSAccess implements IDataSource {
                 JsonArray data = LocalUtils.getResponseData(response);
                 data.forEach(k -> {
                     JsonObject jobj = k.getAsJsonObject();
-                    if (!jobj.get("name").isJsonNull() && !jobj.get("value").isJsonNull())
+                    if (LocalUtils.validateJsonField(jobj, "name") && LocalUtils.validateJsonField(jobj, "value"))
                         facts.put(new Fact(jobj.get("name").getAsString(), provider), jobj.get("value").getAsDouble());
                 });
             }
@@ -266,7 +267,7 @@ public class IDOSAccess implements IDataSource {
                 JsonArray data = LocalUtils.getResponseData(response);
                 data.forEach(k -> {
                     JsonObject jobj = k.getAsJsonObject();
-                    if (!jobj.get("name").isJsonNull() && !jobj.get("value").isJsonNull())
+                    if (LocalUtils.validateJsonField(jobj, "name") && LocalUtils.validateJsonField(jobj, "value"))
                         facts.put(new Fact(jobj.get("name").getAsString(), provider),
                                 parseBoolAsDouble(jobj.get("value").getAsBoolean()));
                 });
@@ -295,9 +296,12 @@ public class IDOSAccess implements IDataSource {
 
             if (LocalUtils.okResponse(response)) {
                 JsonArray data = LocalUtils.getResponseData(response);
-                if (data.size() > 0 && !data.get(0).getAsJsonObject().isJsonNull()) {
-                    JsonElement elem = data.get(0).getAsJsonObject().get("value");
-                    return elem;
+                if (data != null && data.size() > 0) {
+                    JsonObject firstElement = data.get(0).getAsJsonObject();
+                    if (LocalUtils.validateJsonField(firstElement, "value")) {
+                        JsonElement elem = firstElement.get("value");
+                        return elem;
+                    }
                 }
             }
 
@@ -312,21 +316,21 @@ public class IDOSAccess implements IDataSource {
 
     private Boolean obtainBooleanFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName) {
         JsonElement element = obtainFeatureValue(factory, user, provider, featureName);
-        if (element != null && !element.isJsonNull())
+        if (LocalUtils.validateJsonElement(element))
             return element.getAsBoolean();
         return null;
     }
 
     private double obtainDoubleFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName) {
         JsonElement element = obtainFeatureValue(factory, user, provider, featureName);
-        if (element != null && !element.isJsonNull())
+        if (LocalUtils.validateJsonElement(element))
             return element.getAsDouble();
         return Double.NaN;
     }
 
     private String obtainStringFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName) {
         JsonElement element = obtainFeatureValue(factory, user, provider, featureName);
-        if (element != null && !element.isJsonNull())
+        if (LocalUtils.validateJsonElement(element))
             return element.getAsString();
         return "";
     }
@@ -348,8 +352,8 @@ public class IDOSAccess implements IDataSource {
                 JsonArray data = LocalUtils.getResponseData(response);
                 data.forEach(k -> {
                     JsonObject jobj = k.getAsJsonObject();
-                    if (!jobj.get("name").isJsonNull() && !jobj.get("source").isJsonNull() && !jobj.get("value")
-                            .isJsonNull())
+                    if (LocalUtils.validateJsonField(jobj, "name") && LocalUtils.validateJsonField(jobj, "source")
+                            && LocalUtils.validateJsonField(jobj, "value"))
                         facts.put(new Fact(jobj.get("name").getAsString(), jobj.get("source").getAsString()),
                                 jobj.get("value").getAsString());
                 });
