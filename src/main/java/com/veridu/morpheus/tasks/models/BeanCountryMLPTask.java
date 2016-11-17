@@ -74,11 +74,11 @@ public class BeanCountryMLPTask implements ITask {
                 pred = model.predict(inst);
                 realUserProb = pred.realUserProbability();
 
-                dao.upsertScore(factory, user, "country-name-score-series-s-model-m", "country-name", realUserProb);
+                dao.upsertScore(factory, user, "countryNameScore", "countryName", realUserProb);
 
-                dao.upsertGate(factory, user, "country-name-gate-low", realUserProb >= 0.99);
-                dao.upsertGate(factory, user, "country-name-gate-med", realUserProb >= 0.9994642);
-                dao.upsertGate(factory, user, "country-name-gate-high", realUserProb >= 0.9999494);
+                dao.upsertGate(factory, user, "countryNameGate", realUserProb >= 0.99, "low");
+                dao.upsertGate(factory, user, "countryNameGate", realUserProb >= 0.9994642, "medium");
+                dao.upsertGate(factory, user, "countryNameGate", realUserProb >= 0.9999494, "high");
 
                 time2 = System.currentTimeMillis();
                 timediff = time2 - time1;

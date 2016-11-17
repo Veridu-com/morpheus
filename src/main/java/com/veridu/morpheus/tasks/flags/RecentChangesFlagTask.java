@@ -64,9 +64,9 @@ public class RecentChangesFlagTask implements ITask {
         IdOSAPIFactory factory = utils.getIdOSAPIFactory(utils.generateCredentials(pubKey, userId));
 
         // delete all recent change warnings first
-        this.dao.deleteWarning(factory, user, FLAG_RECENT_NAME_CHANGES);
-        this.dao.deleteWarning(factory, user, FLAG_RECENT_NAME_CHANGES_FACEBOOK);
-        this.dao.deleteWarning(factory, user, FLAG_RECENT_NAME_CHANGES_GOOGLE);
+        this.dao.deleteFlag(factory, user, FLAG_RECENT_NAME_CHANGES);
+        this.dao.deleteFlag(factory, user, FLAG_RECENT_NAME_CHANGES_FACEBOOK);
+        this.dao.deleteFlag(factory, user, FLAG_RECENT_NAME_CHANGES_GOOGLE);
 
         JsonObject fbkProfile = this.mongo.getFacebookProfile(factory, user);
         JsonObject googleProfile = this.mongo.getGoogleProfile(factory, user);
@@ -124,7 +124,7 @@ public class RecentChangesFlagTask implements ITask {
                     }
 
                     if (fbkNameMismatches.size() > 0) {
-                        this.dao.insertWarning(factory, user, FLAG_RECENT_NAME_CHANGES_FACEBOOK,
+                        this.dao.insertFlag(factory, user, FLAG_RECENT_NAME_CHANGES_FACEBOOK,
                                 Constants.PROFILE_PROVIDER_NAME);
                         facebookRecentChanges = true;
                     }
@@ -207,7 +207,7 @@ public class RecentChangesFlagTask implements ITask {
                 }
 
                 if (googleNameMismatches.size() > 0) {
-                    this.dao.insertWarning(factory, user, FLAG_RECENT_NAME_CHANGES_GOOGLE,
+                    this.dao.insertFlag(factory, user, FLAG_RECENT_NAME_CHANGES_GOOGLE,
                             Constants.PROFILE_PROVIDER_NAME);
                     googleRecentChanges = true;
                 }
@@ -222,7 +222,7 @@ public class RecentChangesFlagTask implements ITask {
         String factValue = "0";
 
         if (facebookRecentChanges || googleRecentChanges) {
-            this.dao.insertWarning(factory, user, FLAG_RECENT_NAME_CHANGES, Constants.PROFILE_PROVIDER_NAME);
+            this.dao.insertFlag(factory, user, FLAG_RECENT_NAME_CHANGES, Constants.PROFILE_PROVIDER_NAME);
             factValue = "1";
         }
 

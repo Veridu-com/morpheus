@@ -1,0 +1,30 @@
+{
+  "status": true,
+  "data": [
+    {
+      "id": 1321189817,
+      "source": "facebook",
+      "name": "birthYear",
+      "creator": {
+        "name": "idOS Scraper"
+      },
+      "type": "integer",
+      "value": 1992,
+      "created_at": 1478092874,
+      "updated_at": null
+    },
+    {
+      "id": 517015180,
+      "source": "facebook",
+      "name": "birthMonth",
+      "creator": {
+        "name": "idOS Scraper"
+      },
+      "type": "integer",
+      "value": 5,
+      "created_at": 1478092874,
+      "updated_at": null
+    }
+  ],
+  "updated": 1478092874
+}

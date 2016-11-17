@@ -84,20 +84,20 @@ public class BeanOverallCostSensitiveNaiveBayesTask implements ITask {
             // low
             double score = modelLow.getClassifier().distributionForInstance(inst)[1];
             double realUserProbLow = modelLow.binaryPrediction(inst);
-            dao.upsertScore(factory, user, "overall-score-series-s-model-csnb-low", "profile", score);
-            dao.upsertGate(factory, user, "chargeback-low", realUserProbLow > 0.99);
+            dao.upsertScore(factory, user, "noChargebackScoreLow", "profile", score);
+            dao.upsertGate(factory, user, "noChargebackGate", realUserProbLow > 0.99, "low");
 
             // med
             score = modelMed.getClassifier().distributionForInstance(inst)[1];
             double realUserProbMed = modelMed.binaryPrediction(inst);
-            dao.upsertScore(factory, user, "overall-score-series-s-model-csnb-med", "profile", score);
-            dao.upsertGate(factory, user, "chargeback-med", realUserProbMed > 0.99);
+            dao.upsertScore(factory, user, "noChargebackScoreMed", "profile", score);
+            dao.upsertGate(factory, user, "noChargebackGate", realUserProbMed > 0.99, "medium");
 
             // high
             score = modelHigh.getClassifier().distributionForInstance(inst)[1];
             double realUserProbHigh = modelHigh.binaryPrediction(inst);
-            dao.upsertScore(factory, user, "overall-score-series-s-model-csnb-high", "profile", score);
-            dao.upsertGate(factory, user, "chargeback-high", realUserProbHigh > 0.99);
+            dao.upsertScore(factory, user, "noChargebackScoreHigh", "profile", score);
+            dao.upsertGate(factory, user, "noChargebackGate", realUserProbHigh > 0.99, "high");
 
             time2 = System.currentTimeMillis();
             timediff = time2 - time1;

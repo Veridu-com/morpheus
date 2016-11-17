@@ -30,8 +30,6 @@ public class EmptyProfileFlagTask implements ITask {
 
     private IDataSource dao;
 
-    private static final String FLAG_NAME = "compromised-email";
-
     private static final Logger log = Logger.getLogger(EmptyProfileFlagTask.class);
 
     private static final String myProvider = "skynet";
@@ -39,16 +37,16 @@ public class EmptyProfileFlagTask implements ITask {
     private static final String prefixFactName = "flagEmptyProfile";
 
     // *********************************************************************
-    // List of warnings names
+    // List of flags names
     // *********************************************************************
-    private static final String FLAG_EMPTY_DROPBOX = "dropbox-empty";
-    private static final String FLAG_EMPTY_FACEBOOK = "facebook-empty";
-    private static final String FLAG_EMPTY_GOOGLE = "google-empty";
-    private static final String FLAG_EMPTY_LINKEDIN = "linkedin-empty";
-    private static final String FLAG_EMPTY_SPOTIFY = "spotify-empty";
-    private static final String FLAG_EMPTY_TWITTER = "twitter-empty";
-    private static final String FLAG_EMPTY_YAHOO = "yahoo-empty";
-    private static final String FLAG_EMPTY_ACCOUNT = "account-empty";
+    private static final String FLAG_EMPTY_DROPBOX = "dropboxEmpty";
+    private static final String FLAG_EMPTY_FACEBOOK = "facebookEmpty";
+    private static final String FLAG_EMPTY_GOOGLE = "googleEmpty";
+    private static final String FLAG_EMPTY_LINKEDIN = "linkedinEmpty";
+    private static final String FLAG_EMPTY_SPOTIFY = "spotifyEmpty";
+    private static final String FLAG_EMPTY_TWITTER = "twitterEmpty";
+    private static final String FLAG_EMPTY_YAHOO = "yahooEmpty";
+    private static final String FLAG_EMPTY_ACCOUNT = "accountEmpty";
 
     // *********************************************************************
     // List of provider facts
@@ -122,14 +120,14 @@ public class EmptyProfileFlagTask implements ITask {
         // ************************************************************************************
         // Delete all warnings first
         // ************************************************************************************
-        this.dao.deleteWarning(factory, user, FLAG_EMPTY_ACCOUNT);
-        this.dao.deleteWarning(factory, user, FLAG_EMPTY_DROPBOX);
-        this.dao.deleteWarning(factory, user, FLAG_EMPTY_FACEBOOK);
-        this.dao.deleteWarning(factory, user, FLAG_EMPTY_GOOGLE);
-        this.dao.deleteWarning(factory, user, FLAG_EMPTY_LINKEDIN);
-        this.dao.deleteWarning(factory, user, FLAG_EMPTY_SPOTIFY);
-        this.dao.deleteWarning(factory, user, FLAG_EMPTY_TWITTER);
-        this.dao.deleteWarning(factory, user, FLAG_EMPTY_YAHOO);
+        this.dao.deleteFlag(factory, user, FLAG_EMPTY_ACCOUNT);
+        this.dao.deleteFlag(factory, user, FLAG_EMPTY_DROPBOX);
+        this.dao.deleteFlag(factory, user, FLAG_EMPTY_FACEBOOK);
+        this.dao.deleteFlag(factory, user, FLAG_EMPTY_GOOGLE);
+        this.dao.deleteFlag(factory, user, FLAG_EMPTY_LINKEDIN);
+        this.dao.deleteFlag(factory, user, FLAG_EMPTY_SPOTIFY);
+        this.dao.deleteFlag(factory, user, FLAG_EMPTY_TWITTER);
+        this.dao.deleteFlag(factory, user, FLAG_EMPTY_YAHOO);
 
         // ************************************************************************************
         // Dropbox processing
@@ -151,7 +149,7 @@ public class EmptyProfileFlagTask implements ITask {
                 dropboxEmpty = true;
 
         if (dropboxEmpty)
-            this.dao.insertWarning(factory, user, FLAG_EMPTY_DROPBOX, Constants.PROFILE_PROVIDER_NAME);
+            this.dao.insertFlag(factory, user, FLAG_EMPTY_DROPBOX, Constants.PROFILE_PROVIDER_NAME);
 
         // ************************************************************************************
         // Facebook processing
@@ -182,7 +180,7 @@ public class EmptyProfileFlagTask implements ITask {
                 facebookEmpty = true;
 
         if (facebookEmpty)
-            this.dao.insertWarning(factory, user, FLAG_EMPTY_FACEBOOK, Constants.PROFILE_PROVIDER_NAME);
+            this.dao.insertFlag(factory, user, FLAG_EMPTY_FACEBOOK, Constants.PROFILE_PROVIDER_NAME);
 
         // ************************************************************************************
         // Google processing
@@ -206,7 +204,7 @@ public class EmptyProfileFlagTask implements ITask {
                 googleEmpty = true;
 
         if (googleEmpty)
-            this.dao.insertWarning(factory, user, FLAG_EMPTY_GOOGLE, Constants.PROFILE_PROVIDER_NAME);
+            this.dao.insertFlag(factory, user, FLAG_EMPTY_GOOGLE, Constants.PROFILE_PROVIDER_NAME);
 
         // ************************************************************************************
         // Linkedin processing
@@ -230,7 +228,7 @@ public class EmptyProfileFlagTask implements ITask {
                 linkedinEmpty = true;
 
         if (linkedinEmpty)
-            this.dao.insertWarning(factory, user, FLAG_EMPTY_LINKEDIN, Constants.PROFILE_PROVIDER_NAME);
+            this.dao.insertFlag(factory, user, FLAG_EMPTY_LINKEDIN, Constants.PROFILE_PROVIDER_NAME);
 
         // ************************************************************************************
         // Spotify processing
@@ -252,7 +250,7 @@ public class EmptyProfileFlagTask implements ITask {
                 spotifyEmpty = true;
 
         if (spotifyEmpty)
-            this.dao.insertWarning(factory, user, FLAG_EMPTY_SPOTIFY, Constants.PROFILE_PROVIDER_NAME);
+            this.dao.insertFlag(factory, user, FLAG_EMPTY_SPOTIFY, Constants.PROFILE_PROVIDER_NAME);
 
         // ************************************************************************************
         // Twitter processing
@@ -277,7 +275,7 @@ public class EmptyProfileFlagTask implements ITask {
                 twitterEmpty = true;
 
         if (twitterEmpty)
-            this.dao.insertWarning(factory, user, FLAG_EMPTY_TWITTER, Constants.PROFILE_PROVIDER_NAME);
+            this.dao.insertFlag(factory, user, FLAG_EMPTY_TWITTER, Constants.PROFILE_PROVIDER_NAME);
 
         // ************************************************************************************
         // Yahoo processing
@@ -305,7 +303,7 @@ public class EmptyProfileFlagTask implements ITask {
                 yahooEmpty = true;
 
         if (yahooEmpty)
-            this.dao.insertWarning(factory, user, FLAG_EMPTY_YAHOO, Constants.PROFILE_PROVIDER_NAME);
+            this.dao.insertFlag(factory, user, FLAG_EMPTY_YAHOO, Constants.PROFILE_PROVIDER_NAME);
 
         // ************************************************************************************
         // End of provider facts processing
@@ -318,7 +316,7 @@ public class EmptyProfileFlagTask implements ITask {
 
         if (dropboxEmpty || facebookEmpty || googleEmpty || linkedinEmpty || spotifyEmpty || twitterEmpty
                 || yahooEmpty) {
-            this.dao.insertWarning(factory, user, FLAG_EMPTY_ACCOUNT, Constants.PROFILE_PROVIDER_NAME);
+            this.dao.insertFlag(factory, user, FLAG_EMPTY_ACCOUNT, Constants.PROFILE_PROVIDER_NAME);
             factValue = "1";
         }
 

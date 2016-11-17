@@ -74,11 +74,11 @@ public class BeanCityMLPTask implements ITask {
                 pred = model.predict(inst);
                 realUserProb = pred.realUserProbability();
 
-                dao.upsertScore(factory, user, "city-name-score-series-s-model-m", "city-name", realUserProb);
+                dao.upsertScore(factory, user, "cityNameScore", "cityName", realUserProb);
 
-                dao.upsertGate(factory, user, "city-name-gate-low", realUserProb >= 0.99);
-                dao.upsertGate(factory, user, "city-name-gate-med", realUserProb >= 0.9998442);
-                dao.upsertGate(factory, user, "city-name-gate-high", realUserProb >= 0.9999955);
+                dao.upsertGate(factory, user, "cityNameGate", realUserProb >= 0.99, "low");
+                dao.upsertGate(factory, user, "cityNameGate", realUserProb >= 0.9998442, "medium");
+                dao.upsertGate(factory, user, "cityNameGate", realUserProb >= 0.9999955, "high");
 
                 time2 = System.currentTimeMillis();
                 timediff = time2 - time1;

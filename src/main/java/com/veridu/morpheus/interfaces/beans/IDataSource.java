@@ -19,9 +19,9 @@ import java.util.HashMap;
 
 public interface IDataSource {
 
-    void insertWarning(IdOSAPIFactory factory, IUser user, String warningName, String attribute);
+    void insertFlag(IdOSAPIFactory factory, IUser user, String flagName, String attribute);
 
-    void deleteWarning(IdOSAPIFactory factory, IUser user, String warningName);
+    void deleteFlag(IdOSAPIFactory factory, IUser user, String flagName);
 
     int insertAttributeCandidatesForUser(IdOSAPIFactory factory, IUser user, String attName,
             ArrayList<ICandidate> candidates);
@@ -120,5 +120,5 @@ public interface IDataSource {
 
     void upsertScore(IdOSAPIFactory factory, IUser user, String scoreName, String attribute, double score);
 
-    void upsertGate(IdOSAPIFactory factory, IUser user, String gateName, boolean pass);
+    void upsertGate(IdOSAPIFactory factory, IUser user, String gateName, boolean pass, String confidenceLevel);
 }

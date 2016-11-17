@@ -8,7 +8,7 @@ import java.util.HashMap;
 /**
  * Created by cassio on 11/2/16.
  */
-public class Test {
+public class CLItest {
 
     public static void main(String[] args) throws Exception {
 
