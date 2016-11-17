@@ -103,12 +103,12 @@ public class IdOSAccess implements IDataSource {
             ArrayList<ICandidate> candidates) {
 
         try {
-            factory.getCandidates().setAuthType(IdOSAuthType.HANDLER);
-            factory.getCandidates()
+            factory.getCandidate().setAuthType(IdOSAuthType.HANDLER);
+            factory.getCandidate()
                     .deleteAll(user.getId(), Filter.createFilter().addCandidateAttributeNameFilter(attName));
             candidates.parallelStream().forEach(k -> {
                 try {
-                    factory.getCandidates().create(user.getId(), attName, k.getValue(), k.getSupportScore());
+                    factory.getCandidate().create(user.getId(), attName, k.getValue(), k.getSupportScore());
                 } catch (SDKException e) {
                     e.printStackTrace();
                 } catch (UnsupportedEncodingException e) {
@@ -378,8 +378,8 @@ public class IdOSAccess implements IDataSource {
     @Override
     public void deleteFlag(IdOSAPIFactory factory, IUser user, String flagName) {
         try {
-            factory.getFlags().setAuthType(IdOSAuthType.HANDLER);
-            factory.getFlags().deleteAll(user.getId(), Filter.createFilter().addSlugFilter(flagName));
+            factory.getFlag().setAuthType(IdOSAuthType.HANDLER);
+            factory.getFlag().deleteAll(user.getId(), Filter.createFilter().addSlugFilter(flagName));
         } catch (SDKException e) {
             e.printStackTrace();
         }
@@ -388,8 +388,8 @@ public class IdOSAccess implements IDataSource {
     @Override
     public void insertFlag(IdOSAPIFactory factory, IUser user, String flagName, String attribute) {
         try {
-            factory.getFlags().setAuthType(IdOSAuthType.HANDLER);
-            factory.getFlags().create(user.getId(), flagName, attribute);
+            factory.getFlag().setAuthType(IdOSAuthType.HANDLER);
+            factory.getFlag().create(user.getId(), flagName, attribute);
         } catch (SDKException e) {
             e.printStackTrace();
         }

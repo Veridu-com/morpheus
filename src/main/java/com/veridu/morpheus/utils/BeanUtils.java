@@ -100,8 +100,8 @@ public class BeanUtils implements IUtils {
     public boolean checkIfCandidatesExist(IdOSAPIFactory factory, IUser user, String attributeName) {
         try {
 
-            factory.getCandidates().setAuthType(IdOSAuthType.HANDLER);
-            JsonObject response = factory.getCandidates()
+            factory.getCandidate().setAuthType(IdOSAuthType.HANDLER);
+            JsonObject response = factory.getCandidate()
                     .listAll(user.getId(), Filter.createFilter().addCandidateAttributeNameFilter(attributeName));
 
             if (response != null && LocalUtils.okResponse(response)) {
