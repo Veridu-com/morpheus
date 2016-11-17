@@ -74,11 +74,11 @@ public class BeanFirstNameMLPTask implements ITask {
                 pred = model.predict(inst);
                 realUserProb = pred.realUserProbability();
 
-                dao.upsertScore(factory, user, "first-name-score-series-s-model-m", "first-name", realUserProb);
+                dao.upsertScore(factory, user, "firstNameScore", "firstName", realUserProb);
 
-                dao.upsertGate(factory, user, "first-name-gate-low", realUserProb >= 0.99);
-                dao.upsertGate(factory, user, "first-name-gate-med", realUserProb >= 0.9999180);
-                dao.upsertGate(factory, user, "first-name-gate-high", realUserProb >= 0.9999990);
+                dao.upsertGate(factory, user, "firstNameGate", realUserProb >= 0.99, "low");
+                dao.upsertGate(factory, user, "firstNameGate", realUserProb >= 0.9999180, "medium");
+                dao.upsertGate(factory, user, "firstNameGate", realUserProb >= 0.9999990, "high");
 
                 time2 = System.currentTimeMillis();
                 timediff = time2 - time1;

@@ -71,11 +71,11 @@ public class BeanPhoneMLPTask implements ITask {
                 pred = model.predict(inst);
                 realUserProb = pred.realUserProbability();
 
-                dao.upsertScore(factory, user, "phone-score-series-s-model-m", "phone", realUserProb);
+                dao.upsertScore(factory, user, "phoneScore", "phone", realUserProb);
 
-                dao.upsertGate(factory, user, "phone-gate-low", realUserProb >= 0.99);
-                dao.upsertGate(factory, user, "phone-gate-med", realUserProb >= 0.9960656);
-                dao.upsertGate(factory, user, "phone-gate-high", realUserProb >= 0.9998200);
+                dao.upsertGate(factory, user, "phoneGate", realUserProb >= 0.99, "low");
+                dao.upsertGate(factory, user, "phoneGate", realUserProb >= 0.9960656, "medium");
+                dao.upsertGate(factory, user, "phoneGate", realUserProb >= 0.9998200, "high");
 
                 time2 = System.currentTimeMillis();
                 timediff = time2 - time1;

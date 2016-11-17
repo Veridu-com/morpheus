@@ -70,11 +70,11 @@ public class BeanBirthDayMLPTask implements ITask {
                 pred = model.predict(inst);
                 realUserProb = pred.realUserProbability();
 
-                dao.upsertScore(factory, user, "birth-day-score-series-s-model-m", "birth-day", realUserProb);
+                dao.upsertScore(factory, user, "birthDayScore", "birthDay", realUserProb);
 
-                dao.upsertGate(factory, user, "birth-day-gate-low", realUserProb >= 0.7958683); // low gate
-                dao.upsertGate(factory, user, "birth-day-gate-med", realUserProb >= 0.9949294); // med gate
-                dao.upsertGate(factory, user, "birth-day-gate-high", realUserProb >= 0.9991777); // high gate
+                dao.upsertGate(factory, user, "birthDayGate", realUserProb >= 0.7958683, "low"); // low gate
+                dao.upsertGate(factory, user, "birthDayGate", realUserProb >= 0.9949294, "medium"); // med gate
+                dao.upsertGate(factory, user, "birthDayGate", realUserProb >= 0.9991777, "high"); // high gate
 
                 time2 = System.currentTimeMillis();
                 timediff = time2 - time1;

@@ -44,14 +44,14 @@ public class NewProfileFlagTask implements ITask {
     private static final String prefixFactName = "flagNewProfile";
 
     // *********************************************************************
-    // List of new profile warnings
+    // List of new profile flags
     // *********************************************************************
-    private static final String FLAG_NEW_ACCOUNT = "account-new";
-    private static final String FLAG_NEW_FACEBOOK = "facebook-new";
-    private static final String FLAG_NEW_GOOGLE = "google-new";
-    private static final String FLAG_NEW_PAYPAL = "paypal-new";
-    private static final String FLAG_NEW_TWITTER = "twitter-new";
-    private static final String FLAG_NEW_YAHOO = "yahoo-new";
+    private static final String FLAG_NEW_ACCOUNT = "accountNew";
+    private static final String FLAG_NEW_FACEBOOK = "facebookNew";
+    private static final String FLAG_NEW_GOOGLE = "googleNew";
+    private static final String FLAG_NEW_PAYPAL = "paypalNew";
+    private static final String FLAG_NEW_TWITTER = "twitterNew";
+    private static final String FLAG_NEW_YAHOO = "yahooNew";
 
     // *********************************************************************
     // List of provider facts
@@ -90,7 +90,7 @@ public class NewProfileFlagTask implements ITask {
                 newProfile = true;
 
         if (newProfile)
-            this.dao.insertWarning(factory, user, warningName, Constants.PROFILE_PROVIDER_NAME);
+            this.dao.insertFlag(factory, user, warningName, Constants.PROFILE_PROVIDER_NAME);
 
         return newProfile;
     }
@@ -109,12 +109,12 @@ public class NewProfileFlagTask implements ITask {
         IdOSAPIFactory factory = utils.getIdOSAPIFactory(utils.generateCredentials(pubKey, userId));
 
         // delete all warnings first
-        this.dao.deleteWarning(factory, user, FLAG_NEW_YAHOO);
-        this.dao.deleteWarning(factory, user, FLAG_NEW_GOOGLE);
-        this.dao.deleteWarning(factory, user, FLAG_NEW_TWITTER);
-        this.dao.deleteWarning(factory, user, FLAG_NEW_FACEBOOK);
-        this.dao.deleteWarning(factory, user, FLAG_NEW_PAYPAL);
-        this.dao.deleteWarning(factory, user, FLAG_NEW_ACCOUNT);
+        this.dao.deleteFlag(factory, user, FLAG_NEW_YAHOO);
+        this.dao.deleteFlag(factory, user, FLAG_NEW_GOOGLE);
+        this.dao.deleteFlag(factory, user, FLAG_NEW_TWITTER);
+        this.dao.deleteFlag(factory, user, FLAG_NEW_FACEBOOK);
+        this.dao.deleteFlag(factory, user, FLAG_NEW_PAYPAL);
+        this.dao.deleteFlag(factory, user, FLAG_NEW_ACCOUNT);
 
         boolean facebookNew = testIfProfileIsNew(factory, user, facebookProfileAge, Constants.FACEBOOK_PROVIDER_NAME,
                 facebookThreshold, FLAG_NEW_FACEBOOK);
@@ -141,7 +141,7 @@ public class NewProfileFlagTask implements ITask {
         String factValue = "0";
 
         if (facebookNew || googleNew || paypalNew || twitterNew || yahooNew) {
-            this.dao.insertWarning(factory, user, FLAG_NEW_ACCOUNT, Constants.PROFILE_PROVIDER_NAME);
+            this.dao.insertFlag(factory, user, FLAG_NEW_ACCOUNT, Constants.PROFILE_PROVIDER_NAME);
             factValue = "1";
         }
 

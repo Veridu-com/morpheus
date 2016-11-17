@@ -24,7 +24,7 @@ import java.util.Map;
 public class FakeUsDataSource implements IFakeUsDataSource {
 
     private BeanUtils utils;
-    private IDOSAccess idosAccess;
+    private IdOSAccess idOSAccess;
 
     private JdbcTemplate jdbcTemplate;
 
@@ -37,9 +37,9 @@ public class FakeUsDataSource implements IFakeUsDataSource {
     }
 
     @Autowired
-    public FakeUsDataSource(BeanUtils utils, IDOSAccess idosAccess) {
+    public FakeUsDataSource(BeanUtils utils, IdOSAccess idOSAccess) {
         this.utils = utils;
-        this.idosAccess = idosAccess;
+        this.idOSAccess = idOSAccess;
         this.jdbcTemplate = new JdbcTemplate(getDataSource());
     }
 

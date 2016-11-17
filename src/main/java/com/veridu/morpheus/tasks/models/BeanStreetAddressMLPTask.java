@@ -75,11 +75,11 @@ public class BeanStreetAddressMLPTask implements ITask {
                 pred = model.predict(inst);
                 realUserProb = pred.realUserProbability();
 
-                dao.upsertScore(factory, user, "street-address-score-series-s-model-m", "street-address", realUserProb);
+                dao.upsertScore(factory, user, "streetAddressScore", "streetAddress", realUserProb);
 
-                dao.upsertGate(factory, user, "street-address-gate-low", realUserProb >= 0.9962211);
-                dao.upsertGate(factory, user, "street-address-gate-med", realUserProb >= 0.9996522);
-                dao.upsertGate(factory, user, "street-address-gate-high", realUserProb >= 0.9999438);
+                dao.upsertGate(factory, user, "streetAddressGate", realUserProb >= 0.9962211, "low");
+                dao.upsertGate(factory, user, "streetAddressGate", realUserProb >= 0.9996522, "medium");
+                dao.upsertGate(factory, user, "streetAddressGate", realUserProb >= 0.9999438, "high");
 
                 time2 = System.currentTimeMillis();
                 timediff = time2 - time1;

@@ -28,9 +28,9 @@ import java.util.HashMap;
  * Created by cassio on 10/2/16.
  */
 @Component("idosSQL")
-public class IDOSAccess implements IDataSource {
+public class IdOSAccess implements IDataSource {
 
-    static Logger logger = Logger.getLogger(IDOSAccess.class.getName());
+    static Logger logger = Logger.getLogger(IdOSAccess.class.getName());
 
     private int getLatestSourceIdForProvider(IdOSAPIFactory factory, String userId, String provider) {
         try {
@@ -56,9 +56,10 @@ public class IDOSAccess implements IDataSource {
         HashMap<IFact, String> facts = new HashMap<>();
 
         try {
-            factory.getSource().setAuthType(IdOSAuthType.HANDLER);
+            factory.getFeature().setAuthType(IdOSAuthType.HANDLER);
             JsonObject response = factory.getFeature()
                     .listAll(user.getId(), Filter.createFilter().addFeatureSourceNameFilter(provider));
+
             if (LocalUtils.okResponse(response)) {
                 JsonArray data = LocalUtils.getResponseData(response);
                 data.forEach(k -> {
@@ -91,7 +92,10 @@ public class IDOSAccess implements IDataSource {
             e.printStackTrace();
         }
 
-        return LocalUtils.okResponse(response) ? 1 : 0;
+        if (LocalUtils.okResponse(response))
+            return response.get("deleted").getAsInt();
+
+        return 0;
     }
 
     @Override
@@ -99,12 +103,12 @@ public class IDOSAccess implements IDataSource {
             ArrayList<ICandidate> candidates) {
 
         try {
-            factory.getCandidates().setAuthType(IdOSAuthType.HANDLER);
-            factory.getCandidates()
+            factory.getCandidate().setAuthType(IdOSAuthType.HANDLER);
+            factory.getCandidate()
                     .deleteAll(user.getId(), Filter.createFilter().addCandidateAttributeNameFilter(attName));
             candidates.parallelStream().forEach(k -> {
                 try {
-                    factory.getCandidates().create(user.getId(), attName, k.getValue(), k.getSupportScore());
+                    factory.getCandidate().create(user.getId(), attName, k.getValue(), k.getSupportScore());
                 } catch (SDKException e) {
                     e.printStackTrace();
                 } catch (UnsupportedEncodingException e) {
@@ -372,20 +376,20 @@ public class IDOSAccess implements IDataSource {
     }
 
     @Override
-    public void deleteWarning(IdOSAPIFactory factory, IUser user, String warningName) {
+    public void deleteFlag(IdOSAPIFactory factory, IUser user, String flagName) {
         try {
-            factory.getFlags().setAuthType(IdOSAuthType.HANDLER);
-            factory.getFlags().deleteAll(user.getId(), Filter.createFilter().addSlugFilter(warningName));
+            factory.getFlag().setAuthType(IdOSAuthType.HANDLER);
+            factory.getFlag().deleteAll(user.getId(), Filter.createFilter().addSlugFilter(flagName));
         } catch (SDKException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void insertWarning(IdOSAPIFactory factory, IUser user, String warningName, String attribute) {
+    public void insertFlag(IdOSAPIFactory factory, IUser user, String flagName, String attribute) {
         try {
-            factory.getFlags().setAuthType(IdOSAuthType.HANDLER);
-            factory.getFlags().create(user.getId(), warningName, attribute);
+            factory.getFlag().setAuthType(IdOSAuthType.HANDLER);
+            factory.getFlag().create(user.getId(), flagName, attribute);
         } catch (SDKException e) {
             e.printStackTrace();
         }
@@ -404,10 +408,10 @@ public class IDOSAccess implements IDataSource {
     }
 
     @Override
-    public void upsertGate(IdOSAPIFactory factory, IUser user, String gateName, boolean pass) {
+    public void upsertGate(IdOSAPIFactory factory, IUser user, String gateName, boolean pass, String confidenceLevel) {
         try {
             factory.getGate().setAuthType(IdOSAuthType.HANDLER);
-            factory.getGate().upsert(user.getId(), gateName, pass);
+            factory.getGate().upsert(user.getId(), gateName, pass, confidenceLevel);
         } catch (SDKException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
