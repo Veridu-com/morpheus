@@ -1,15 +1,14 @@
 package com.veridu.morpheus.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 /**
  * Created by cassio on 10/2/16.
@@ -21,18 +20,19 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
     private String userName;
     private String password;
 
+    @Autowired
+    private Environment environment;
+
+    @Autowired
+    public ApplicationSecurity(Environment environment) {
+        super();
+        this.environment = environment;
+    }
+
     @PostConstruct
     public void init() {
-        InputStream fileStream = this.getClass().getResourceAsStream("/application.properties");
-        Properties props = new Properties();
-        try {
-            props.load(fileStream);
-            userName = props.getProperty("morpheus.http.user");
-            password = props.getProperty("morpheus.http.password");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        userName = environment.getProperty("morpheus.http.user");
+        password = environment.getProperty("morpheus.http.password");
     }
 
     @Override
