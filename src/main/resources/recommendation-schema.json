@@ -1,0 +1,226 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Rules schema",
+  "type": "object",
+  "properties": {
+    "username": {
+      "type": "string"
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string"
+          },
+          "tests": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/definitions/gate"
+                },
+                {
+                  "$ref": "#/definitions/flag"
+                },
+                {
+                  "$ref": "#/definitions/score"
+                },
+                {
+                  "$ref": "#/definitions/attribute_str"
+                },
+                {
+                  "$ref": "#/definitions/attribute_num"
+                }
+              ]
+            }
+          },
+          "connector": {
+            "type": "string",
+            "enum": [
+              "and",
+              "or"
+            ]
+          }
+        },
+        "required": [
+          "tag",
+          "tests"
+        ]
+      }
+    }
+  },
+  "required": [
+    "username",
+    "rules"
+  ],
+  "definitions": {
+    "gate": {
+      "type": "object",
+      "properties": {
+        "tag": {
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "gate"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "confidence_level": {
+          "type": "string",
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        }
+      },
+      "required": [
+        "tag",
+        "category",
+        "name",
+        "confidence_level"
+      ]
+    },
+    "flag": {
+      "type": "object",
+      "properties": {
+        "tag": {
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "flag"
+          ]
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tag",
+        "category",
+        "name"
+      ]
+    },
+    "score": {
+      "type": "object",
+      "properties": {
+        "tag": {
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "score"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "cmp_value": {
+          "type": "number"
+        },
+        "operator": {
+          "enum": [
+            "==",
+            ">=",
+            "<=",
+            ">",
+            "<"
+          ]
+        }
+      },
+      "required": [
+        "tag",
+        "category",
+        "name",
+        "cmp_value",
+        "operator"
+      ]
+    },
+    "attribute_str": {
+      "type": "object",
+      "properties": {
+        "tag": {
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "attribute"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "value_type": {
+          "enum": [
+            "string"
+          ]
+        },
+        "cmp_value": {
+          "type": "string"
+        },
+        "operator": {
+          "enum": [
+            "==",
+            ">",
+            "<"
+          ]
+        }
+      },
+      "required": [
+        "tag",
+        "category",
+        "name",
+        "value_type",
+        "cmp_value",
+        "operator"
+      ]
+    },
+    "attribute_num": {
+      "type": "object",
+      "properties": {
+        "tag": {
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "attribute"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "value_type": {
+          "enum": [
+            "number"
+          ]
+        },
+        "cmp_value": {
+          "type": "number"
+        },
+        "operator": {
+          "enum": [
+            "==",
+            ">=",
+            "<=",
+            ">",
+            "<"
+          ]
+        }
+      },
+      "required": [
+        "tag",
+        "category",
+        "name",
+        "value_type",
+        "cmp_value",
+        "operator"
+      ]
+    }
+  }
+}
