@@ -1,6 +1,7 @@
 package com.veridu.morpheus.controllers.recommendations;
 
 import com.veridu.morpheus.impl.ModelResponse;
+import com.veridu.morpheus.impl.ModelResponseFailure;
 import com.veridu.morpheus.tasks.recommendations.RecommendationTask;
 import com.veridu.morpheus.utils.BeanConfigurationManager;
 import com.veridu.morpheus.utils.BeanUtils;
@@ -61,7 +62,7 @@ public class RecommendationController {
         } catch (ValidationException e) {
             logger.error("Schema could not be validated.");
             e.printStackTrace();
-            return new ModelResponse(false, "Json validation failed for input rules");
+            return new ModelResponseFailure(false, "Json validation failed for input rules");
         }
 
         this.recommendationTask.runTask(request);

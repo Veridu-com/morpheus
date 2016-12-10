@@ -110,7 +110,7 @@ public class Constants {
     public static final String DROPBOX_PROVIDER_NAME = "dropbox";
     public static final String SMS_PROVIDER_NAME = "sms";
     public static final String OTP_PROVIDER_NAME = "otp";
-    public static final String PROFILE_PROVIDER_NAME = "proifle";
+    public static final String PROFILE_PROVIDER_NAME = "profile";
 
     public static final String[] PROVIDERS_NAMES = { GOOGLE_PROVIDER_NAME, TWITTER_PROVIDER_NAME, AMAZON_PROVIDER_NAME,
             FACEBOOK_PROVIDER_NAME, CPR_PROVIDER_NAME, LINKEDIN_PROVIDER_NAME, PAYPAL_PROVIDER_NAME,

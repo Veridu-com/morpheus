@@ -20,7 +20,6 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
     private String userName;
     private String password;
 
-    @Autowired
     private Environment environment;
 
     @Autowired
