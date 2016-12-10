@@ -16,7 +16,6 @@ import com.veridu.morpheus.interfaces.users.IProfile;
 import com.veridu.morpheus.interfaces.users.IUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Service;
 import org.supercsv.cellprocessor.constraint.NotNull;
 import org.supercsv.cellprocessor.ift.CellProcessor;
@@ -87,14 +86,14 @@ public class BeanUtils implements IUtils {
             this.serializedModels.put(modelName, this.readModel("/models/" + modelName));
     }
 
-    public DriverManagerDataSource getFakeUsDataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(configBean.getObjectStringProperty("db", "classname"));
-        dataSource.setUrl(configBean.getObjectStringProperty("db", "url"));
-        dataSource.setUsername(configBean.getObjectStringProperty("db", "username"));
-        dataSource.setPassword(configBean.getObjectStringProperty("db", "password"));
-        return dataSource;
-    }
+    //    public DriverManagerDataSource getFakeUsDataSource() {
+    //        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+    //        dataSource.setDriverClassName(configBean.getObjectStringProperty("db", "classname"));
+    //        dataSource.setUrl(configBean.getObjectStringProperty("db", "url"));
+    //        dataSource.setUsername(configBean.getObjectStringProperty("db", "username"));
+    //        dataSource.setPassword(configBean.getObjectStringProperty("db", "password"));
+    //        return dataSource;
+    //    }
 
     @Override
     public boolean checkIfCandidatesExist(IdOSAPIFactory factory, IUser user, String attributeName) {
@@ -168,7 +167,7 @@ public class BeanUtils implements IUtils {
 
     @Override
     public IdOSAPIFactory getIdOSAPIFactory(HashMap<String, String> credentials) {
-        return new IdOSAPIFactory(credentials);
+        return new IdOSAPIFactory(credentials, configBean.getIDOSAPIURL(), !configBean.getUseSSLchecking());
     }
 
     @Override
