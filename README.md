@@ -11,7 +11,7 @@ a lightweight version of Skynet.
  
 You need to set the `SPRING_APPLICATION_JSON` environment variable with the JSON configuration, such as in the following example:
  
-```json
+```
 {
   "server": {
     "address": "0.0.0.0",
