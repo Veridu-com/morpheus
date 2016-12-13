@@ -265,8 +265,8 @@
             "feature"
           ]
         },
-        "name": {
-          "type": "string"
+        "featureid": {
+          "type": "integer"
         },
         "value_type": {
           "enum": [
@@ -288,7 +288,7 @@
       "required": [
         "tag",
         "category",
-        "name",
+        "featureid",
         "value_type",
         "cmp_value",
         "operator"
@@ -305,8 +305,8 @@
             "feature"
           ]
         },
-        "name": {
-          "type": "string"
+        "featureid": {
+          "type": "integer"
         },
         "value_type": {
           "enum": [
@@ -330,7 +330,7 @@
       "required": [
         "tag",
         "category",
-        "name",
+        "featureid",
         "value_type",
         "cmp_value",
         "operator"

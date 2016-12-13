@@ -1,12 +1,12 @@
 package com.veridu.morpheus.tasks.recommendations;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.veridu.idos.IdOSAPIFactory;
 import com.veridu.idos.exceptions.InvalidToken;
 import com.veridu.idos.exceptions.SDKException;
 import com.veridu.idos.utils.IdOSAuthType;
 import com.veridu.morpheus.impl.RuleResults;
-import com.veridu.morpheus.interfaces.beans.IDataSource;
 import com.veridu.morpheus.interfaces.beans.IUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Created by cassio on 12/6/16.
@@ -23,17 +23,13 @@ import java.util.ArrayList;
 @Component("recommendation")
 public class RecommendationTask {
 
-    private IUtils utils;
-    private IDataSource dao;
+    private final IUtils utils;
 
     private static final Logger log = Logger.getLogger(RecommendationTask.class);
 
-    private static final boolean DEBUG = false;
-
     @Autowired
-    public RecommendationTask(IUtils utils, IDataSource dao) {
+    public RecommendationTask(IUtils utils) {
         this.utils = utils;
-        this.dao = dao;
     }
 
     @Async
@@ -48,13 +44,18 @@ public class RecommendationTask {
             factory.getScore().setAuthType(IdOSAuthType.HANDLER);
             factory.getFlag().setAuthType(IdOSAuthType.HANDLER);
             factory.getGate().setAuthType(IdOSAuthType.HANDLER);
+            factory.getFeature().setAuthType(IdOSAuthType.HANDLER);
+            factory.getRecommendation().setAuthType(IdOSAuthType.HANDLER);
+            factory.getReference().setAuthType(IdOSAuthType.HANDLER);
         } catch (InvalidToken invalidToken) {
+            log.error("Invalid token");
             invalidToken.printStackTrace();
             return;
         }
 
-        ArrayList<JSONObject> failedRules = new ArrayList<>();
-        ArrayList<JSONObject> passedRules = new ArrayList<>();
+        JsonArray failedRules = new JsonArray();
+
+        JsonArray passedRules = new JsonArray();
 
         // run all rules
         JSONArray rules = request.getJSONArray("rules");
@@ -65,12 +66,37 @@ public class RecommendationTask {
             String ruleTag = rule.getString("tag");
 
             RuleResults results = processRule(rules.getJSONObject(i), factory, userName);
-            boolean pass = resolvePass(results, connector);
+
+            JsonObject responseRule = new JsonObject();
+            responseRule.addProperty("tag", ruleTag);
+            responseRule.addProperty("connector", connector);
+            responseRule.add("passed", results.getPassed());
+            responseRule.add("failed", results.getFailed());
+
+            if (resolvePass(results, connector))
+                passedRules.add(responseRule);
+            else
+                failedRules.add(responseRule);
+        }
+
+        String pass = failedRules.size() == 0 ? "true" : "false";
+
+        try {
+            factory.getRecommendation().upsert(userName, pass, passedRules, failedRules);
+            log.info("Recommendation written for user " + userName + " pass => " + pass);
+        } catch (SDKException | UnsupportedEncodingException e) {
+            log.error("Problems computing recommendation for user " + userName);
+            e.printStackTrace();
         }
 
     }
 
     private boolean resolvePass(RuleResults results, String connector) {
+        if (connector.equals("and")) {
+            if (results.getFailed().size() == 0)
+                return true;
+        } else if (results.getPassed().size() > 0)
+            return true;
         return false;
     }
 
@@ -80,6 +106,10 @@ public class RecommendationTask {
 
         // run all tests
         JSONArray tests = rule.getJSONArray("tests");
+        String cmpValue_str;
+        double cmpValue_num;
+        String valueType;
+        String opcode;
 
         for (int i = 0; i < tests.length(); i++) {
             JSONObject test = tests.getJSONObject(i);
@@ -133,8 +163,8 @@ public class RecommendationTask {
                     break;
                 case "score":
                     String scoreName = test.getString("name");
-                    double cmpValue = test.getDouble("cmp_value");
-                    String opcode = test.getString("operator");
+                    cmpValue_num = test.getDouble("cmp_value");
+                    opcode = test.getString("operator");
 
                     // get the score
                     response = factory.getScore().getOne(userName, scoreName);
@@ -142,19 +172,80 @@ public class RecommendationTask {
 
                     double actualValue = data.get("value").getAsDouble();
 
-                    if (resolveDoubleComparison(cmpValue, actualValue, opcode))
+                    if (resolveDoubleComparison(cmpValue_num, actualValue, opcode))
                         results.appendPassedTest(test);
                     else
                         results.appendFailedTest(test);
 
                     break;
                 case "attribute":
+                    valueType = test.getString("value_type");
+                    String attName = test.getString("name");
+                    opcode = test.getString("operator");
 
-                    //String attributeName = factory.getAttribute().listAll(userName, Filter.createFilter().addNameFilter())
+                    String attVal_str;
+                    double attVal_num;
+
+                    response = factory.getAttribute().getOne(userName, attName);
+                    data = response.get("data").getAsJsonObject();
+
+                    if (valueType.equals("string")) {
+                        cmpValue_str = test.getString("cmp_value");
+                        attVal_str = data.get("value").getAsString();
+                        if (resolveStringComparison(cmpValue_str, attVal_str, opcode))
+                            results.appendPassedTest(test);
+                        else
+                            results.appendFailedTest(test);
+                    } else { // number
+                        cmpValue_num = test.getDouble("cmp_value");
+                        attVal_num = Double.parseDouble(data.get("value").getAsString());
+                        if (resolveDoubleComparison(cmpValue_num, attVal_num, opcode))
+                            results.appendPassedTest(test);
+                        else
+                            results.appendFailedTest(test);
+                    }
                     break;
                 case "feature":
+                    valueType = test.getString("value_type");
+                    int featureId = test.getInt("featureid");
+                    opcode = test.getString("operator");
+
+                    String featureVal_str;
+                    double featureVal_num;
+
+                    response = factory.getFeature().getOne(userName, featureId);
+                    data = response.get("data").getAsJsonObject();
+
+                    if (valueType.equals("string")) {
+                        cmpValue_str = test.getString("cmp_value");
+                        featureVal_str = data.get("value").getAsString();
+                        if (resolveStringComparison(cmpValue_str, featureVal_str, opcode))
+                            results.appendPassedTest(test);
+                        else
+                            results.appendFailedTest(test);
+                    } else { // number feature
+                        cmpValue_num = test.getDouble("cmp_value");
+                        featureVal_num = data.get("value").getAsDouble();
+                        if (resolveDoubleComparison(cmpValue_num, featureVal_num, opcode))
+                            results.appendPassedTest(test);
+                        else
+                            results.appendFailedTest(test);
+                    }
                     break;
                 case "reference":
+                    String refName = test.getString("name");
+                    cmpValue_str = test.getString("cmp_value");
+                    opcode = test.getString("operator");
+
+                    response = factory.getReference().getOne(userName, refName);
+                    data = response.get("data").getAsJsonObject();
+
+                    String refValue = data.get("value").getAsString();
+
+                    if (resolveStringComparison(cmpValue_str, refValue, opcode))
+                        results.appendPassedTest(test);
+                    else
+                        results.appendFailedTest(test);
                     break;
                 }
             } catch (SDKException e) {
@@ -181,6 +272,20 @@ public class RecommendationTask {
             return actualValue <= cmpValue;
         case "<":
             return actualValue < cmpValue;
+        }
+        return false;
+    }
+
+    private boolean resolveStringComparison(String cmpValue, String actualValue, String opcode) {
+        switch (opcode) {
+        case "!=":
+            return !cmpValue.equals(actualValue);
+        case "==":
+            return cmpValue.equals(actualValue);
+        case ">":
+            return actualValue.compareTo(cmpValue) > 0;
+        case "<":
+            return actualValue.compareTo(cmpValue) < 0;
         }
         return false;
     }
