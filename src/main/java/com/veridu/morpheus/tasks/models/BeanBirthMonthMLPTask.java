@@ -36,7 +36,7 @@ public class BeanBirthMonthMLPTask implements ITask {
 
     private static final IFact fact = new Fact("probRealBirthMonthMLP", Constants.SKYNET_PROVIDER);
 
-    private static final Logger log = Logger.getLogger(BeanBirthDayMLPTask.class);
+    private static final Logger log = Logger.getLogger(BeanBirthMonthMLPTask.class);
 
     @Autowired
     public BeanBirthMonthMLPTask(IUtils utils, IDataSource dao,
