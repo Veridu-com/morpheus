@@ -408,10 +408,10 @@ public class IdOSAccess implements IDataSource {
     }
 
     @Override
-    public void upsertGate(IdOSAPIFactory factory, IUser user, String gateName, boolean pass, String confidenceLevel) {
+    public void upsertGate(IdOSAPIFactory factory, IUser user, String gateName, String confidenceLevel) {
         try {
             factory.getGate().setAuthType(IdOSAuthType.HANDLER);
-            factory.getGate().upsert(user.getId(), gateName, pass, confidenceLevel);
+            factory.getGate().upsert(user.getId(), gateName, confidenceLevel);
         } catch (SDKException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {

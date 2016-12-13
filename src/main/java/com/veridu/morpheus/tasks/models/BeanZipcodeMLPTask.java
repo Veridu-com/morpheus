@@ -76,9 +76,13 @@ public class BeanZipcodeMLPTask implements ITask {
 
                 dao.upsertScore(factory, user, "zipcodeScore", "zipcode", realUserProb);
 
-                dao.upsertGate(factory, user, "zipcodeGate", realUserProb >= 0.99, "low");
-                dao.upsertGate(factory, user, "zipcodeGate", realUserProb >= 0.9998905, "medium");
-                dao.upsertGate(factory, user, "zipcodeGate", realUserProb >= 0.9999990, "high");
+                if (realUserProb >= 0.9999990) {
+                    dao.upsertGate(factory, user, "zipcodeGate", "high");
+                } else if (realUserProb >= 0.9998905) {
+                    dao.upsertGate(factory, user, "zipcodeGate", "medium");
+                } else if (realUserProb >= 0.99) {
+                    dao.upsertGate(factory, user, "zipcodeGate", "low");
+                }
 
                 time2 = System.currentTimeMillis();
                 timediff = time2 - time1;
@@ -94,6 +98,8 @@ public class BeanZipcodeMLPTask implements ITask {
             if (pred == null)
                 log.error("Zipcode MLP model could not make prediction");
         } else {
+            dao.upsertGate(factory, user, "zipcodeGate", "none");
+
             log.info(String.format("Zipcode MLP model found no candidates to score for user %s", userId));
         }
 
