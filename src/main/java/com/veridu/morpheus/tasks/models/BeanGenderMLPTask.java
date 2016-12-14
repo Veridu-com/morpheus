@@ -76,9 +76,15 @@ public class BeanGenderMLPTask implements ITask {
 
                 dao.upsertScore(factory, user, "genderScore", "gender", realUserProb);
 
-                dao.upsertGate(factory, user, "genderGate", realUserProb >= 0.99, "low");
-                dao.upsertGate(factory, user, "genderGate", realUserProb >= 0.9998139, "medium");
-                dao.upsertGate(factory, user, "genderGate", realUserProb >= 0.9999970, "high");
+                if (realUserProb >= 0.9999970) {
+                    dao.upsertGate(factory, user, "genderGate", "high");
+                } else if (realUserProb >= 0.9998139) {
+                    dao.upsertGate(factory, user, "genderGate", "medium");
+                } else if (realUserProb >= 0.99) {
+                    dao.upsertGate(factory, user, "genderGate", "low");
+                } else {
+                    dao.upsertGate(factory, user, "genderGate", "none");
+                }
 
                 time2 = System.currentTimeMillis();
                 timediff = time2 - time1;
@@ -95,6 +101,8 @@ public class BeanGenderMLPTask implements ITask {
                 log.error("Gender MLP model could not make prediction for user " + user.getId());
 
         } else {
+            dao.upsertGate(factory, user, "genderGate", "NA");
+
             log.info(String.format("Gender MLP model found no candidates to score for user %s", userId));
         }
     }

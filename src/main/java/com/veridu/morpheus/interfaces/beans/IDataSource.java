@@ -120,5 +120,5 @@ public interface IDataSource {
 
     void upsertScore(IdOSAPIFactory factory, IUser user, String scoreName, String attribute, double score);
 
-    void upsertGate(IdOSAPIFactory factory, IUser user, String gateName, boolean pass, String confidenceLevel);
+    void upsertGate(IdOSAPIFactory factory, IUser user, String gateName, String confidenceLevel);
 }
