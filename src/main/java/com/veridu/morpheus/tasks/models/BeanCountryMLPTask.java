@@ -76,9 +76,15 @@ public class BeanCountryMLPTask implements ITask {
 
                 dao.upsertScore(factory, user, "countryNameScore", "countryName", realUserProb);
 
-                dao.upsertGate(factory, user, "countryNameGate", realUserProb >= 0.99, "low");
-                dao.upsertGate(factory, user, "countryNameGate", realUserProb >= 0.9994642, "medium");
-                dao.upsertGate(factory, user, "countryNameGate", realUserProb >= 0.9999494, "high");
+                if (realUserProb >= 0.9999494) {
+                    dao.upsertGate(factory, user, "countryNameGate", "high");
+                } else if (realUserProb >= 0.9994642) {
+                    dao.upsertGate(factory, user, "countryNameGate", "medium");
+                } else if (realUserProb >= 0.99) {
+                    dao.upsertGate(factory, user, "countryNameGate", "low");
+                } else {
+                    dao.upsertGate(factory, user, "countryNameGate", "none");
+                }
 
                 time2 = System.currentTimeMillis();
                 timediff = time2 - time1;
@@ -94,6 +100,8 @@ public class BeanCountryMLPTask implements ITask {
             if (pred == null)
                 log.error("Country MLP model could not make prediction for user " + user.getId());
         } else {
+            dao.upsertGate(factory, user, "countryNameGate", "NA");
+
             log.info(String.format("Country MLP model found no candidates to score for user %s", userId));
         }
     }

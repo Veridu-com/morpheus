@@ -77,9 +77,15 @@ public class BeanBirthYearMLPTask implements ITask {
 
                 dao.upsertScore(factory, user, "birthYearScore", "birthYear", realUserProb);
 
-                dao.upsertGate(factory, user, "birthYearGate", realUserProb >= 0.7329271, "low"); // low
-                dao.upsertGate(factory, user, "birthYearGate", realUserProb >= 0.8582320, "medium"); // med
-                dao.upsertGate(factory, user, "birthYearGate", realUserProb >= 0.9954738, "high"); // high
+                if (realUserProb >= 0.9954738) {
+                    dao.upsertGate(factory, user, "birthYearGate", "high"); // high
+                } else if (realUserProb >= 0.8582320) {
+                    dao.upsertGate(factory, user, "birthYearGate", "medium"); // med
+                } else if (realUserProb >= 0.7329271) {
+                    dao.upsertGate(factory, user, "birthYearGate", "low"); // low
+                } else {
+                    dao.upsertGate(factory, user, "birthYearGate", "none");
+                }
 
                 time2 = System.currentTimeMillis();
                 timediff = time2 - time1;
@@ -95,6 +101,8 @@ public class BeanBirthYearMLPTask implements ITask {
             if (pred == null)
                 log.error("Birthyear MLP model could not make prediction for user " + user.getId());
         } else {
+            dao.upsertGate(factory, user, "birthYearGate", "NA");
+
             log.info(String.format("Birthyear MLP model found no candidates to score for user %s", userId));
         }
     }

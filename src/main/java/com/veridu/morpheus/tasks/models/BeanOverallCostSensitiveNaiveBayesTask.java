@@ -81,23 +81,27 @@ public class BeanOverallCostSensitiveNaiveBayesTask implements ITask {
                 System.out.println("---------------------------------------");
             }
 
-            // low
-            double score = modelLow.getClassifier().distributionForInstance(inst)[1];
             double realUserProbLow = modelLow.binaryPrediction(inst);
-            dao.upsertScore(factory, user, "noChargebackScoreLow", "profile", score);
-            dao.upsertGate(factory, user, "noChargebackGate", realUserProbLow > 0.99, "low");
+            double scoreLow = modelLow.getClassifier().distributionForInstance(inst)[1];
+            dao.upsertScore(factory, user, "noChargebackScoreLow", "profile", scoreLow);
 
-            // med
-            score = modelMed.getClassifier().distributionForInstance(inst)[1];
             double realUserProbMed = modelMed.binaryPrediction(inst);
-            dao.upsertScore(factory, user, "noChargebackScoreMed", "profile", score);
-            dao.upsertGate(factory, user, "noChargebackGate", realUserProbMed > 0.99, "medium");
+            double scoreMed = modelMed.getClassifier().distributionForInstance(inst)[1];
+            dao.upsertScore(factory, user, "noChargebackScoreMed", "profile", scoreMed);
 
-            // high
-            score = modelHigh.getClassifier().distributionForInstance(inst)[1];
             double realUserProbHigh = modelHigh.binaryPrediction(inst);
-            dao.upsertScore(factory, user, "noChargebackScoreHigh", "profile", score);
-            dao.upsertGate(factory, user, "noChargebackGate", realUserProbHigh > 0.99, "high");
+            double scoreHigh = modelHigh.getClassifier().distributionForInstance(inst)[1];
+            dao.upsertScore(factory, user, "noChargebackScoreHigh", "profile", scoreHigh);
+
+            if (realUserProbHigh > 0.99) {
+                dao.upsertGate(factory, user, "noChargebackGate", "high");
+            } else if (realUserProbMed > 0.99) {
+                dao.upsertGate(factory, user, "noChargebackGate", "medium");
+            } else if (realUserProbLow > 0.99) {
+                dao.upsertGate(factory, user, "noChargebackGate", "low");
+            } else {
+                dao.upsertGate(factory, user, "noChargebackGate", "none");
+            }
 
             time2 = System.currentTimeMillis();
             timediff = time2 - time1;
@@ -105,13 +109,13 @@ public class BeanOverallCostSensitiveNaiveBayesTask implements ITask {
             //            if (params.verbose) {
             log.info(String.format(
                     "Overall Cost Sensitive Naive Bayes LOW model predicted for user %s => %.2f with probability %.2f in %d ms",
-                    userId, realUserProbLow, score, time2 - time1));
+                    userId, realUserProbLow, scoreLow, time2 - time1));
             log.info(String.format(
                     "Overall Cost Sensitive Naive Bayes MED model predicted for user %s => %.2f with probability %.2f in %d ms",
-                    userId, realUserProbMed, score, time2 - time1));
+                    userId, realUserProbMed, scoreMed, time2 - time1));
             log.info(String.format(
                     "Overall Cost Sensitive Naive Bayes HIGH model predicted for user %s => %.2f with probability %.2f in %d ms",
-                    userId, realUserProbHigh, score, time2 - time1));
+                    userId, realUserProbHigh, scoreHigh, time2 - time1));
             //            }
 
         } catch (Exception e) {

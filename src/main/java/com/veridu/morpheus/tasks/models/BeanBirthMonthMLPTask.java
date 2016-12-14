@@ -36,7 +36,7 @@ public class BeanBirthMonthMLPTask implements ITask {
 
     private static final IFact fact = new Fact("probRealBirthMonthMLP", Constants.SKYNET_PROVIDER);
 
-    private static final Logger log = Logger.getLogger(BeanBirthDayMLPTask.class);
+    private static final Logger log = Logger.getLogger(BeanBirthMonthMLPTask.class);
 
     @Autowired
     public BeanBirthMonthMLPTask(IUtils utils, IDataSource dao,
@@ -77,9 +77,15 @@ public class BeanBirthMonthMLPTask implements ITask {
 
                 dao.upsertScore(factory, user, "birthMonthScore", "birthMonth", realUserProb);
 
-                dao.upsertGate(factory, user, "birthMonthGate", realUserProb >= 0.7290693, "low"); // low
-                dao.upsertGate(factory, user, "birthMonthGate", realUserProb >= 0.9994298, "medium"); // med
-                dao.upsertGate(factory, user, "birthMonthGate", realUserProb >= 0.9999658, "high"); // high
+                if (realUserProb >= 0.9999658) {
+                    dao.upsertGate(factory, user, "birthMonthGate", "high"); // high
+                } else if (realUserProb >= 0.9994298) {
+                    dao.upsertGate(factory, user, "birthMonthGate", "medium"); // med
+                } else if (realUserProb >= 0.7290693) {
+                    dao.upsertGate(factory, user, "birthMonthGate", "low"); // low
+                } else {
+                    dao.upsertGate(factory, user, "birthMonthGate", "none");
+                }
 
                 time2 = System.currentTimeMillis();
                 timediff = time2 - time1;
@@ -96,6 +102,8 @@ public class BeanBirthMonthMLPTask implements ITask {
                 log.error("Birthmonth MLP model could not make prediction for user " + user.getId());
 
         } else {
+            dao.upsertGate(factory, user, "birthMonthGate", "NA");
+
             log.info(String.format("Birthmonth MLP model found no candidates to score for user %s", userId));
         }
     }
