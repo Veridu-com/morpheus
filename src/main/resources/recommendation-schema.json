@@ -94,13 +94,11 @@
         "confidence_level": {
           "type": "string",
           "enum": [
+            "none",
             "low",
             "medium",
             "high"
           ]
-        },
-        "pass": {
-          "type": "boolean"
         }
       },
       "required": [
@@ -108,7 +106,6 @@
         "category",
         "slug",
         "confidence_level",
-        "pass"
       ]
     },
     "flag": {

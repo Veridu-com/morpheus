@@ -32,6 +32,10 @@ public class RecommendationTask {
         this.utils = utils;
     }
 
+    private enum ConfLevel {
+        none, low, medium, high
+    }
+
     @Async
     public void runTask(JSONObject request) {
         String userName = request.getString("username");
@@ -124,14 +128,13 @@ public class RecommendationTask {
                     // obtain gate:
                     response = factory.getGate().getOne(userName, gateSlug);
                     data = response.getAsJsonObject("data");
-                    if (data.has("pass")) {
-                        boolean testValue = test.getBoolean("pass"); // reference value
-                        boolean gateValue = data.get("pass").getAsBoolean();
-                        if (testValue == gateValue)
-                            results.appendPassedTest(test);
-                        else
-                            results.appendFailedTest(test);
-                    } else
+
+                    String testConfidence = test.getString("confidence_level"); // reference value
+                    String gateConfidence = data.get("confidence_level").getAsString(); // actual value
+
+                    if (resolveGateConfLevelComparison(testConfidence, gateConfidence))
+                        results.appendPassedTest(test);
+                    else
                         results.appendFailedTest(test);
                     break;
                 case "flag":
@@ -256,6 +259,12 @@ public class RecommendationTask {
         }
 
         return results;
+    }
+
+    private boolean resolveGateConfLevelComparison(String testConfidence, String gateConfidence) {
+        ConfLevel testConf = ConfLevel.valueOf(testConfidence);
+        ConfLevel gateConf = ConfLevel.valueOf(gateConfidence);
+        return gateConf.compareTo(testConf) >= 0;
     }
 
     private boolean resolveDoubleComparison(double cmpValue, double actualValue, String opcode) {
