@@ -79,6 +79,8 @@ public class BeanPhoneMLPTask implements ITask {
                     dao.upsertGate(factory, user, "phoneGate", "medium");
                 } else if (realUserProb >= 0.99) {
                     dao.upsertGate(factory, user, "phoneGate", "low");
+                } else {
+                    dao.upsertGate(factory, user, "phoneGate", "none");
                 }
 
                 time2 = System.currentTimeMillis();
@@ -96,7 +98,7 @@ public class BeanPhoneMLPTask implements ITask {
             if (pred == null)
                 log.error("Phone MLP model could not make prediction for user " + user.getId());
         } else {
-            dao.upsertGate(factory, user, "phoneGate", "none");
+            dao.upsertGate(factory, user, "phoneGate", "na");
 
             log.info(String.format("Phone MLP model found no candidates to score for user %s", userId));
         }

@@ -79,6 +79,8 @@ public class BeanEmailMLPTask implements ITask {
                     dao.upsertGate(factory, user, "emailGate", "medium");
                 } else if (realUserProb >= 0.99) {
                     dao.upsertGate(factory, user, "emailGate", "low");
+                } else {
+                    dao.upsertGate(factory, user, "emailGate", "none");
                 }
 
                 time2 = System.currentTimeMillis();
@@ -97,7 +99,7 @@ public class BeanEmailMLPTask implements ITask {
                 log.error("Email MLP model could not make prediction for user " + user.getId());
 
         } else {
-            dao.upsertGate(factory, user, "emailGate", "none");
+            dao.upsertGate(factory, user, "emailGate", "na");
 
             log.info(String.format("Email MLP model found no candidates to score for user %s", userId));
         }

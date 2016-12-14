@@ -82,6 +82,8 @@ public class BeanCityMLPTask implements ITask {
                     dao.upsertGate(factory, user, "cityNameGate", "medium");
                 } else if (realUserProb >= 0.99) {
                     dao.upsertGate(factory, user, "cityNameGate", "low");
+                } else {
+                    dao.upsertGate(factory, user, "cityNameGate", "none");
                 }
 
                 time2 = System.currentTimeMillis();
@@ -98,7 +100,7 @@ public class BeanCityMLPTask implements ITask {
             if (pred == null)
                 log.error("City MLP model could not make prediction for user " + user.getId());
         } else {
-            dao.upsertGate(factory, user, "cityNameGate", "none");
+            dao.upsertGate(factory, user, "cityNameGate", "na");
 
             log.info(String.format("City MLP model found no candidates to score for user %s", userId));
         }

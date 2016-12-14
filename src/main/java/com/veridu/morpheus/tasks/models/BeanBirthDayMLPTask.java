@@ -78,6 +78,8 @@ public class BeanBirthDayMLPTask implements ITask {
                     dao.upsertGate(factory, user, "birthDayGate", "medium"); // med gate
                 } else if (realUserProb >= 0.7958683) {
                     dao.upsertGate(factory, user, "birthDayGate", "low"); // low gate
+                } else {
+                    dao.upsertGate(factory, user, "birthDayGate", "none");
                 }
 
                 time2 = System.currentTimeMillis();
@@ -94,7 +96,7 @@ public class BeanBirthDayMLPTask implements ITask {
             if (pred == null)
                 log.error("Birthday MLP model could not make prediction for user " + user.getId());
         } else {
-            dao.upsertGate(factory, user, "birthDayGate", "none");
+            dao.upsertGate(factory, user, "birthDayGate", "na");
 
             log.info(String.format("Birthday MLP model found no candidates to score for user %s", userId));
         }

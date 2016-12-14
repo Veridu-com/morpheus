@@ -82,6 +82,8 @@ public class BeanFirstNameMLPTask implements ITask {
                     dao.upsertGate(factory, user, "firstNameGate", "medium");
                 } else if (realUserProb >= 0.99) {
                     dao.upsertGate(factory, user, "firstNameGate", "low");
+                } else {
+                    dao.upsertGate(factory, user, "firstNameGate", "none");
                 }
 
                 time2 = System.currentTimeMillis();
@@ -98,7 +100,7 @@ public class BeanFirstNameMLPTask implements ITask {
             if (pred == null)
                 log.error("First name MLP model could not make prediction for user " + user.getId());
         } else {
-            dao.upsertGate(factory, user, "firstNameGate", "none");
+            dao.upsertGate(factory, user, "firstNameGate", "na");
 
             log.info(String.format("First name MLP model found no candidates to score for user %s", userId));
         }

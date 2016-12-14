@@ -99,6 +99,8 @@ public class BeanOverallCostSensitiveNaiveBayesTask implements ITask {
                 dao.upsertGate(factory, user, "noChargebackGate", "medium");
             } else if (realUserProbLow > 0.99) {
                 dao.upsertGate(factory, user, "noChargebackGate", "low");
+            } else {
+                dao.upsertGate(factory, user, "noChargebackGate", "none");
             }
 
             time2 = System.currentTimeMillis();

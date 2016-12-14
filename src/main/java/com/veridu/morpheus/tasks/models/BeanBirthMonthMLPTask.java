@@ -83,6 +83,8 @@ public class BeanBirthMonthMLPTask implements ITask {
                     dao.upsertGate(factory, user, "birthMonthGate", "medium"); // med
                 } else if (realUserProb >= 0.7290693) {
                     dao.upsertGate(factory, user, "birthMonthGate", "low"); // low
+                } else {
+                    dao.upsertGate(factory, user, "birthMonthGate", "none");
                 }
 
                 time2 = System.currentTimeMillis();
@@ -100,7 +102,7 @@ public class BeanBirthMonthMLPTask implements ITask {
                 log.error("Birthmonth MLP model could not make prediction for user " + user.getId());
 
         } else {
-            dao.upsertGate(factory, user, "birthMonthGate", "none");
+            dao.upsertGate(factory, user, "birthMonthGate", "na");
 
             log.info(String.format("Birthmonth MLP model found no candidates to score for user %s", userId));
         }

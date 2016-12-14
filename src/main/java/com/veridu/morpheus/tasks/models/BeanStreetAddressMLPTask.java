@@ -83,6 +83,8 @@ public class BeanStreetAddressMLPTask implements ITask {
                     dao.upsertGate(factory, user, "streetAddressGate", "medium");
                 } else if (realUserProb >= 0.9962211) {
                     dao.upsertGate(factory, user, "streetAddressGate", "low");
+                } else {
+                    dao.upsertGate(factory, user, "streetAddressGate", "none");
                 }
 
                 time2 = System.currentTimeMillis();
@@ -100,7 +102,7 @@ public class BeanStreetAddressMLPTask implements ITask {
                 log.error("Street MLP model could not make prediction");
 
         } else {
-            dao.upsertGate(factory, user, "streetAddressGate", "none");
+            dao.upsertGate(factory, user, "streetAddressGate", "na");
 
             log.info(String.format("Street address MLP model found no candidates to score for user %s", userId));
         }
