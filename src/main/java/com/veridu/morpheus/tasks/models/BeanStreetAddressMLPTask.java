@@ -102,7 +102,7 @@ public class BeanStreetAddressMLPTask implements ITask {
                 log.error("Street MLP model could not make prediction");
 
         } else {
-            dao.upsertGate(factory, user, "streetAddressGate", "na");
+            dao.upsertGate(factory, user, "streetAddressGate", "NA");
 
             log.info(String.format("Street address MLP model found no candidates to score for user %s", userId));
         }

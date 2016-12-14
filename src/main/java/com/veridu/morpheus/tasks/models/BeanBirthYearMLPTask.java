@@ -101,7 +101,7 @@ public class BeanBirthYearMLPTask implements ITask {
             if (pred == null)
                 log.error("Birthyear MLP model could not make prediction for user " + user.getId());
         } else {
-            dao.upsertGate(factory, user, "birthYearGate", "na");
+            dao.upsertGate(factory, user, "birthYearGate", "NA");
 
             log.info(String.format("Birthyear MLP model found no candidates to score for user %s", userId));
         }

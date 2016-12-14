@@ -100,7 +100,7 @@ public class BeanFirstNameMLPTask implements ITask {
             if (pred == null)
                 log.error("First name MLP model could not make prediction for user " + user.getId());
         } else {
-            dao.upsertGate(factory, user, "firstNameGate", "na");
+            dao.upsertGate(factory, user, "firstNameGate", "NA");
 
             log.info(String.format("First name MLP model found no candidates to score for user %s", userId));
         }

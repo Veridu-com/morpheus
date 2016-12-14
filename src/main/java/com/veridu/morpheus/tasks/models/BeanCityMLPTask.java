@@ -100,7 +100,7 @@ public class BeanCityMLPTask implements ITask {
             if (pred == null)
                 log.error("City MLP model could not make prediction for user " + user.getId());
         } else {
-            dao.upsertGate(factory, user, "cityNameGate", "na");
+            dao.upsertGate(factory, user, "cityNameGate", "NA");
 
             log.info(String.format("City MLP model found no candidates to score for user %s", userId));
         }

@@ -100,7 +100,7 @@ public class BeanZipcodeMLPTask implements ITask {
             if (pred == null)
                 log.error("Zipcode MLP model could not make prediction");
         } else {
-            dao.upsertGate(factory, user, "zipcodeGate", "na");
+            dao.upsertGate(factory, user, "zipcodeGate", "NA");
 
             log.info(String.format("Zipcode MLP model found no candidates to score for user %s", userId));
         }

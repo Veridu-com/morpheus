@@ -101,7 +101,7 @@ public class BeanLastNameMLPTask implements ITask {
             if (pred == null)
                 log.error("Last name MLP model could not make prediction for user " + user.getId());
         } else {
-            dao.upsertGate(factory, user, "lastNameGate", "na");
+            dao.upsertGate(factory, user, "lastNameGate", "NA");
 
             log.info(String.format("Last name MLP model found no candidates to score for user %s", userId));
         }

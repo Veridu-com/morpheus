@@ -101,7 +101,7 @@ public class BeanGenderMLPTask implements ITask {
                 log.error("Gender MLP model could not make prediction for user " + user.getId());
 
         } else {
-            dao.upsertGate(factory, user, "genderGate", "na");
+            dao.upsertGate(factory, user, "genderGate", "NA");
 
             log.info(String.format("Gender MLP model found no candidates to score for user %s", userId));
         }

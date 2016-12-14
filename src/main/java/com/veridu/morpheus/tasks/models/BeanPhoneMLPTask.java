@@ -98,7 +98,7 @@ public class BeanPhoneMLPTask implements ITask {
             if (pred == null)
                 log.error("Phone MLP model could not make prediction for user " + user.getId());
         } else {
-            dao.upsertGate(factory, user, "phoneGate", "na");
+            dao.upsertGate(factory, user, "phoneGate", "NA");
 
             log.info(String.format("Phone MLP model found no candidates to score for user %s", userId));
         }

@@ -102,7 +102,7 @@ public class BeanBirthMonthMLPTask implements ITask {
                 log.error("Birthmonth MLP model could not make prediction for user " + user.getId());
 
         } else {
-            dao.upsertGate(factory, user, "birthMonthGate", "na");
+            dao.upsertGate(factory, user, "birthMonthGate", "NA");
 
             log.info(String.format("Birthmonth MLP model found no candidates to score for user %s", userId));
         }

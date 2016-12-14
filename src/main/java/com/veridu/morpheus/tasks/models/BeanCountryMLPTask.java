@@ -100,7 +100,7 @@ public class BeanCountryMLPTask implements ITask {
             if (pred == null)
                 log.error("Country MLP model could not make prediction for user " + user.getId());
         } else {
-            dao.upsertGate(factory, user, "countryNameGate", "na");
+            dao.upsertGate(factory, user, "countryNameGate", "NA");
 
             log.info(String.format("Country MLP model found no candidates to score for user %s", userId));
         }
