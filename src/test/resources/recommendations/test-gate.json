@@ -1,0 +1,18 @@
+{
+  "username": "f67b96dcf96b49d713a520ce9f54053c",
+  "publickey": "4c9184f37cff01bcdc32dc486ec36961",
+  "rules": [
+    {
+      "tag": "Rule 1",
+      "tests": [
+        {
+          "tag": "Test 1",
+          "category": "gate",
+          "slug": "testgate1-high",
+          "confidence_level": "high",
+          "pass": true
+        }
+      ]
+    }
+  ]
+}

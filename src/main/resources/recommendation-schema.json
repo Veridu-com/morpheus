@@ -94,13 +94,11 @@
         "confidence_level": {
           "type": "string",
           "enum": [
+            "none",
             "low",
             "medium",
             "high"
           ]
-        },
-        "pass": {
-          "type": "boolean"
         }
       },
       "required": [
@@ -108,7 +106,6 @@
         "category",
         "slug",
         "confidence_level",
-        "pass"
       ]
     },
     "flag": {
@@ -265,8 +262,8 @@
             "feature"
           ]
         },
-        "name": {
-          "type": "string"
+        "featureid": {
+          "type": "integer"
         },
         "value_type": {
           "enum": [
@@ -288,7 +285,7 @@
       "required": [
         "tag",
         "category",
-        "name",
+        "featureid",
         "value_type",
         "cmp_value",
         "operator"
@@ -305,8 +302,8 @@
             "feature"
           ]
         },
-        "name": {
-          "type": "string"
+        "featureid": {
+          "type": "integer"
         },
         "value_type": {
           "enum": [
@@ -330,7 +327,7 @@
       "required": [
         "tag",
         "category",
-        "name",
+        "featureid",
         "value_type",
         "cmp_value",
         "operator"
