@@ -6,8 +6,10 @@ import com.veridu.idos.IdOSAPIFactory;
 import com.veridu.idos.exceptions.InvalidToken;
 import com.veridu.idos.exceptions.SDKException;
 import com.veridu.idos.utils.IdOSAuthType;
+import com.veridu.morpheus.impl.Age;
 import com.veridu.morpheus.impl.RuleResults;
 import com.veridu.morpheus.interfaces.beans.IUtils;
+import com.veridu.morpheus.utils.LocalUtils;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -110,8 +112,9 @@ public class RecommendationTask {
 
         // run all tests
         JSONArray tests = rule.getJSONArray("tests");
-        String cmpValue_str;
-        double cmpValue_num;
+        String cmpValueString;
+        double cmpValueDouble;
+        int cmpValueInt;
         String valueType;
         String opcode;
 
@@ -166,7 +169,7 @@ public class RecommendationTask {
                     break;
                 case "score":
                     String scoreName = test.getString("name");
-                    cmpValue_num = test.getDouble("cmp_value");
+                    cmpValueDouble = test.getDouble("cmp_value");
                     opcode = test.getString("operator");
 
                     // get the score
@@ -175,7 +178,7 @@ public class RecommendationTask {
 
                     double actualValue = data.get("value").getAsDouble();
 
-                    if (resolveDoubleComparison(cmpValue_num, actualValue, opcode))
+                    if (resolveDoubleComparison(cmpValueDouble, actualValue, opcode))
                         results.appendPassedTest(test);
                     else
                         results.appendFailedTest(test);
@@ -193,16 +196,16 @@ public class RecommendationTask {
                     data = response.get("data").getAsJsonObject();
 
                     if (valueType.equals("string")) {
-                        cmpValue_str = test.getString("cmp_value");
+                        cmpValueString = test.getString("cmp_value");
                         attVal_str = data.get("value").getAsString();
-                        if (resolveStringComparison(cmpValue_str, attVal_str, opcode))
+                        if (resolveStringComparison(cmpValueString, attVal_str, opcode))
                             results.appendPassedTest(test);
                         else
                             results.appendFailedTest(test);
                     } else { // number
-                        cmpValue_num = test.getDouble("cmp_value");
+                        cmpValueDouble = test.getDouble("cmp_value");
                         attVal_num = Double.parseDouble(data.get("value").getAsString());
-                        if (resolveDoubleComparison(cmpValue_num, attVal_num, opcode))
+                        if (resolveDoubleComparison(cmpValueDouble, attVal_num, opcode))
                             results.appendPassedTest(test);
                         else
                             results.appendFailedTest(test);
@@ -220,16 +223,16 @@ public class RecommendationTask {
                     data = response.get("data").getAsJsonObject();
 
                     if (valueType.equals("string")) {
-                        cmpValue_str = test.getString("cmp_value");
+                        cmpValueString = test.getString("cmp_value");
                         featureVal_str = data.get("value").getAsString();
-                        if (resolveStringComparison(cmpValue_str, featureVal_str, opcode))
+                        if (resolveStringComparison(cmpValueString, featureVal_str, opcode))
                             results.appendPassedTest(test);
                         else
                             results.appendFailedTest(test);
                     } else { // number feature
-                        cmpValue_num = test.getDouble("cmp_value");
+                        cmpValueDouble = test.getDouble("cmp_value");
                         featureVal_num = data.get("value").getAsDouble();
-                        if (resolveDoubleComparison(cmpValue_num, featureVal_num, opcode))
+                        if (resolveDoubleComparison(cmpValueDouble, featureVal_num, opcode))
                             results.appendPassedTest(test);
                         else
                             results.appendFailedTest(test);
@@ -237,7 +240,7 @@ public class RecommendationTask {
                     break;
                 case "reference":
                     String refName = test.getString("name");
-                    cmpValue_str = test.getString("cmp_value");
+                    cmpValueString = test.getString("cmp_value");
                     opcode = test.getString("operator");
 
                     response = factory.getReference().getOne(userName, refName);
@@ -245,10 +248,68 @@ public class RecommendationTask {
 
                     String refValue = data.get("value").getAsString();
 
-                    if (resolveStringComparison(cmpValue_str, refValue, opcode))
+                    if (resolveStringComparison(cmpValueString, refValue, opcode))
                         results.appendPassedTest(test);
                     else
                         results.appendFailedTest(test);
+                    break;
+                case "macro":
+                    valueType = test.getString("value_type");
+                    String macroName = test.getString("name");
+                    opcode = test.getString("operator");
+
+                    String macroVal_str;
+                    double macroVal_num;
+
+                    switch (macroName) {
+                    case "age":
+                        cmpValueInt = test.getInt("cmp_value");
+                        // obtain attribute values for age
+                        try {
+                            Age age = Age.obtainAge(factory, userName);
+                            if (age.validate()) {
+                                int numAge = age.obtainAge();
+                                if (resolveIntegerComparison(cmpValueInt, numAge, opcode))
+                                    results.appendPassedTest(test);
+                                else
+                                    results.appendFailedTest(test);
+                            } else
+                                results.appendFailedTest(test);
+                        } catch (SDKException e) {
+                            results.appendFailedTest(test);
+                        }
+                        break;
+                    case "sources":
+
+                        cmpValueInt = test.getInt("cmp_value");
+
+                        // obtain number of sources the guy has used
+                        try {
+                            factory.getSource().setAuthType(IdOSAuthType.HANDLER);
+                            response = factory.getSource().listAll(userName);
+                            int numSources;
+
+                            if (LocalUtils.okResponse(response)) {
+                                if (response.get("data").isJsonObject())
+                                    numSources = 1;
+                                else
+                                    numSources = response.get("data").getAsJsonArray().size();
+
+                                if (resolveIntegerComparison(cmpValueInt, numSources, opcode))
+                                    results.appendPassedTest(test);
+                                else
+                                    results.appendFailedTest(test);
+                            } else {
+                                results.appendFailedTest(test);
+                            }
+
+                        } catch (SDKException e) {
+                            results.appendFailedTest(test);
+                        }
+                        break;
+                    default:
+                        results.appendFailedTest(test);
+                    }
                     break;
                 }
             } catch (SDKException e) {
@@ -268,6 +329,24 @@ public class RecommendationTask {
     }
 
     private boolean resolveDoubleComparison(double cmpValue, double actualValue, String opcode) {
+        switch (opcode) {
+        case "!=":
+            return cmpValue != actualValue;
+        case "==":
+            return cmpValue == actualValue;
+        case ">=":
+            return actualValue >= cmpValue;
+        case ">":
+            return actualValue > cmpValue;
+        case "<=":
+            return actualValue <= cmpValue;
+        case "<":
+            return actualValue < cmpValue;
+        }
+        return false;
+    }
+
+    private boolean resolveIntegerComparison(int cmpValue, int actualValue, String opcode) {
         switch (opcode) {
         case "!=":
             return cmpValue != actualValue;

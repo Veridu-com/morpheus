@@ -52,6 +52,12 @@
                 },
                 {
                   "$ref": "#/definitions/reference"
+                },
+                {
+                  "$ref": "#/definitions/macro_str"
+                },
+                {
+                  "$ref": "#/definitions/macro_num"
                 }
               ]
             }
@@ -105,7 +111,7 @@
         "tag",
         "category",
         "slug",
-        "confidence_level",
+        "confidence_level"
       ]
     },
     "flag": {
@@ -363,6 +369,88 @@
         "tag",
         "category",
         "name",
+        "cmp_value",
+        "operator"
+      ]
+    },
+    "macro_str": {
+      "type": "object",
+      "properties": {
+        "tag": {
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "macro"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "value_type": {
+          "enum": [
+            "string"
+          ]
+        },
+        "cmp_value": {
+          "type": "string"
+        },
+        "operator": {
+          "enum": [
+            "!=",
+            "==",
+            ">",
+            "<"
+          ]
+        }
+      },
+      "required": [
+        "tag",
+        "category",
+        "name",
+        "value_type",
+        "cmp_value",
+        "operator"
+      ]
+    },
+    "macro_num": {
+      "type": "object",
+      "properties": {
+        "tag": {
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "macro"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "value_type": {
+          "enum": [
+            "number"
+          ]
+        },
+        "cmp_value": {
+          "type": "number"
+        },
+        "operator": {
+          "enum": [
+            "!=",
+            "==",
+            ">=",
+            "<=",
+            ">",
+            "<"
+          ]
+        }
+      },
+      "required": [
+        "tag",
+        "category",
+        "name",
+        "value_type",
         "cmp_value",
         "operator"
       ]
