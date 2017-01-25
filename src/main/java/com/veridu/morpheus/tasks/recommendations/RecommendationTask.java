@@ -18,6 +18,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
 
 /**
  * Created by cassio on 12/6/16.
@@ -292,8 +293,15 @@ public class RecommendationTask {
                             if (LocalUtils.okResponse(response)) {
                                 if (response.get("data").isJsonObject())
                                     numSources = 1;
-                                else
-                                    numSources = response.get("data").getAsJsonArray().size();
+                                else {
+                                    JsonArray ar = response.get("data").getAsJsonArray();
+                                    HashSet<String> sourceNames = new HashSet<>();
+                                    for (int j = 0; j < ar.size(); j++) {
+                                        String sName = ar.get(j).getAsJsonObject().get("name").getAsString();
+                                        sourceNames.add(sName);
+                                    }
+                                    numSources = sourceNames.size();
+                                }
 
                                 if (resolveIntegerComparison(cmpValueInt, numSources, opcode))
                                     results.appendPassedTest(test);
