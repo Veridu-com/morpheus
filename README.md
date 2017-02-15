@@ -7,7 +7,7 @@ The project no longer depends on JBoss as an application server, instead
 it uses Spring Boot and other projects from the Spring framework to create
 a lightweight version of Skynet.
 
-[Operations manual](src/master/Operations.md)
+[Operations manual](Operations.md)
 
 #Configuration via environment variable
 
