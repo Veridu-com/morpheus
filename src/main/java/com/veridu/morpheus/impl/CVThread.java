@@ -1,9 +1,14 @@
-package com.veridu.morpheus.impl;
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
 
-import java.util.concurrent.Callable;
+package com.veridu.morpheus.impl;
 
 import weka.classifiers.Classifier;
 import weka.core.Instances;
+
+import java.util.concurrent.Callable;
 
 public class CVThread implements Callable<CVEvalReturn> {
 

@@ -1,12 +1,15 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
 package com.veridu.skynet.models.overall;
-
-import java.io.Serializable;
 
 import com.veridu.morpheus.impl.GenericModel;
 import com.veridu.morpheus.interfaces.models.IPrediction;
-
 import weka.classifiers.meta.CostSensitiveClassifier;
 import weka.core.Instance;
+
+import java.io.Serializable;
 
 public class OverallCostSensitiveNaiveBayesModel extends GenericModel implements Serializable {
 

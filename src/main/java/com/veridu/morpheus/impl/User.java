@@ -1,10 +1,15 @@
-package com.veridu.morpheus.impl;
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
 
-import java.util.ArrayList;
-import java.util.HashMap;
+package com.veridu.morpheus.impl;
 
 import com.veridu.morpheus.interfaces.users.IProfile;
 import com.veridu.morpheus.interfaces.users.IUser;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class User implements IUser {
 

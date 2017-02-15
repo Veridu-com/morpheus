@@ -1,13 +1,16 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
 package com.veridu.skynet.models.zipcode;
-
-import java.io.Serializable;
 
 import com.veridu.morpheus.impl.GenericModel;
 import com.veridu.morpheus.impl.Prediction;
 import com.veridu.morpheus.interfaces.models.IPrediction;
-
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instance;
+
+import java.io.Serializable;
 
 public class ZipcodeMLPModel extends GenericModel implements Serializable {
 

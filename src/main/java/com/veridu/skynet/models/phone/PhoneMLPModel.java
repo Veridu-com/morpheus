@@ -1,14 +1,17 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
 package com.veridu.skynet.models.phone;
-
-import java.io.Serializable;
 
 import com.veridu.morpheus.impl.GenericModel;
 import com.veridu.morpheus.impl.Prediction;
 import com.veridu.morpheus.interfaces.models.IPrediction;
-
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instance;
+
+import java.io.Serializable;
 
 public class PhoneMLPModel extends GenericModel implements Serializable {
 

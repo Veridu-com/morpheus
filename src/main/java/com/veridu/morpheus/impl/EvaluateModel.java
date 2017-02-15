@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.impl;
 
 import com.veridu.morpheus.interfaces.models.IModel;
@@ -24,8 +29,8 @@ public class EvaluateModel {
                 trueClassValue = inst.classValue();
 
                 if (DEBUG)
-                    System.out
-                            .println(String.format("instance im analyzing isReal: %s prediction: %s realUserProb: %.2f",
+                    System.out.println(
+                            String.format("instance im analyzing isReal: %s prediction: %s realUserProb: %.2f",
                                     trueClassValue, predIsReal, predObj.realUserProbability()));
 
                 if (predIsReal && (trueClassValue == 1))
