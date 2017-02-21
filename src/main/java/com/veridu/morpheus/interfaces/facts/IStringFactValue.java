@@ -12,7 +12,7 @@ public interface IStringFactValue extends IFactValue {
 
     /**
      * The string fact value
-     * @return
+     * @return the value
      */
     String getStringFactValue();
 
