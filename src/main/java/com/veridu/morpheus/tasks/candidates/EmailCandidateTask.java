@@ -43,6 +43,12 @@ public class EmailCandidateTask implements ITask {
 
     private static final Logger logger = Logger.getLogger(BirthDayCandidateTask.class);
 
+    /**
+     * Constructor
+     * @param dataSource injected idOS SQL data source
+     * @param utils injected utils bean
+     * @param mongo injected idOS NoSQL data source
+     */
     @Autowired
     public EmailCandidateTask(IDataSource dataSource, IUtils utils, IMongoDataSource mongo) {
         this.dataSource = dataSource;
@@ -50,6 +56,10 @@ public class EmailCandidateTask implements ITask {
         this.mongo = mongo;
     }
 
+    /**
+     * Run an email candidates task
+     * @param params request parameters
+     */
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {

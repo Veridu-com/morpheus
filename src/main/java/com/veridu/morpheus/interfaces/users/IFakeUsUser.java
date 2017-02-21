@@ -12,6 +12,10 @@ import java.util.HashMap;
 
 public interface IFakeUsUser extends IUser {
 
+    /**
+     * Obtain the map of attributes to candidates
+     * @return hashmap object
+     */
     public HashMap<IAttribute, ArrayList<ICandidate>> getAttributesMap();
 
     public void setAttributesMap(HashMap<IAttribute, ArrayList<ICandidate>> map);

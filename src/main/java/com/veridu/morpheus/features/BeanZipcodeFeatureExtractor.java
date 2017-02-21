@@ -57,6 +57,18 @@ public class BeanZipcodeFeatureExtractor implements IFeatureExtractor {
     private Instances googleFeaturesHeader;
     private Instances paypalFeaturesHeader;
 
+    /**
+     * Constructor
+     *
+     * @param dataSource injected idOS SQL data source
+     * @param utils injected utils bean
+     * @param mongo injected idOS NoSQL data source
+     * @param facebookFeatureExtractor injected facebook feature extractor
+     * @param linkedinFeatureExtractor injected linkedin feature extractor
+     * @param twitterFeatureExtractor injected twitter feature extractor
+     * @param googleFeatureExtractor injected google feature extractor
+     * @param paypalFeatureExtractor injected paypal feature extractor
+     */
     @Autowired
     public BeanZipcodeFeatureExtractor(IDataSource dataSource, IUtils utils, IMongoDataSource mongo,
             @Qualifier("facebookExtractor") IFeatureExtractor facebookFeatureExtractor,
@@ -89,6 +101,9 @@ public class BeanZipcodeFeatureExtractor implements IFeatureExtractor {
 
     private static final boolean DEBUG = false;
 
+    /**
+     * called after bean construction
+     */
     @PostConstruct
     private void init() {
         // generic providers extractors
@@ -107,6 +122,14 @@ public class BeanZipcodeFeatureExtractor implements IFeatureExtractor {
         this.paypalFeaturesHeader = this.utils.generateDatasetHeader(this.paypalFeatureExtractor.obtainFactList());
     }
 
+    /**
+     * Create an instance with zipcode features
+     *
+     * @param factory idOS API factory
+     * @param dataset data header
+     * @param user selected user
+     * @return an Instance object with the features regarding zipcode
+     */
     @Override
     public Instance createInstance(IdOSAPIFactory factory, Instances dataset, IUser user) {
 

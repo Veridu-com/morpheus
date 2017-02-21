@@ -13,10 +13,26 @@ import weka.core.Instances;
 
 import java.util.ArrayList;
 
+/**
+ * Every feature extractor should implement this interface
+ */
 public interface IFeatureExtractor {
 
+    /**
+     * Create an instance
+     *
+     * @param factory idOS API factory
+     * @param dataset dataset header
+     * @param user selected user
+     * @return an instance containing features values defined by this extractor
+     */
     public Instance createInstance(IdOSAPIFactory factory, Instances dataset, IUser user);
 
+    /**
+     * Obtain the facts list this extractor generates
+     *
+     * @return facts list
+     */
     public ArrayList<IFact> obtainFactList();
 
 }

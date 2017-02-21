@@ -42,6 +42,13 @@ public class BeanCountryMLPTask implements ITask {
 
     private static final Logger log = Logger.getLogger(BeanCountryMLPTask.class);
 
+    /**
+     * Constructor
+     *
+     * @param countryFeatureExtractor injected country feature extractor
+     * @param utils injected utils bean
+     * @param dao injected idOS SQL data source
+     */
     @Autowired
     public BeanCountryMLPTask(@Qualifier("countryExtractor") IFeatureExtractor countryFeatureExtractor, IUtils utils,
             IDataSource dao) {
@@ -50,6 +57,11 @@ public class BeanCountryMLPTask implements ITask {
         this.dao = dao;
     }
 
+    /**
+     * Run a country prediction task
+     *
+     * @param params request parameters
+     */
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {

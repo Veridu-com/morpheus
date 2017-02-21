@@ -15,6 +15,14 @@ public class EvaluateModel {
 
     private static final boolean DEBUG = false;
 
+    /**
+     * Evaluates a trained model on a dataset
+     *
+     * @param model trained model
+     * @param dataset evaluation dataset
+     * @param threshold value in [0,1] on which to threshold for binary predictions
+     * @return evaluation result object
+     */
     public EvaluationResult evaluate(IModel model, Instances dataset, double threshold) {
         EvaluationResult evalResult = new EvaluationResult();
 

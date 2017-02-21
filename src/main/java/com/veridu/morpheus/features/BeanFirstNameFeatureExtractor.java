@@ -52,6 +52,16 @@ public class BeanFirstNameFeatureExtractor implements IFeatureExtractor {
 
     private IFeatureExtractor twitterFeatureExtractor;
 
+    /**
+     * Constructor
+     *
+     * @param dataSource injected idOS SQL data source
+     * @param utils injected utils bean
+     * @param mongo injected idOS NoSQL data source
+     * @param facebookFeatureExtractor injected facebook feature extractor
+     * @param linkedinFeatureExtractor injected linkedin feature extractor
+     * @param twitterFeatureExtractor injected twitter feature extractor
+     */
     @Autowired
     public BeanFirstNameFeatureExtractor(IDataSource dataSource, IUtils utils, IMongoDataSource mongo,
             @Qualifier("facebookExtractor") IFeatureExtractor facebookFeatureExtractor,
@@ -100,6 +110,9 @@ public class BeanFirstNameFeatureExtractor implements IFeatureExtractor {
 
     private static final boolean DEBUG = false;
 
+    /**
+     * called after bean construction
+     */
     @PostConstruct
     private void init() {
         this.factList = new ArrayList<>();
@@ -136,6 +149,14 @@ public class BeanFirstNameFeatureExtractor implements IFeatureExtractor {
         this.twitterFeaturesHeader = this.utils.generateDatasetHeader(twitterFacts);
     }
 
+    /**
+     * Create an instance with first name features
+     *
+     * @param factory idOS API factory
+     * @param dataset data header
+     * @param user selected user
+     * @return an Instance object with the features regarding first name
+     */
     @Override
     public Instance createInstance(IdOSAPIFactory factory, Instances dataset, IUser user) {
         // System.err.println("======> going to extract features for user " + user.getId());

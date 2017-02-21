@@ -27,6 +27,12 @@ public class CountryController {
     private BeanConfigurationManager beanManager;
     private ITask countryTask;
 
+    /**
+     * Constructor
+     * @param utils injected utils
+     * @param beanManager injected manager
+     * @param countryTask injected task
+     */
     @Autowired
     public CountryController(BeanUtils utils, BeanConfigurationManager beanManager,
             @Qualifier("country-mlp") ITask countryTask) {
@@ -35,6 +41,11 @@ public class CountryController {
         this.countryTask = countryTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/country-mlp")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

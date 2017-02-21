@@ -23,11 +23,20 @@ public class BirthMonthCandidateController {
 
     private ITask birthMonthCandidatesTask;
 
+    /**
+     * Constructor
+     * @param birthMonthCandidatesTask injected task
+     */
     @Autowired
     public BirthMonthCandidateController(@Qualifier("birthmonth-candidates") ITask birthMonthCandidatesTask) {
         this.birthMonthCandidatesTask = birthMonthCandidatesTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/birthmonth-candidates")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

@@ -10,7 +10,8 @@ import com.google.gson.JsonParser;
 import org.json.JSONObject;
 
 /**
- * Created by cassio on 12/7/16.
+ * This class wraps rules results, indicating which tests in a rule have passed and which
+ * have failed.
  */
 public class RuleResults {
 
@@ -18,10 +19,20 @@ public class RuleResults {
     private JsonArray failed = new JsonArray();
     private JsonParser parser = new JsonParser();
 
+    /**
+     * Append a test that passed
+     *
+     * @param test encoded json test
+     */
     public void appendPassedTest(JSONObject test) {
         this.passed.add(parser.parse(test.toString()));
     }
 
+    /**
+     * Append a test that failed
+     *
+     * @param test encoded json test
+     */
     public void appendFailedTest(JSONObject test) {
         this.failed.add((parser.parse(test.toString())));
     }

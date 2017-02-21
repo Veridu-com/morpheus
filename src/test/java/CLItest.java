@@ -11,7 +11,7 @@ import com.veridu.idos.utils.IdOSAuthType;
 import java.util.HashMap;
 
 /**
- * Created by cassio on 11/2/16.
+ * Perform some idOS API requests for testing on the cli.
  */
 public class CLItest {
 

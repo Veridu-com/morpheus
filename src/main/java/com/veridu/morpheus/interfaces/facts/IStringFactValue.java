@@ -5,8 +5,15 @@
 
 package com.veridu.morpheus.interfaces.facts;
 
+/**
+ * Wrapper for a string fact value
+ */
 public interface IStringFactValue extends IFactValue {
 
-    public String getStringFactValue();
+    /**
+     * The string fact value
+     * @return
+     */
+    String getStringFactValue();
 
 }

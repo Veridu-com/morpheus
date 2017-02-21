@@ -38,6 +38,12 @@ public class RecommendationController {
 
     private Schema schema;
 
+    /**
+     * Constructor
+     * @param utils injected utils
+     * @param beanManager injected manager
+     * @param recommendationTask injected task
+     */
     @Autowired
     public RecommendationController(BeanUtils utils, BeanConfigurationManager beanManager,
             RecommendationTask recommendationTask) {
@@ -46,6 +52,10 @@ public class RecommendationController {
         this.recommendationTask = recommendationTask;
     }
 
+    /**
+     * Called after the class is instantiated.
+     * Reads the recommendation json schema from a file and loads it to memory.
+     */
     @PostConstruct
     public void init() {
         // read recommendations schema
@@ -54,6 +64,11 @@ public class RecommendationController {
         this.schema = SchemaLoader.load(rawSchema);
     }
 
+    /**
+     * Handle post request
+     * @param recommendationInput input request encoded as json
+     * @return model response as json
+     */
     @PostMapping("/morpheus/recommendation")
     public ModelResponse makePrediction(@RequestBody String recommendationInput) {
 

@@ -23,10 +23,20 @@ import java.util.concurrent.ThreadPoolExecutor;
 @EnableAsync
 public class Application extends AsyncConfigurerSupport {
 
+    /**
+     * Main application entry point
+     *
+     * @param args command line args
+     */
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
+    /**
+     * Configures the async executor that runs background tasks
+     *
+     * @return async task executor
+     */
     @Override
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();

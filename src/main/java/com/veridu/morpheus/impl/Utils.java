@@ -13,6 +13,12 @@ import java.io.IOException;
 
 public class Utils {
 
+    /**
+     * Read an ARFF dataset to memory
+     *
+     * @param path file system path to the file
+     * @return loaded instances
+     */
     public static Instances readARFFdataset(String path) {
         ArffReader ar = null;
         try {

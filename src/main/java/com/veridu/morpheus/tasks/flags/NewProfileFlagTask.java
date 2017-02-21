@@ -35,6 +35,11 @@ public class NewProfileFlagTask implements ITask {
 
     private IDataSource dao;
 
+    /**
+     * Constructor
+     * @param utils injected utils bean
+     * @param dao injected idOS SQL data source
+     */
     @Autowired
     public NewProfileFlagTask(IUtils utils, IDataSource dao) {
         this.utils = utils;
@@ -79,6 +84,16 @@ public class NewProfileFlagTask implements ITask {
     private static final int twitterThreshold = 1470401890; // 08/05/2016 @ 12:58pm (UTC)
     private static final int yahooThreshold = 1472438086; // 08/29/2016 @ 2:34am (UTC)
 
+    /**
+     * Test if a profile is new
+     * @param factory idOS API factory
+     * @param user selected user
+     * @param ageFact age fact to search for
+     * @param provider provider name
+     * @param threshold profile age to threshold on to determine if a profile is new
+     * @param warningName name of the warning
+     * @return true if the profile is new
+     */
     private boolean testIfProfileIsNew(IdOSAPIFactory factory, IUser user, IFact ageFact, String provider,
             int threshold, String warningName) {
         boolean newProfile = false;
@@ -99,6 +114,10 @@ public class NewProfileFlagTask implements ITask {
         return newProfile;
     }
 
+    /**
+     * Run a new profile flag task
+     * @param params request parameters
+     */
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {

@@ -50,6 +50,16 @@ public class BeanOverallFeatureExtractor implements IFeatureExtractor {
     private Instances linkedinHeader;
     private Instances twitterHeader;
 
+    /**
+     * Constructor
+     *
+     * @param checkExtractor injected background check feature extractor
+     * @param googleExtractor injected google feature extractor
+     * @param facebookExtractor injected facebook feature extractor
+     * @param linkedinExtractor injected linkedin feature extractor
+     * @param twitterExtractor injected twitter feature extractor
+     * @param utils injected utils bean
+     */
     @Autowired
     public BeanOverallFeatureExtractor(@Qualifier("checkExtractor") IFeatureExtractor checkExtractor,
             @Qualifier("googleExtractor") IFeatureExtractor googleExtractor,
@@ -64,6 +74,9 @@ public class BeanOverallFeatureExtractor implements IFeatureExtractor {
         this.utils = utils;
     }
 
+    /**
+     * called after bean construction
+     */
     @PostConstruct
     public void init() {
         this.facts.addAll(checkExtractor.obtainFactList());
@@ -79,6 +92,14 @@ public class BeanOverallFeatureExtractor implements IFeatureExtractor {
         this.twitterHeader = this.utils.generateDatasetHeader(this.twitterExtractor.obtainFactList());
     }
 
+    /**
+     * Create an instance with overall features
+     *
+     * @param factory idOS API factory
+     * @param dataset data header
+     * @param user selected user
+     * @return an Instance object with the features regarding overall
+     */
     @Override
     public Instance createInstance(IdOSAPIFactory factory, Instances dataset, IUser user) {
 

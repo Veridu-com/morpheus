@@ -27,6 +27,12 @@ public class EmailController {
     private BeanConfigurationManager beanManager;
     private ITask emailTask;
 
+    /**
+     * Constructor
+     * @param utils injected utils
+     * @param beanManager injected manager
+     * @param emailTask injected task
+     */
     @Autowired
     public EmailController(BeanUtils utils, BeanConfigurationManager beanManager,
             @Qualifier("email-mlp") ITask emailTask) {
@@ -35,6 +41,11 @@ public class EmailController {
         this.emailTask = emailTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/email-mlp")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

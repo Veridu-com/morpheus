@@ -27,6 +27,12 @@ public class PhoneController {
     private BeanConfigurationManager beanManager;
     private ITask phoneTask;
 
+    /**
+     * Constructor
+     * @param utils injected utils class
+     * @param beanManager injected manager
+     * @param phoneTask injected task
+     */
     @Autowired
     public PhoneController(BeanUtils utils, BeanConfigurationManager beanManager,
             @Qualifier("phone-mlp") ITask phoneTask) {
@@ -35,6 +41,11 @@ public class PhoneController {
         this.phoneTask = phoneTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/phone-mlp")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

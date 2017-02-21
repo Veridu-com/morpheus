@@ -23,11 +23,20 @@ public class StreetAddressCandidateController {
 
     private ITask streetAddressCandidatesTask;
 
+    /**
+     * Constructor
+     * @param streetAddressCandidatesTask injected task
+     */
     @Autowired
     public StreetAddressCandidateController(@Qualifier("street-candidates") ITask streetAddressCandidatesTask) {
         this.streetAddressCandidatesTask = streetAddressCandidatesTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/street-candidates")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

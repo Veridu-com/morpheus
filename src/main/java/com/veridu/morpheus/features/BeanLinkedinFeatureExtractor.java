@@ -34,17 +34,35 @@ public class BeanLinkedinFeatureExtractor implements IFeatureExtractor {
 
     private ArrayList<IFact> facts;
 
+    /**
+     * Constructor
+     *
+     * @param dataSource injected idOS SQL data source
+     * @param utils injected utils bean
+     *
+     */
     @Autowired
     public BeanLinkedinFeatureExtractor(IDataSource dataSource, IUtils utils) {
         this.dataSource = dataSource;
         this.utils = utils;
     }
 
+    /**
+     * called after bean construction
+     */
     @PostConstruct
     public void init() {
         this.facts = this.utils.getLinkedinNumericFacts();
     }
 
+    /**
+     * Create an instance with country features
+     *
+     * @param factory idOS API factory
+     * @param dataset data header
+     * @param user selected user
+     * @return an Instance object with the features regarding country
+     */
     @Override
     public Instance createInstance(IdOSAPIFactory factory, Instances dataset, IUser user) {
 

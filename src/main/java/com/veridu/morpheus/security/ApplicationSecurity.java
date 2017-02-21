@@ -16,7 +16,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import javax.annotation.PostConstruct;
 
 /**
- * Created by cassio on 10/2/16.
+ * Configure the Srping web application security.
+ * This is mainly so we can use HTTP basic auth,
+ * but we can do HTTPS if we want here as well ;-)
  */
 @Configuration
 @EnableWebSecurity

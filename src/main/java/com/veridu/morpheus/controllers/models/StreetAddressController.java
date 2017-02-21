@@ -27,6 +27,13 @@ public class StreetAddressController {
     private BeanConfigurationManager beanManager;
     private ITask streetAddressTask;
 
+    /**
+     * Constructor
+     *
+     * @param utils injected utils
+     * @param beanManager injected manager
+     * @param streetAddressTask injected task
+     */
     @Autowired
     public StreetAddressController(BeanUtils utils, BeanConfigurationManager beanManager,
             @Qualifier("street-mlp") ITask streetAddressTask) {
@@ -35,6 +42,11 @@ public class StreetAddressController {
         this.streetAddressTask = streetAddressTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/street-mlp")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

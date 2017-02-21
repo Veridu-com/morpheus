@@ -102,12 +102,21 @@ public class EmptyProfileFlagTask implements ITask {
     private static final IFact yahooCityName = new Fact("cityName", Constants.YAHOO_PROVIDER_NAME);
     private static final IFact yahooNumContacts = new Fact("numContacts", Constants.YAHOO_PROVIDER_NAME);
 
+    /**
+     * Constructor
+     * @param utils injected utils bean
+     * @param dao injected idOS SQL data source
+     */
     @Autowired
     public EmptyProfileFlagTask(IUtils utils, IDataSource dao) {
         this.utils = utils;
         this.dao = dao;
     }
 
+    /**
+     * Run an empty profile flag task
+     * @param params request parameters
+     */
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {

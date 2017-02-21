@@ -24,7 +24,7 @@ public interface IModel extends Serializable {
      * @param instance
      *            instance to be predicted.
      * @return a prediction object
-     * @throws Exception
+     * @throws Exception if there is an error applying the instance to the model
      */
     public IPrediction predict(Instance instance) throws Exception;
 
@@ -49,7 +49,7 @@ public interface IModel extends Serializable {
     /**
      * Obtain the underlying classifier used for this model.
      *
-     * @return
+     * @return the underlying classifier
      */
     public AbstractClassifier getClassifier();
 

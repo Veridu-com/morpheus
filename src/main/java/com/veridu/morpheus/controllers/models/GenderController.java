@@ -27,6 +27,13 @@ public class GenderController {
     private BeanConfigurationManager beanManager;
     private ITask genderTask;
 
+    /**
+     * Constructor
+     *
+     * @param utils injected utils
+     * @param beanManager injected manager
+     * @param genderTask injected task
+     */
     @Autowired
     public GenderController(BeanUtils utils, BeanConfigurationManager beanManager,
             @Qualifier("gender-mlp") ITask genderTask) {
@@ -35,6 +42,11 @@ public class GenderController {
         this.genderTask = genderTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/gender-mlp")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

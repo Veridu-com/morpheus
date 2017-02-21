@@ -7,6 +7,10 @@ package com.veridu.morpheus.impl;
 
 import java.io.File;
 
+/**
+ * Class defining several constants used throught the project, such as training file names,
+ * model file names, flags, provider names, etc.
+ */
 public class Constants {
 
     public static final boolean DEBUG = false;

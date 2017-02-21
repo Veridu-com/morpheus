@@ -23,11 +23,20 @@ public class GenderCandidateController {
 
     private ITask genderCandidatesTask;
 
+    /**
+     * Constructor
+     * @param genderCandidatesTask candidates task
+     */
     @Autowired
     public GenderCandidateController(@Qualifier("gender-candidates") ITask genderCandidatesTask) {
         this.genderCandidatesTask = genderCandidatesTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/gender-candidates")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

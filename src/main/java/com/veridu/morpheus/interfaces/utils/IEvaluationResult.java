@@ -9,21 +9,21 @@ public interface IEvaluationResult {
     /**
      * Get the false positive rate: FPR = FP / (FP+TN)
      *
-     * @return
+     * @return FPR
      */
     public double getFalsePositiveRate();
 
     /**
      * Get the recall: Recall = TP / (TP + FN)
      *
-     * @return
+     * @return recall
      */
     public double getRecall();
 
     /**
      * Get the precision: Precision = TP / (TP + FP)
      *
-     * @return
+     * @return precision
      */
     public double getPrecision();
 

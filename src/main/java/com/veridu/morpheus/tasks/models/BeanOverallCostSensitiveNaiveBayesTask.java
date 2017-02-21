@@ -39,6 +39,12 @@ public class BeanOverallCostSensitiveNaiveBayesTask implements ITask {
 
     private static final boolean DEBUG = false;
 
+    /**
+     * Constructor
+     * @param utils injected utils bean
+     * @param dao injected DAO
+     * @param overallExtractor feature extractor for overall model
+     */
     @Autowired
     public BeanOverallCostSensitiveNaiveBayesTask(IUtils utils, IDataSource dao,
             @Qualifier("overallExtractor") IFeatureExtractor overallExtractor) {
@@ -47,6 +53,11 @@ public class BeanOverallCostSensitiveNaiveBayesTask implements ITask {
         this.overallExtractor = overallExtractor;
     }
 
+    /**
+     * Run the overall scoring task in background
+     *
+     * @param params request parameters
+     */
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {

@@ -42,6 +42,13 @@ public class BeanGenderMLPTask implements ITask {
 
     private static final Logger log = Logger.getLogger(BeanGenderMLPTask.class);
 
+    /**
+     * Constructor
+     *
+     * @param genderFeatureExtractor injected gender feature extractor
+     * @param utils injected utils bean
+     * @param dao injected idOS SQL data source
+     */
     @Autowired
     public BeanGenderMLPTask(@Qualifier("genderExtractor") IFeatureExtractor genderFeatureExtractor, IUtils utils,
             IDataSource dao) {
@@ -50,6 +57,10 @@ public class BeanGenderMLPTask implements ITask {
         this.dao = dao;
     }
 
+    /**
+     * Run a gender prediction task
+     * @param params request parameters
+     */
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {

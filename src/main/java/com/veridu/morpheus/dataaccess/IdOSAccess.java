@@ -37,6 +37,14 @@ public class IdOSAccess implements IDataSource {
 
     static Logger logger = Logger.getLogger(IdOSAccess.class.getName());
 
+    /**
+     * Gets the most recent source id for a particular provider name
+     *
+     * @param factory idOS API factory
+     * @param userId the user id
+     * @param provider provider name
+     * @return integer value with id
+     */
     private int getLatestSourceIdForProvider(IdOSAPIFactory factory, String userId, String provider) {
         try {
             factory.getSource().setAuthType(IdOSAuthType.HANDLER);
@@ -56,6 +64,16 @@ public class IdOSAccess implements IDataSource {
         return -1;
     }
 
+    /**
+     * Obtain provider facts for a user
+     *
+     * @param factory  idOS API factory
+     * @param user
+     *            will use user_id as profile_id for query
+     * @param provider
+     *            desired provider of facts
+     * @return the facts as a hashmap of IFact - String
+     */
     @Override
     public HashMap<IFact, String> obtainProviderFactsForUser(IdOSAPIFactory factory, IUser user, String provider) {
         HashMap<IFact, String> facts = new HashMap<>();
@@ -85,6 +103,16 @@ public class IdOSAccess implements IDataSource {
         return facts;
     }
 
+    /**
+     * Delete facts for a given user related to a specific provider
+     *
+     * @param factory idOS API factory
+     * @param user
+     *            will use the userId as profileId in the facts table
+     * @param provider
+     *            the provider for whom the facts should be wiped
+     * @return the number of deleted facts
+     */
     @Override
     public int deleteProviderFactsForUser(IdOSAPIFactory factory, IUser user, String provider) {
         JsonObject response = null;
@@ -103,6 +131,15 @@ public class IdOSAccess implements IDataSource {
         return 0;
     }
 
+    /**
+     * Insert attribute candidates for a user and a given attribute name
+     *
+     * @param factory idOS API factory
+     * @param user the given user
+     * @param attName attribute name
+     * @param candidates the candidate values to insert in a list
+     * @return 1 if the operation succeeded
+     */
     @Override
     public int insertAttributeCandidatesForUser(IdOSAPIFactory factory, IUser user, String attName,
             ArrayList<ICandidate> candidates) {
@@ -128,6 +165,19 @@ public class IdOSAccess implements IDataSource {
         return 1;
     }
 
+    /**
+     *
+     * Insert fact for user
+     *
+     * @param factory idOS API factory
+     * @param user
+     *            user to store fact for
+     * @param fact
+     *            the fact containing name and provider
+     * @param factValue the fact value
+     * @return 1 if the operation succeeded, 0 otherwise
+     *
+     */
     @Override
     public int insertFactForUser(IdOSAPIFactory factory, IUser user, IFact fact, String factValue) {
         JsonObject response = null;
@@ -146,6 +196,16 @@ public class IdOSAccess implements IDataSource {
         return LocalUtils.okResponse(response) ? 1 : 0;
     }
 
+    /**
+     *
+     * @param factory idOS API factory
+     * @param user
+     *            user to store fact for
+     * @param fact
+     *            the fact containing name and provider
+     * @param factValue the fact value
+     * @return 1 if the operation succeeded, 0 otherwise
+     */
     @Override
     public int insertFactForUser(IdOSAPIFactory factory, IUser user, IFact fact, double factValue) {
         JsonObject response = null;
@@ -164,6 +224,16 @@ public class IdOSAccess implements IDataSource {
         return LocalUtils.okResponse(response) ? 1 : 0;
     }
 
+    /**
+     *
+     * @param factory idOS API factory
+     * @param user
+     *            user to store fact for
+     * @param fact
+     *            the fact containing name and provider
+     * @param factValue the fact value
+     * @return 1 if the operation succeeded, 0 otherwise
+     */
     @Override
     public int insertFactForUser(IdOSAPIFactory factory, IUser user, IFact fact, boolean factValue) {
         JsonObject response = null;
@@ -182,6 +252,15 @@ public class IdOSAccess implements IDataSource {
         return LocalUtils.okResponse(response) ? 1 : 0;
     }
 
+    /**
+     * Obtain all facts related to a user
+     *
+     * @param factory idOS API factory
+     * @param user
+     *            desired user to get facts for
+     *
+     * @return facts as a hashmap: IFact - String
+     */
     @Override
     public HashMap<IFact, String> obtainFactsForUser(IdOSAPIFactory factory, IUser user) {
         HashMap<IFact, String> facts = new HashMap<>();
@@ -212,6 +291,14 @@ public class IdOSAccess implements IDataSource {
         return facts;
     }
 
+    /**
+     * Obtain profiles for a specific user
+     *
+     * @param factory idOS API factory
+     * @param user the user to find profiles
+     *
+     * @return a list with all profiles
+     */
     @Override
     public ArrayList<IProfile> obtainSingleUserProfiles(IdOSAPIFactory factory, IUser user) {
         ArrayList<IProfile> profiles = new ArrayList<>();
@@ -236,6 +323,15 @@ public class IdOSAccess implements IDataSource {
         return profiles;
     }
 
+    /**
+     * Obtain numeric facts for a given profile and provider combination
+     *
+     * @param factory idOS API factory
+     * @param user user to obtain the facts for
+     * @param provider the provider to restrict the search to
+     *
+     * @return the numeric facts
+     */
     @Override
     public HashMap<IFact, Double> obtainNumericFactsForProfile(IdOSAPIFactory factory, IUser user, String provider) {
         int sourceId = getLatestSourceIdForProvider(factory, user.getId(), provider);
@@ -263,6 +359,14 @@ public class IdOSAccess implements IDataSource {
         return facts;
     }
 
+    /**
+     * Obtain binary facts for a given profile and provider combination
+     *
+     * @param factory idOS API factory
+     * @param user user to obtain the facts for
+     * @param provider the provider to restrict the search to
+     * @return the numeric facts
+     */
     @Override
     public HashMap<IFact, Double> obtainBinaryFactsForProfile(IdOSAPIFactory factory, IUser user, String provider) {
         int sourceId = getLatestSourceIdForProvider(factory, user.getId(), provider);
@@ -291,10 +395,27 @@ public class IdOSAccess implements IDataSource {
         return facts;
     }
 
+    /**
+     * Convert a boolean value to a double
+     *
+     * @param value boolean true/false
+     *
+     * @return Return 1 or 0  based on the boolean value
+     */
     private double parseBoolAsDouble(boolean value) {
         return value ? 1.0 : 0.0;
     }
 
+    /**
+     * Obtain a specific feature given its name for a specific user and provider
+     *
+     * @param factory idOS API factory
+     * @param user the given user
+     * @param provider a provider name
+     * @param featureName the feature name
+     *
+     * @return a json with the feature
+     */
     private JsonElement obtainFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName) {
         int sourceId = getLatestSourceIdForProvider(factory, user.getId(), provider);
         JsonObject response;
@@ -323,6 +444,15 @@ public class IdOSAccess implements IDataSource {
         return null;
     }
 
+    /**
+     * Obtain a boolean feature value
+     *
+     * @param factory idOS API factory
+     * @param user user for the feature
+     * @param provider provider name
+     * @param featureName feature name
+     * @return boolean json value
+     */
     private Boolean obtainBooleanFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName) {
         JsonElement element = obtainFeatureValue(factory, user, provider, featureName);
         if (LocalUtils.validateJsonElement(element))
@@ -330,6 +460,16 @@ public class IdOSAccess implements IDataSource {
         return null;
     }
 
+    /**
+     * Obtain a double feature value
+     *
+     * @param factory idOS API factory
+     * @param user user for the feature
+     * @param provider provider name
+     * @param featureName feature name
+     *
+     * @return double value
+     */
     private double obtainDoubleFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName) {
         JsonElement element = obtainFeatureValue(factory, user, provider, featureName);
         if (LocalUtils.validateJsonElement(element))
@@ -337,6 +477,16 @@ public class IdOSAccess implements IDataSource {
         return Double.NaN;
     }
 
+    /**
+     * Obtain a string feature value
+     *
+     * @param factory idOS API factory
+     * @param user user for the feature
+     * @param provider provider name
+     * @param featureName feature name
+     *
+     * @return String feature value
+     */
     private String obtainStringFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName) {
         JsonElement element = obtainFeatureValue(factory, user, provider, featureName);
         if (LocalUtils.validateJsonElement(element))
@@ -344,11 +494,26 @@ public class IdOSAccess implements IDataSource {
         return "";
     }
 
+    /**
+     * Get facebook email
+     *
+     * @param factory idOS API factory
+     * @param user email for this user
+     * @return the email
+     */
     @Override
     public String obtainFacebookEmail(IdOSAPIFactory factory, IUser user) {
         return obtainStringFeatureValue(factory, user, "facebook", "emailAddress");
     }
 
+    /**
+     * Obtain a specific  fact for all providers for a given user
+     *
+     * @param factory idOS API factory
+     * @param user given user
+     * @param factName fact name
+     * @return a hashmap of fact - value
+     */
     @Override
     public HashMap<IFact, String> obtainSpecificFactForUser(IdOSAPIFactory factory, IUser user, String factName) {
         HashMap<IFact, String> facts = new HashMap<>();
@@ -375,11 +540,26 @@ public class IdOSAccess implements IDataSource {
         return facts;
     }
 
+    /**
+     * Obtain whether the users paypal account is verified
+     *
+     * @param factory idOS API factory
+     * @param user the given user
+     * @return a boolean with the answer
+     */
     @Override
     public Boolean obtainFactValueIsPaypalVerified(IdOSAPIFactory factory, IUser user) {
         return obtainBooleanFeatureValue(factory, user, "paypal", "verifiedProfile");
     }
 
+    /**
+     * Delete a flag for a given user
+     *
+     * @param factory idOS API factory
+     * @param user given user
+     * @param flagName flag name to delete
+     *
+     */
     @Override
     public void deleteFlag(IdOSAPIFactory factory, IUser user, String flagName) {
         try {
@@ -390,6 +570,14 @@ public class IdOSAccess implements IDataSource {
         }
     }
 
+    /**
+     * Insert a flag for a given user
+     *
+     * @param factory idOS API factory
+     * @param user given user
+     * @param flagName the flag name
+     * @param attribute the attribute name
+     */
     @Override
     public void insertFlag(IdOSAPIFactory factory, IUser user, String flagName, String attribute) {
         try {
@@ -400,6 +588,15 @@ public class IdOSAccess implements IDataSource {
         }
     }
 
+    /**
+     * Upsert score
+     *
+     * @param factory idOS API factory
+     * @param user user to upsert a score
+     * @param scoreName name of the score, related to a model
+     * @param attribute attribute to which the score is related. null if related to profile
+     * @param score double in [0,1] indicating the score
+     */
     @Override
     public void upsertScore(IdOSAPIFactory factory, IUser user, String scoreName, String attribute, double score) {
         try {
@@ -412,6 +609,14 @@ public class IdOSAccess implements IDataSource {
         }
     }
 
+    /**
+     * Upsert a gate for a user
+     *
+     * @param factory idOS API factory
+     * @param user user to upsert a gate for
+     * @param gateName the gate name
+     * @param confidenceLevel confidence as a string
+     */
     @Override
     public void upsertGate(IdOSAPIFactory factory, IUser user, String gateName, String confidenceLevel) {
         try {

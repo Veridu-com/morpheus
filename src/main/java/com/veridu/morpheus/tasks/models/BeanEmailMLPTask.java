@@ -38,6 +38,13 @@ public class BeanEmailMLPTask implements ITask {
 
     private static final Logger log = Logger.getLogger(BeanEmailMLPTask.class);
 
+    /**
+     * Constructor
+     *
+     * @param emailFeatureExtractor email feature extractor
+     * @param utils injected utils bean
+     * @param dao injected idOS SQL data source
+     */
     @Autowired
     public BeanEmailMLPTask(@Qualifier("emailExtractor") IFeatureExtractor emailFeatureExtractor, IUtils utils,
             IDataSource dao) {
@@ -46,6 +53,10 @@ public class BeanEmailMLPTask implements ITask {
         this.dao = dao;
     }
 
+    /**
+     * Run an email prediction task
+     * @param params request parameters
+     */
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {

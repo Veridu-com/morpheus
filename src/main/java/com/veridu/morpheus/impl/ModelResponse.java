@@ -8,10 +8,18 @@ package com.veridu.morpheus.impl;
 /**
  * Created by cassio on 10/2/16.
  */
+
+/**
+ * This class wraps a model response
+ */
 public class ModelResponse {
 
     private boolean status;
 
+    /**
+     * Constructor
+     * @param status true for success, false otherwise
+     */
     public ModelResponse(boolean status) {
         this.status = status;
     }

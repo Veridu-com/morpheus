@@ -23,11 +23,20 @@ public class NewProfileFlagController {
 
     private ITask newProfileTask;
 
+    /**
+     * Constructor
+     * @param newProfileTask injected task
+     */
     @Autowired
     public NewProfileFlagController(@Qualifier("flags-new") ITask newProfileTask) {
         this.newProfileTask = newProfileTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/flags-new")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

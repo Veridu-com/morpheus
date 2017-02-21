@@ -27,6 +27,12 @@ public class CityController {
     private BeanConfigurationManager beanManager;
     private ITask cityTask;
 
+    /**
+     * Constructor
+     * @param utils injected utils
+     * @param beanManager injected manager
+     * @param cityTask injected task
+     */
     @Autowired
     public CityController(BeanUtils utils, BeanConfigurationManager beanManager,
             @Qualifier("city-mlp") ITask cityTask) {
@@ -35,6 +41,11 @@ public class CityController {
         this.cityTask = cityTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/city-mlp")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

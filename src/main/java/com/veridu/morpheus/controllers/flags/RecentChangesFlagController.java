@@ -23,11 +23,20 @@ public class RecentChangesFlagController {
 
     private ITask recentChangesTask;
 
+    /**
+     * Constructor
+     * @param recentChangesTask injected task
+     */
     @Autowired
     public RecentChangesFlagController(@Qualifier("flags-recent-changes") ITask recentChangesTask) {
         this.recentChangesTask = recentChangesTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/flags-recent-changes")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

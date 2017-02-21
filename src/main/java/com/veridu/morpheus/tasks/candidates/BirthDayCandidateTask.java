@@ -37,12 +37,21 @@ public class BirthDayCandidateTask implements ITask {
 
     private static final Logger logger = Logger.getLogger(BirthDayCandidateTask.class);
 
+    /**
+     * Constructor
+     * @param utils injected utils bean
+     * @param dataSource injected idOS SQL data source
+     */
     @Autowired
     public BirthDayCandidateTask(IUtils utils, IDataSource dataSource) {
         this.utils = utils;
         this.dataSource = dataSource;
     }
 
+    /**
+     * Run a birthday candidates task
+     * @param params request parameters
+     */
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {

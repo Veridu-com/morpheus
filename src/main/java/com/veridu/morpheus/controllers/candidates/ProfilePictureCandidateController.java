@@ -23,11 +23,20 @@ public class ProfilePictureCandidateController {
 
     private ITask profilePicCandidatesTask;
 
+    /**
+     * Constructor
+     * @param profilePicCandidatesTask injected task
+     */
     @Autowired
     public ProfilePictureCandidateController(@Qualifier("profilepic-candidates") ITask profilePicCandidatesTask) {
         this.profilePicCandidatesTask = profilePicCandidatesTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/profilepic-candidates")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

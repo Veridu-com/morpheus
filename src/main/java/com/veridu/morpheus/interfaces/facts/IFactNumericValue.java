@@ -5,8 +5,15 @@
 
 package com.veridu.morpheus.interfaces.facts;
 
+/**
+ * Wrapper for a numeric value
+ */
 public interface IFactNumericValue extends IFactValue {
 
-    public double getNumericFactValue();
+    /**
+     * Obtain the numeric value
+     * @return the value
+     */
+    double getNumericFactValue();
 
 }

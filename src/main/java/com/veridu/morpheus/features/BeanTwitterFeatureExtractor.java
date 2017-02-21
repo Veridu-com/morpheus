@@ -59,6 +59,13 @@ public class BeanTwitterFeatureExtractor implements IFeatureExtractor {
 
     private static final Pattern quoteBotsPattern = Pattern.compile("\\d+.(“|\")+(.+)(\"|”)+\\s*(-|–)+\\s*.+");
 
+    /**
+     * Constructor
+     *
+     * @param dataSource injected idOS SQL data source
+     * @param utils injected utils bean
+     * @param mongo injected idOS NoSQL data source
+     */
     @Autowired
     public BeanTwitterFeatureExtractor(IDataSource dataSource, IUtils utils, IMongoDataSource mongo) {
         this.dataSource = dataSource;
@@ -66,6 +73,9 @@ public class BeanTwitterFeatureExtractor implements IFeatureExtractor {
         this.mongo = mongo;
     }
 
+    /**
+     * called after bean construction
+     */
     @PostConstruct
     public void init() {
         this.basicNumericFacts = this.utils.getTwitterNumericFacts();
@@ -159,6 +169,14 @@ public class BeanTwitterFeatureExtractor implements IFeatureExtractor {
         return false;
     }
 
+    /**
+     * Create an instance with twitter features
+     *
+     * @param factory idOS API factory
+     * @param dataset data header
+     * @param user selected user
+     * @return an Instance object with the features regarding twitter
+     */
     @Override
     public Instance createInstance(IdOSAPIFactory factory, Instances dataset, IUser user) {
 

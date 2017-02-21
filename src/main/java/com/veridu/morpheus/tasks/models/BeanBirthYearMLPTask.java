@@ -42,6 +42,13 @@ public class BeanBirthYearMLPTask implements ITask {
 
     private static final Logger log = Logger.getLogger(BeanBirthYearMLPTask.class);
 
+    /**
+     * Constructor
+     *
+     * @param utils injected utils bean
+     * @param dao injected idOS SQL data source
+     * @param birthYearFeatureExtractor injected birthyear feature extractor
+     */
     @Autowired
     public BeanBirthYearMLPTask(@Qualifier("birthYearExtractor") IFeatureExtractor birthYearFeatureExtractor,
             IUtils utils, IDataSource dao) {
@@ -50,6 +57,10 @@ public class BeanBirthYearMLPTask implements ITask {
         this.dao = dao;
     }
 
+    /**
+     * Run a birth day prediction task
+     * @param params request parameters
+     */
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {

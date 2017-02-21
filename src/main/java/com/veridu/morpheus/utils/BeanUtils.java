@@ -11,7 +11,6 @@ import com.veridu.idos.exceptions.InvalidToken;
 import com.veridu.idos.exceptions.SDKException;
 import com.veridu.idos.utils.Filter;
 import com.veridu.idos.utils.IdOSAuthType;
-import com.veridu.morpheus.impl.Constants;
 import com.veridu.morpheus.impl.Fact;
 import com.veridu.morpheus.interfaces.beans.IUtils;
 import com.veridu.morpheus.interfaces.facts.IFact;
@@ -63,11 +62,18 @@ public class BeanUtils implements IUtils {
 
     private HashMap<String, IModel> serializedModels;
 
+    /**
+     * Constructor
+     * @param configBean injected configuration bean
+     */
     @Autowired
     public BeanUtils(BeanConfigurationManager configBean) {
         this.configBean = configBean;
     }
 
+    /**
+     * called after bean is constructed
+     */
     @PostConstruct
     private void init() {
         // read unique and binary facts
@@ -85,11 +91,6 @@ public class BeanUtils implements IUtils {
         //    preloadSerializedModels();
     }
 
-    private void preloadSerializedModels() {
-        for (String modelName : Constants.MODEL_NAMES)
-            this.serializedModels.put(modelName, this.readModel("/models/" + modelName));
-    }
-
     //    public DriverManagerDataSource getFakeUsDataSource() {
     //        DriverManagerDataSource dataSource = new DriverManagerDataSource();
     //        dataSource.setDriverClassName(configBean.getObjectStringProperty("db", "classname"));
@@ -99,6 +100,14 @@ public class BeanUtils implements IUtils {
     //        return dataSource;
     //    }
 
+    /**
+     * Check if candidates exist for a given attribute
+     *
+     * @param factory idOS API factory
+     * @param user selected user
+     * @param attributeName attribute name
+     * @return true if there are any candidates for the attribute
+     */
     @Override
     public boolean checkIfCandidatesExist(IdOSAPIFactory factory, IUser user, String attributeName) {
         try {
@@ -122,6 +131,14 @@ public class BeanUtils implements IUtils {
         return false;
     }
 
+    /**
+     * Generate credentials for using the idOS API, such as querying information
+     * of a user from a company
+     *
+     * @param credentialPubKey a credential public key
+     * @param username user name
+     * @return a hashmap containing the credentials, specifically credentialPublicKey, servicePrivateKey, servicePublicKey and username.
+     */
     @Override
     public HashMap<String, String> generateCredentials(String credentialPubKey, String username) {
         HashMap<String, String> credentials = new HashMap<>();
@@ -132,6 +149,12 @@ public class BeanUtils implements IUtils {
         return credentials;
     }
 
+    /**
+     * Is the domain in a temporary list
+     *
+     * @param domain domain name for the email address
+     * @return true if the domain of the email is from a temporary mail address
+     */
     @Override
     public boolean isDomainInTemporaryDomainsList(String domain) {
         return this.temporaryEmailsList.contains(domain);
@@ -169,11 +192,25 @@ public class BeanUtils implements IUtils {
         return list;
     }
 
+    /**
+     * Get the idOS API factory already configured with the set of credentials
+     * @see #generateCredentials(String, String)
+     * @param credentials a hashmap of credentials
+     * @return the configured idOS API factory
+     *
+     */
     @Override
     public IdOSAPIFactory getIdOSAPIFactory(HashMap<String, String> credentials) {
         return new IdOSAPIFactory(credentials, configBean.getIDOSAPIURL(), !configBean.getUseSSLchecking());
     }
 
+    /**
+     * Merge a sequence of instances using a master header
+     *
+     * @param masterHeader common dataset header for all instances
+     * @param instances sequence of instances
+     * @return the merged data set
+     */
     @Override
     public Instance mergeInstances(Instances masterHeader, Instance... instances) {
         Instance masterInstance = new DenseInstance(masterHeader.numAttributes());
@@ -201,6 +238,13 @@ public class BeanUtils implements IUtils {
         return masterInstance;
     }
 
+    /**
+     * Merge attribute information from several dataset instances
+     *
+     * @param headers a sequence of all dataset headers
+     *
+     * @return the merged header
+     */
     @Override
     public Instances mergeInstancesHeaders(Instances... headers) {
 
@@ -219,6 +263,12 @@ public class BeanUtils implements IUtils {
         return dataset;
     }
 
+    /**
+     * Read a model from the filesystem.
+     *
+     * @param resourcePath path to the model file
+     * @return the loaded model
+     */
     @Override
     public IModel readModel(String resourcePath) {
         // read model file
@@ -233,6 +283,11 @@ public class BeanUtils implements IUtils {
         return null;
     }
 
+    /**
+     * Create an HTML response header
+     * @param modelName model name
+     * @return the HTML header
+     */
     public StringBuilder createResponseHeader(String modelName) {
         StringBuilder sb = new StringBuilder("<!DOCTYPE html><html><head><title>");
         sb.append(modelName);
@@ -240,6 +295,13 @@ public class BeanUtils implements IUtils {
         return sb;
     }
 
+    /**
+     * Add a row in an HTML response for model result
+     * @param response a stringbuilder response which will be appended to
+     * @param rowName name of row
+     * @param rowValue value in the row
+     * @return the stringbuilder response object
+     */
     public StringBuilder addResponseTableRow(StringBuilder response, String rowName, String rowValue) {
         response.append("<tr>");
         response.append("<td>");
@@ -252,11 +314,23 @@ public class BeanUtils implements IUtils {
         return response;
     }
 
+    /**
+     * Add a footer to the response
+     * @param response stringbuilder object
+     * @return the response object with the HTML footer appended to it
+     */
     public String addResponseFooter(StringBuilder response) {
         response.append("</table></body></html>");
         return response.toString();
     }
 
+    /**
+     * Finds the index of the minority class for a dataset.
+     *
+     * @param dataset
+     *            instances
+     * @return index
+     */
     @Override
     public int obtainMinorityClassIndex(Instances dataset) {
         if (dataset.classIndex() < 0)
@@ -274,6 +348,13 @@ public class BeanUtils implements IUtils {
         return minorityClassIndex;
     }
 
+    /**
+     * Generic version of read unique facts
+     *
+     * @param streamPath path of the stream
+     *
+     * @return a list of facts
+     */
     @Override
     public ArrayList<IFact> readFacts(String streamPath) {
 
@@ -309,11 +390,24 @@ public class BeanUtils implements IUtils {
         return facts;
     }
 
+    /**
+     * Reads the provider facts CSV file. Right now it contains a list of type provider,factName, in which only binary
+     * or numeric facts are being used.
+     *
+     * @return a list with facts
+     */
     @Override
     public ArrayList<IFact> readUniqueFactsNumericBinary() {
         return this.uniqueNumericBinaryFacts;
     }
 
+    /**
+     * Generates a dataset with 0 instances based on a list of facts
+     *
+     * @param facts
+     *            the facts list
+     * @return dataset
+     */
     @Override
     public Instances generateDatasetHeader(ArrayList<IFact> facts) {
 
@@ -344,6 +438,12 @@ public class BeanUtils implements IUtils {
         return dataset;
     }
 
+    /**
+     * Creates the isEverythingEmpty attribute, which identifies an instance with all attributes missing.
+     * Also creates the class attribute for an instance.
+     *
+     * @return an attribute list with the isEverythingEmpty and class attributes
+     */
     @Override
     public ArrayList<Attribute> createEmptyAndClassAttribute() {
 
@@ -450,6 +550,14 @@ public class BeanUtils implements IUtils {
         return binaryArgMax(probabilities[0], probabilities[1]);
     }
 
+    /**
+     * Returns 0 if p0 is greater than p1
+     *
+     * @param p0 first probability
+     * @param p1 second probability
+     *
+     * @return 0 if p0 is greater than p1
+     */
     @Override
     public int binaryArgMax(double p0, double p1) {
         if (p1 > p0)
@@ -457,6 +565,13 @@ public class BeanUtils implements IUtils {
         return 0;
     }
 
+    /**
+     * Read an ARFF file from the filesystem. WARNING: This function will automatically set the class index to be the
+     * last attribute.
+     *
+     * @param filePath path to the file
+     * @return all instances in the file
+     */
     @Override
     public Instances readARFF(String filePath) {
         BufferedReader reader;
@@ -473,6 +588,13 @@ public class BeanUtils implements IUtils {
         return null;
     }
 
+    /**
+     * Get the profile id of a selected provider given the list of profiles
+     *
+     * @param profiles the list of profiles
+     * @param provider a provider name
+     * @return the profile id for that provider
+     */
     @Override
     public String getProfileId(ArrayList<IProfile> profiles, String provider) {
         for (IProfile prof : profiles)
@@ -481,6 +603,10 @@ public class BeanUtils implements IUtils {
         return null;
     }
 
+    /**
+     * Get the list of binary facts
+     * @return the list of binary facts
+     */
     @Override
     public ArrayList<IFact> getChecksBinaryFacts() {
         return checksBinaryFacts;
@@ -490,6 +616,10 @@ public class BeanUtils implements IUtils {
         this.checksBinaryFacts = checksBinaryFacts;
     }
 
+    /**
+     * Get the list of facebook numeric facts
+     * @return the list of facebook numeric facts
+     */
     @Override
     public ArrayList<IFact> getFacebookNumericFacts() {
         return facebookNumericFacts;
@@ -499,6 +629,10 @@ public class BeanUtils implements IUtils {
         this.facebookNumericFacts = facebookNumericFacts;
     }
 
+    /**
+     * Get the list of google binary facts
+     * @return the list of google binary facts
+     */
     @Override
     public ArrayList<IFact> getGoogleBinaryFacts() {
         return googleBinaryFacts;
@@ -508,6 +642,10 @@ public class BeanUtils implements IUtils {
         this.googleBinaryFacts = googleBinaryFacts;
     }
 
+    /**
+     * Get the list of google numeric facts
+     * @return the list of google numeric facts
+     */
     @Override
     public ArrayList<IFact> getGoogleNumericFacts() {
         return googleNumericFacts;
@@ -517,6 +655,10 @@ public class BeanUtils implements IUtils {
         this.googleNumericFacts = googleNumericFacts;
     }
 
+    /**
+     * Get the list of linkedin numeric facts
+     * @return the list of linkedin numeric facts
+     */
     @Override
     public ArrayList<IFact> getLinkedinNumericFacts() {
         return linkedinNumericFacts;
@@ -526,6 +668,10 @@ public class BeanUtils implements IUtils {
         this.linkedinNumericFacts = linkedinNumericFacts;
     }
 
+    /**
+     * Get the list of twitter numeric facts
+     * @return the list of twitter numeric facts
+     */
     @Override
     public ArrayList<IFact> getTwitterNumericFacts() {
         return twitterNumericFacts;
@@ -535,6 +681,10 @@ public class BeanUtils implements IUtils {
         this.twitterNumericFacts = twitterNumericFacts;
     }
 
+    /**
+     * Get the list of paypal binary facts
+     * @return the list of paypal binary facts
+     */
     @Override
     public ArrayList<IFact> getPaypalBinaryFacts() {
         return paypalBinaryFacts;

@@ -47,6 +47,9 @@ public class TestIdOSSQL extends MainTest {
         factory = mock(IdOSAPIFactory.class);
     }
 
+    /**
+     * Test whether we can load provider facts for a user
+     */
     @Test
     public void testObtainProviderFactsForUser() {
 
@@ -80,6 +83,9 @@ public class TestIdOSSQL extends MainTest {
         }
     }
 
+    /**
+     * Test if we can delete provider facts for a user
+     */
     @Test
     public void testDeleteProviderFactsForUser() {
         JsonObject response = loadJsonResponse("/delete-all-features-response.json"); // expected response

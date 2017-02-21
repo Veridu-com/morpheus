@@ -23,11 +23,20 @@ public class CountryCandidateController {
 
     private ITask countryCandidatesTask;
 
+    /**
+     * Constructor
+     * @param countryCandidatesTask injected task
+     */
     @Autowired
     public CountryCandidateController(@Qualifier("country-candidates") ITask countryCandidatesTask) {
         this.countryCandidatesTask = countryCandidatesTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/country-candidates")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

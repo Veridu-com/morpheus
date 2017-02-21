@@ -5,33 +5,36 @@
 
 package com.veridu.morpheus.interfaces.models;
 
+/**
+ * Interface for model parameters
+ */
 public interface IModelParams {
 
     /**
      * Gets the string parameters as an array
      *
-     * @return
+     * @return string parameters
      */
     public String[] getStringParams();
 
     /**
      * Gets the integer parameters
      *
-     * @return
+     * @return integer parameters
      */
     public int[] getIntParams();
 
     /**
      * Gets the double parameters
      *
-     * @return
+     * @return double parameters
      */
     public double[] getDoubleParams();
 
     /**
      * Gets the boolean parameters
      *
-     * @return
+     * @return boolean parameters
      */
     public boolean[] getBooleanParams();
 

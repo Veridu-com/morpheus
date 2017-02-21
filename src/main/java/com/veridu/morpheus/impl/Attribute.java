@@ -7,10 +7,18 @@ package com.veridu.morpheus.impl;
 
 import com.veridu.morpheus.interfaces.facts.IAttribute;
 
+/**
+ * An attribute
+ *
+ */
 public class Attribute implements IAttribute {
 
     private String name;
 
+    /**
+     * Create an attribute object given an attribute name
+     * @param name attribute name
+     */
     public Attribute(String name) {
         this.name = name;
     }

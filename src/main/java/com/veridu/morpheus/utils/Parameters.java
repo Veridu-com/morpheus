@@ -5,7 +5,7 @@
 package com.veridu.morpheus.utils;
 
 /**
- * Created by cassio on 9/28/16.
+ * Morpheus request parameters
  */
 public class Parameters {
 

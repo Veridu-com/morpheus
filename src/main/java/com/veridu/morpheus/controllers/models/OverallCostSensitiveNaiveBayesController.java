@@ -27,6 +27,12 @@ public class OverallCostSensitiveNaiveBayesController {
     private BeanConfigurationManager beanManager;
     private ITask overallCSNBTask;
 
+    /**
+     * Constructor
+     * @param utils injected utils
+     * @param beanManager injected manager
+     * @param overallCSNBTask injected task
+     */
     @Autowired
     public OverallCostSensitiveNaiveBayesController(BeanUtils utils, BeanConfigurationManager beanManager,
             @Qualifier("overall-cs-nb") ITask overallCSNBTask) {
@@ -35,6 +41,11 @@ public class OverallCostSensitiveNaiveBayesController {
         this.overallCSNBTask = overallCSNBTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/overall-cs-nb")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

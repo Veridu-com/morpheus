@@ -39,12 +39,21 @@ public class BeanFacebookFeatureExtractor implements IFeatureExtractor {
     private ArrayList<IFact> numericFacts;
     private ArrayList<IFact> facts;
 
+    /**
+     * Constructor
+     *
+     * @param dataSource injected idOS SQL data source
+     * @param utils injected utils bean
+     */
     @Autowired
     public BeanFacebookFeatureExtractor(IDataSource dataSource, IUtils utils) {
         this.dataSource = dataSource;
         this.utils = utils;
     }
 
+    /**
+     * called after bean construction
+     */
     @PostConstruct
     public void init() {
         this.numericFacts = this.utils.getFacebookNumericFacts();
@@ -53,6 +62,14 @@ public class BeanFacebookFeatureExtractor implements IFeatureExtractor {
         this.facts.add(new Fact("isFacebookEmailDomainInTempDomainList", "facebook"));
     }
 
+    /**
+     * Create an instance with facebook features
+     *
+     * @param factory idOS API factory
+     * @param dataset data header
+     * @param user selected user
+     * @return an Instance object with the features regarding facebook
+     */
     @Override
     public Instance createInstance(IdOSAPIFactory factory, Instances dataset, IUser user) {
 

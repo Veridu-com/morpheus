@@ -50,6 +50,12 @@ public class FirstNameCandidateTask implements ITask {
 
     Logger logger = Logger.getLogger(FirstNameCandidateTask.class);
 
+    /**
+     * Constructor
+     * @param dataSource injected idOS SQL data source
+     * @param utils injected utils bean
+     * @param mongo injected idOS NoSQL data source
+     */
     @Autowired
     public FirstNameCandidateTask(IDataSource dataSource, IUtils utils, IMongoDataSource mongo) {
         this.dataSource = dataSource;
@@ -57,6 +63,10 @@ public class FirstNameCandidateTask implements ITask {
         this.mongo = mongo;
     }
 
+    /**
+     * Run a first name candidates task
+     * @param params request parameters
+     */
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {

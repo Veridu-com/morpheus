@@ -7,6 +7,9 @@ package com.veridu.morpheus.impl;
 
 import com.veridu.morpheus.interfaces.facts.IFactNumericValue;
 
+/**
+ * Numeric fact value wrapper
+ */
 public class NumericFactValue implements IFactNumericValue {
 
     private double value;

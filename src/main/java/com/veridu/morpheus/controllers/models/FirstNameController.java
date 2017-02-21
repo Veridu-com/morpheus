@@ -27,6 +27,12 @@ public class FirstNameController {
     private BeanConfigurationManager beanManager;
     private ITask firstNameTask;
 
+    /**
+     * Constructor
+     * @param utils injected utils
+     * @param beanManager injected manager
+     * @param firstNameTask injected task
+     */
     @Autowired
     public FirstNameController(BeanUtils utils, BeanConfigurationManager beanManager,
             @Qualifier("firstname-mlp") ITask firstNameTask) {
@@ -35,6 +41,11 @@ public class FirstNameController {
         this.firstNameTask = firstNameTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/firstname-mlp")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

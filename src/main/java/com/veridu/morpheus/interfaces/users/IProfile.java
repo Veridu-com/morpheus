@@ -11,14 +11,14 @@ public interface IProfile extends Serializable {
     /**
      * Get the provider
      *
-     * @return
+     * @return provider name
      */
     public String getProvider();
 
     /**
      * Get a profile Id, which is a string.
      *
-     * @return
+     * @return profile id
      */
     public String getProfileId();
 

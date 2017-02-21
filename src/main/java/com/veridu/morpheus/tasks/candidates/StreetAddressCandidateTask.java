@@ -41,6 +41,12 @@ public class StreetAddressCandidateTask implements ITask {
 
     private static final Logger logger = Logger.getLogger(StreetAddressCandidateTask.class);
 
+    /**
+     * Constructor
+     * @param dataSource injected idOS SQL data source
+     * @param utils injected utils bean
+     * @param mongo injected idOS NoSQL data source
+     */
     @Autowired
     public StreetAddressCandidateTask(IDataSource dataSource, IUtils utils, IMongoDataSource mongo) {
         this.dataSource = dataSource;
@@ -48,6 +54,10 @@ public class StreetAddressCandidateTask implements ITask {
         this.mongo = mongo;
     }
 
+    /**
+     * Run a street address candidates task
+     * @param params request parameters
+     */
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {

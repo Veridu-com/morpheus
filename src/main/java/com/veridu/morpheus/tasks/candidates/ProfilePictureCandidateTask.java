@@ -44,12 +44,21 @@ public class ProfilePictureCandidateTask implements ITask {
     private static final IFact gooPic = new Fact(profilePicFactName, Constants.GOOGLE_PROVIDER_NAME);
     private static final IFact twiPic = new Fact(profilePicFactName, Constants.TWITTER_PROVIDER_NAME);
 
+    /**
+     * Constructor
+     * @param utils injected utils bean
+     * @param dataSource injected idOS SQL data source
+     */
     @Autowired
     public ProfilePictureCandidateTask(IUtils utils, IDataSource dataSource) {
         this.utils = utils;
         this.dataSource = dataSource;
     }
 
+    /**
+     * Run an a profile pictures candidates task
+     * @param params request parameters
+     */
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {

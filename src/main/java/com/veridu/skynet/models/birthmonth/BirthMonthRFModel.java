@@ -22,16 +22,33 @@ public class BirthMonthRFModel extends GenericModel implements Serializable {
     public BirthMonthRFModel() {
     }
 
+    /**
+     * Constructor
+     *
+     * @param randomForest the base classifier for this model
+     */
     public BirthMonthRFModel(RandomForest randomForest) {
         this.randomForest = randomForest;
     }
 
+    /**
+     * Make a prediction
+     * @param instance
+     *            instance to be predicted.
+     * @return an IPrediction object with the results
+     * @throws Exception if an error occurs, such as failure to load the ML model
+     */
     @Override
     public IPrediction predict(Instance instance) throws Exception {
         double[] dist = this.randomForest.distributionForInstance(instance);
         return new Prediction(dist[0], dist[1]);
     }
 
+    /**
+     * Obtain the underlying abstract classifier for this model
+     *
+     * @return the base classifier
+     */
     @Override
     public AbstractClassifier getClassifier() {
         return this.randomForest;

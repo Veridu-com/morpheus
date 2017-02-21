@@ -27,6 +27,12 @@ public class BirthMonthController {
     private BeanConfigurationManager beanManager;
     private ITask birthMonthTask;
 
+    /**
+     * Constructor
+     * @param utils injected utils class
+     * @param beanManager injected manager class
+     * @param birthMonthTask injected task
+     */
     @Autowired
     public BirthMonthController(BeanUtils utils, BeanConfigurationManager beanManager,
             @Qualifier("birthmonth-mlp") ITask birthMonthTask) {
@@ -35,6 +41,11 @@ public class BirthMonthController {
         this.birthMonthTask = birthMonthTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/birthmonth-mlp")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

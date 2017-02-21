@@ -23,11 +23,20 @@ public class EmptyProfileFlagController {
 
     private ITask profileTask;
 
+    /**
+     * Constructor
+     * @param profileTask injected task
+     */
     @Autowired
     public EmptyProfileFlagController(@Qualifier("flags-empty") ITask profileTask) {
         this.profileTask = profileTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/flags-empty")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

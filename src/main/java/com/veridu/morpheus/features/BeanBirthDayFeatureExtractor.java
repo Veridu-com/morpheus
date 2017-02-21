@@ -51,6 +51,14 @@ public class BeanBirthDayFeatureExtractor implements IFeatureExtractor {
 
     private IUtils utils;
 
+    /**
+     * Constructor
+     *
+     * @param facebookFeatureExtractor injected facebook feature extractor
+     * @param facebookBirthdayExtractor injected birthday feature extractor
+     * @param utils injected utils bean
+     * @param dataSource injected idOS SQL data source
+     */
     @Autowired
     public BeanBirthDayFeatureExtractor(@Qualifier("facebookExtractor") IFeatureExtractor facebookFeatureExtractor,
             @Qualifier("facebookBirthdayFactsExtractor") IFeatureExtractor facebookBirthdayExtractor, IUtils utils,
@@ -75,6 +83,9 @@ public class BeanBirthDayFeatureExtractor implements IFeatureExtractor {
 
     private static RulesEngine rulesEngine = new RulesEngine(bDayFactName, myProviderName, providers, true);
 
+    /**
+     * called after bean construction
+     */
     @PostConstruct
     private void init() {
         this.factList.addAll(this.facebookFeatureExtractor.obtainFactList());
@@ -82,6 +93,14 @@ public class BeanBirthDayFeatureExtractor implements IFeatureExtractor {
         this.facebookHeader = this.utils.generateDatasetHeader(this.facebookFeatureExtractor.obtainFactList());
     }
 
+    /**
+     * Create an instance with birthday features
+     *
+     * @param factory idOS API factory
+     * @param dataset data header
+     * @param user selected user
+     * @return an Instance object with the features regarding birthday
+     */
     @Override
     public Instance createInstance(IdOSAPIFactory factory, Instances dataset, IUser user) {
 

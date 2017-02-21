@@ -17,6 +17,7 @@ public interface ILearningMethod {
      * @param params
      *            model parameters
      * @return a serializable model
+     * @throws Exception in case there is a problem during training, such as wrong model parameters
      */
     public IModel train(Instances dataset, IModelParams params) throws Exception;
 

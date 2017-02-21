@@ -13,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.*;
 
+/**
+ * Multi-threaded cross validation functionality
+ */
 public class CVMultithreadedEvaluateModel {
 
     private static final int NTHREADS = 8;
@@ -22,12 +25,12 @@ public class CVMultithreadedEvaluateModel {
     /**
      * Cross validate a model using multiple threads. Hell yes :-)
      *
-     * If you pass a threshold <= 0 then a binary output is used, no thresholds. Pay attention to that.
+     * If you pass a threshold leq 0 then a binary output is used, no thresholds. Pay attention to that.
      *
-     * @param model
-     * @param dataset
-     * @param threshold
-     * @return
+     * @param model model for eval
+     * @param dataset the instances
+     * @param threshold double value for threshold
+     * @return evaluation results
      */
     public static EvaluationResult evaluate(IModel model, Instances dataset, double threshold) {
 

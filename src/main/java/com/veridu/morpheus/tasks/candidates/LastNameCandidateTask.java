@@ -41,6 +41,12 @@ public class LastNameCandidateTask implements ITask {
 
     Logger logger = Logger.getLogger(LastNameCandidateTask.class);
 
+    /**
+     * Constructor
+     * @param dataSource injected idOS SQL data source
+     * @param utils injected utils bean
+     * @param mongo injected idOS NoSQL data source
+     */
     @Autowired
     public LastNameCandidateTask(IDataSource dataSource, IUtils utils, IMongoDataSource mongo) {
         this.dataSource = dataSource;
@@ -48,6 +54,11 @@ public class LastNameCandidateTask implements ITask {
         this.mongo = mongo;
     }
 
+    /**
+     * Search for str in cands and increase support in case found
+     * @param cands candidates hashmap with string and support values
+     * @param str the string to search for
+     */
     private static void searchForStringInCandidates(HashMap<String, Double> cands, String str) {
         if (str != null)
             for (String cand : cands.keySet())
@@ -55,6 +66,11 @@ public class LastNameCandidateTask implements ITask {
                     cands.put(cand, cands.get(cand) + 1.0);
     }
 
+    /**
+     * Obtain an array list of direct family members (mother,father,brothers,sisters) last names
+     * @param fbkFamily facebook family members as a json array
+     * @return the last names
+     */
     private static ArrayList<String> obtainDirectRelativesLastNames(JsonArray fbkFamily) {
         ArrayList<String> lastNames = new ArrayList<>();
 
@@ -74,6 +90,10 @@ public class LastNameCandidateTask implements ITask {
         return lastNames;
     }
 
+    /**
+     * Run a last name candidates task
+     * @param params request parameters
+     */
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {

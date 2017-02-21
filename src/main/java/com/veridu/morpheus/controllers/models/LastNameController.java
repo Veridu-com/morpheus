@@ -27,6 +27,12 @@ public class LastNameController {
     private BeanConfigurationManager beanManager;
     private ITask lastNameTask;
 
+    /**
+     * Constructor
+     * @param utils injected utils
+     * @param beanManager injected manager
+     * @param lastNameTask injected task
+     */
     @Autowired
     public LastNameController(BeanUtils utils, BeanConfigurationManager beanManager,
             @Qualifier("lastname-mlp") ITask lastNameTask) {
@@ -35,6 +41,11 @@ public class LastNameController {
         this.lastNameTask = lastNameTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/lastname-mlp")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

@@ -24,6 +24,11 @@ public class Fact implements IFact, Serializable {
     private String name;
     private String provider;
 
+    /**
+     * Constructor - name and provider uniquely identify a fact
+     * @param name fact name
+     * @param provider fact provider
+     */
     public Fact(String name, String provider) {
         this.name = name;
         this.provider = provider;
