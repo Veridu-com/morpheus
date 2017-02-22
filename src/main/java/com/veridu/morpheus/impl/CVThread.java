@@ -1,10 +1,18 @@
-package com.veridu.morpheus.impl;
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
 
-import java.util.concurrent.Callable;
+package com.veridu.morpheus.impl;
 
 import weka.classifiers.Classifier;
 import weka.core.Instances;
 
+import java.util.concurrent.Callable;
+
+/**
+ * Cross validation thread for use with CVMultithreadedEvaluateModel
+ */
 public class CVThread implements Callable<CVEvalReturn> {
 
     private Instances train;
@@ -12,6 +20,14 @@ public class CVThread implements Callable<CVEvalReturn> {
     private Classifier classifier;
     private double threshold = -1;
 
+    /**
+     * Constructor
+     *
+     * @param classifier base classifier to use
+     * @param train training dataset fold
+     * @param test test dataset fold
+     * @param threshold threshold value on which to make binary predictions
+     */
     public CVThread(Classifier classifier, Instances train, Instances test, double threshold) {
         this.classifier = classifier;
         this.train = train;
@@ -19,12 +35,25 @@ public class CVThread implements Callable<CVEvalReturn> {
         this.threshold = threshold;
     }
 
+    /**
+     * Constructor
+     *
+     * @param classifier base classifier to use
+     * @param train training dataset fold
+     * @param test test dataset fold
+     */
     public CVThread(Classifier classifier, Instances train, Instances test) {
         this.classifier = classifier;
         this.train = train;
         this.test = test;
     }
 
+    /**
+     * Call method - for running the thread
+     *
+     * @return An evaluation result object
+     * @throws Exception in case there is a problem when making predictions
+     */
     @Override
     public CVEvalReturn call() throws Exception {
 

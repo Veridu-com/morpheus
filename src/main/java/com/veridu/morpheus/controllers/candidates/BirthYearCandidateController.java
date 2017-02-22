@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.controllers.candidates;
 
 import com.veridu.morpheus.impl.ModelResponse;
@@ -18,11 +23,21 @@ public class BirthYearCandidateController {
 
     private ITask birthYearCandidatesTask;
 
+    /**
+     * Constructor
+     *
+     * @param birthYearCandidatesTask injected task
+     */
     @Autowired
     public BirthYearCandidateController(@Qualifier("birthyear-candidates") ITask birthYearCandidatesTask) {
         this.birthYearCandidatesTask = birthYearCandidatesTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/birthyear-candidates")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

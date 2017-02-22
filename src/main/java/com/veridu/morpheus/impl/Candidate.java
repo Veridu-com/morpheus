@@ -1,19 +1,38 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.impl;
 
 import com.veridu.morpheus.interfaces.facts.ICandidate;
 
+/**
+ * A candidate for an attribute
+ */
 public class Candidate implements ICandidate {
 
     private String value;
     private boolean real;
     private double supportScore = 0;
 
+    /**
+     * Constructor
+     * @param value candidate string value
+     * @param real whether this candidate is real or not
+     */
     public Candidate(String value, boolean real) {
         super();
         this.value = value;
         this.real = real;
     }
 
+    /**
+     * Constructor
+     *
+     * @param value candidate value
+     * @param supportScore support score in [0,1] for this candidate
+     */
     public Candidate(String value, double supportScore) {
         super();
         this.value = value;

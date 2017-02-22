@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.interfaces.users;
 
 public interface IAcceptRejectUser extends IUser {
@@ -5,8 +10,8 @@ public interface IAcceptRejectUser extends IUser {
     /**
      * indicates whether it is a real user on acceptReject
      *
-     * @return
+     * @return whether the user is real
      */
-    public boolean isReal();
+    boolean isReal();
 
 }

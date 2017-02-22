@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.controllers.flags;
 
 import com.veridu.morpheus.impl.ModelResponse;
@@ -18,11 +23,20 @@ public class RecentChangesFlagController {
 
     private ITask recentChangesTask;
 
+    /**
+     * Constructor
+     * @param recentChangesTask injected task
+     */
     @Autowired
     public RecentChangesFlagController(@Qualifier("flags-recent-changes") ITask recentChangesTask) {
         this.recentChangesTask = recentChangesTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/flags-recent-changes")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
 package com.veridu.morpheus.tasks.models;
 
 import com.veridu.idos.IdOSAPIFactory;
@@ -34,6 +38,13 @@ public class BeanBirthDayMLPTask implements ITask {
 
     private static final Logger log = Logger.getLogger(BeanBirthDayMLPTask.class);
 
+    /**
+     * Constructor
+     *
+     * @param utils injected utils bean
+     * @param dao injected idOS SQL data source
+     * @param birthDayFeatureExtractor injected birthday feature extractor
+     */
     @Autowired
     public BeanBirthDayMLPTask(IUtils utils, IDataSource dao,
             @Qualifier("birthDayExtractor") IFeatureExtractor birthDayFeatureExtractor) {
@@ -42,6 +53,10 @@ public class BeanBirthDayMLPTask implements ITask {
         this.birthDayFeatureExtractor = birthDayFeatureExtractor;
     }
 
+    /**
+     * Run a birth day prediction task
+     * @param params request parameters
+     */
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {

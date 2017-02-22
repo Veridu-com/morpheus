@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
 package com.veridu.morpheus.tasks.flags;
 
 import com.google.gson.JsonArray;
@@ -43,6 +47,12 @@ public class RecentChangesFlagTask implements ITask {
     private static final String FLAG_RECENT_NAME_CHANGES_FACEBOOK = "recent-name-changes-facebook";
     private static final String FLAG_RECENT_NAME_CHANGES_GOOGLE = "recent-name-changes-google";
 
+    /**
+     * Constructor
+     * @param utils injected utils bean
+     * @param mongo injected idOS NoSQL data source
+     * @param dao injected idOS SQL data source
+     */
     @Autowired
     public RecentChangesFlagTask(IUtils utils, IMongoDataSource mongo, IDataSource dao) {
         this.utils = utils;
@@ -50,6 +60,10 @@ public class RecentChangesFlagTask implements ITask {
         this.dao = dao;
     }
 
+    /**
+     * Run a recent changes flag task
+     * @param params request parameters
+     */
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {

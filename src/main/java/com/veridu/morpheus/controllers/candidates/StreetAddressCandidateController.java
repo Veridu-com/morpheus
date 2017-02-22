@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.controllers.candidates;
 
 import com.veridu.morpheus.impl.ModelResponse;
@@ -18,11 +23,20 @@ public class StreetAddressCandidateController {
 
     private ITask streetAddressCandidatesTask;
 
+    /**
+     * Constructor
+     * @param streetAddressCandidatesTask injected task
+     */
     @Autowired
     public StreetAddressCandidateController(@Qualifier("street-candidates") ITask streetAddressCandidatesTask) {
         this.streetAddressCandidatesTask = streetAddressCandidatesTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/street-candidates")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

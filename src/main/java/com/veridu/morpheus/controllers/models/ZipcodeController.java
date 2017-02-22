@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.controllers.models;
 
 import com.veridu.morpheus.impl.ModelResponse;
@@ -22,6 +27,13 @@ public class ZipcodeController {
     private BeanConfigurationManager beanManager;
     private ITask zipcodeTask;
 
+    /**
+     * Constructor
+     *
+     * @param utils injected utils
+     * @param beanManager injected manager
+     * @param zipcodeTask injected task
+     */
     @Autowired
     public ZipcodeController(BeanUtils utils, BeanConfigurationManager beanManager,
             @Qualifier("zipcode-mlp") ITask zipcodeTask) {
@@ -30,6 +42,11 @@ public class ZipcodeController {
         this.zipcodeTask = zipcodeTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/zipcode-mlp")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

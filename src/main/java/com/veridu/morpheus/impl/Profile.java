@@ -1,12 +1,30 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.impl;
 
 import com.veridu.morpheus.interfaces.users.IProfile;
 
+/**
+ * This class represents a user profile, which associates a provider
+ * name to a profile ID related to that provider. A provider name
+ * and a profile id uniquely identify a profile. Note that two
+ * equal profile ids may not indicate the same profile, as they
+ * can belong to different providers.
+ */
 public class Profile implements IProfile {
 
     private String provider;
     private String profileId;
 
+    /**
+     * Constructor
+     *
+     * @param provider provider name
+     * @param profileId profile id as string
+     */
     public Profile(String provider, String profileId) {
         super();
         this.provider = provider;

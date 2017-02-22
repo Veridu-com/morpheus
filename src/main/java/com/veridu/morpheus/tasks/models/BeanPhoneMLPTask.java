@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
 package com.veridu.morpheus.tasks.models;
 
 import com.veridu.idos.IdOSAPIFactory;
@@ -34,6 +38,12 @@ public class BeanPhoneMLPTask implements ITask {
 
     private static final Logger log = Logger.getLogger(BeanPhoneMLPTask.class);
 
+    /**
+     * Constructor
+     * @param phoneFeatureExtractor injected phone feature extractor
+     * @param utils injected utils bean
+     * @param dao injected idOS SQL data source
+     */
     @Autowired
     public BeanPhoneMLPTask(@Qualifier("phoneExtractor") IFeatureExtractor phoneFeatureExtractor, IUtils utils,
             IDataSource dao) {
@@ -42,6 +52,10 @@ public class BeanPhoneMLPTask implements ITask {
         this.dao = dao;
     }
 
+    /**
+     * Run a phone prediction task
+     * @param params request parameters
+     */
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {

@@ -1,21 +1,37 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
-import com.veridu.morpheus.impl.User;
 import com.veridu.morpheus.interfaces.facts.IAttribute;
 import com.veridu.morpheus.interfaces.facts.ICandidate;
 import com.veridu.morpheus.interfaces.users.IFakeUsUser;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+/**
+ * Represents a user from the Fake Us Portal - FUP.
+ */
 public class FakeUsUser extends User implements IFakeUsUser {
 
     private HashMap<IAttribute, ArrayList<ICandidate>> attributesMap = new HashMap<IAttribute, ArrayList<ICandidate>>();
 
+    /**
+     * Constructor
+     * @param id user id
+     */
     public FakeUsUser(String id) {
         super(id);
     }
 
+    /**
+     * Consutrctor
+     * @param id user id
+     * @param attributesMap hashmap indicating which maps attributes to candidates, which can be real or fake
+     */
     public FakeUsUser(String id, HashMap<IAttribute, ArrayList<ICandidate>> attributesMap) {
         super(id);
         this.attributesMap = attributesMap;

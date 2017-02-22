@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.impl;
 
 import com.google.gson.JsonObject;
@@ -17,12 +22,27 @@ public class Age {
     int birthMonth;
     int birthYear;
 
+    /**
+     * Constructor
+     *
+     * @param birthDay user birthdays day
+     * @param birthMonth user birthdays month
+     * @param birthYear user birthdays year
+     */
     public Age(int birthDay, int birthMonth, int birthYear) {
         this.birthDay = birthDay;
         this.birthMonth = birthMonth;
         this.birthYear = birthYear;
     }
 
+    /**
+     * Obtain an Age object by consulting idOS
+     *
+     * @param factory idOS API factory
+     * @param userName users name
+     * @return users Age
+     * @throws SDKException in case of connection or query problems
+     */
     public static Age obtainAge(IdOSAPIFactory factory, String userName) throws SDKException {
         JsonObject response;
 
@@ -40,6 +60,12 @@ public class Age {
         return new Age(bday, bmonth, byear);
     }
 
+    /**
+     * Obtain an int value from the data field
+     *
+     * @param response json api response
+     * @return int value
+     */
     private static int parseIntResponse(JsonObject response) {
         if (LocalUtils.okResponse(response))
             return Integer.parseInt(response.get("data").getAsJsonObject().get("value").getAsString());
@@ -49,7 +75,7 @@ public class Age {
     /**
      * Tells whether the user has a valid age
      *
-     * @return
+     * @return true if has a valid age
      */
     public boolean validate() {
         return this.birthDay > -1 && this.birthMonth > -1 && this.birthYear > -1;

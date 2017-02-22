@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
 package com.veridu.morpheus.tasks.models;
 
 import com.veridu.idos.IdOSAPIFactory;
@@ -39,6 +43,13 @@ public class BeanLastNameMLPTask implements ITask {
 
     private static final Logger log = Logger.getLogger(BeanLastNameMLPTask.class);
 
+    /**
+     * Constructor
+     *
+     * @param lastNameFeatureExtractor last name feature extractor
+     * @param utils injected utils bean
+     * @param dao injected idOS SQL data source
+     */
     @Autowired
     public BeanLastNameMLPTask(@Qualifier("lastNameExtractor") IFeatureExtractor lastNameFeatureExtractor, IUtils utils,
             IDataSource dao) {
@@ -47,6 +58,10 @@ public class BeanLastNameMLPTask implements ITask {
         this.dao = dao;
     }
 
+    /**
+     * Run a last name prediction task
+     * @param params request parameters
+     */
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {

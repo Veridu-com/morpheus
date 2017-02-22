@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.features;
 
 import com.google.gson.JsonObject;
@@ -43,6 +48,13 @@ public class BeanBirthYearFeatureExtractor implements IFeatureExtractor {
 
     private IMongoDataSource mongo;
 
+    /**
+     * Constructor
+     *
+     * @param dataSource injected idOS SQL data source
+     * @param utils injected utils bean
+     * @param mongo injected idOS NoSQL data source
+     */
     @Autowired
     public BeanBirthYearFeatureExtractor(IDataSource dataSource, IUtils utils, IMongoDataSource mongo) {
         this.dataSource = dataSource;
@@ -89,6 +101,9 @@ public class BeanBirthYearFeatureExtractor implements IFeatureExtractor {
 
     private static final String myProviderName = "birth-year-features";
 
+    /**
+     * called after bean construction
+     */
     @PostConstruct
     private void init() {
         // base fact list lives on the csv file
@@ -142,6 +157,14 @@ public class BeanBirthYearFeatureExtractor implements IFeatureExtractor {
         }
     }
 
+    /**
+     * Create an instance with birth year features
+     *
+     * @param factory idOS API factory
+     * @param dataset data header
+     * @param user selected user
+     * @return an Instance object with the features regarding birth year
+     */
     @Override
     public Instance createInstance(IdOSAPIFactory factory, Instances dataset, IUser user) {
         ArrayList<IFact> facts = this.obtainFactList();

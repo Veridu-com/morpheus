@@ -1,19 +1,21 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.impl;
 
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
 import com.veridu.morpheus.interfaces.models.IModel;
-
 import weka.classifiers.AbstractClassifier;
 import weka.core.Instances;
 
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.concurrent.*;
+
+/**
+ * Multi-threaded cross validation functionality
+ */
 public class CVMultithreadedEvaluateModel {
 
     private static final int NTHREADS = 8;
@@ -22,13 +24,13 @@ public class CVMultithreadedEvaluateModel {
 
     /**
      * Cross validate a model using multiple threads. Hell yes :-)
-     * 
-     * If you pass a threshold <= 0 then a binary output is used, no thresholds. Pay attention to that.
-     * 
-     * @param model
-     * @param dataset
-     * @param threshold
-     * @return
+     *
+     * If you pass a threshold leq 0 then a binary output is used, no thresholds. Pay attention to that.
+     *
+     * @param model model for eval
+     * @param dataset the instances
+     * @param threshold double value for threshold
+     * @return evaluation results
      */
     public static EvaluationResult evaluate(IModel model, Instances dataset, double threshold) {
 

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.features;
 
 import com.veridu.idos.IdOSAPIFactory;
@@ -31,17 +36,34 @@ public class BeanCheckFeatureExtractor implements IFeatureExtractor {
 
     private ArrayList<IFact> facts;
 
+    /**
+     * Constructor
+     *
+     * @param dataSource injected idOS SQL data source
+     * @param utils injected utils bean
+     */
     @Autowired
     public BeanCheckFeatureExtractor(IDataSource dataSource, IUtils utils) {
         this.dataSource = dataSource;
         this.utils = utils;
     }
 
+    /**
+     * called after bean construction
+     */
     @PostConstruct
     public void init() {
         this.facts = this.utils.getChecksBinaryFacts();
     }
 
+    /**
+     * Create an instance with background check features
+     *
+     * @param factory idOS API factory
+     * @param dataset data header
+     * @param user selected user
+     * @return an Instance object with the features regarding background check
+     */
     @Override
     public Instance createInstance(IdOSAPIFactory factory, Instances dataset, IUser user) {
 

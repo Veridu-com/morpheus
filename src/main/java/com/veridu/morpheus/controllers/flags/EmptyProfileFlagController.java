@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.controllers.flags;
 
 import com.veridu.morpheus.impl.ModelResponse;
@@ -18,11 +23,20 @@ public class EmptyProfileFlagController {
 
     private ITask profileTask;
 
+    /**
+     * Constructor
+     * @param profileTask injected task
+     */
     @Autowired
     public EmptyProfileFlagController(@Qualifier("flags-empty") ITask profileTask) {
         this.profileTask = profileTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/flags-empty")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

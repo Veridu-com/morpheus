@@ -1,13 +1,24 @@
-package com.veridu.morpheus.impl;
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
 
-import java.io.FileReader;
-import java.io.IOException;
+package com.veridu.morpheus.impl;
 
 import weka.core.Instances;
 import weka.core.converters.ArffLoader.ArffReader;
 
+import java.io.FileReader;
+import java.io.IOException;
+
 public class Utils {
 
+    /**
+     * Read an ARFF dataset to memory
+     *
+     * @param path file system path to the file
+     * @return loaded instances
+     */
     public static Instances readARFFdataset(String path) {
         ArffReader ar = null;
         try {

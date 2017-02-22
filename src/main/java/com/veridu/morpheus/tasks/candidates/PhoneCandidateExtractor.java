@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
 package com.veridu.morpheus.tasks.candidates;
 
 import com.veridu.idos.IdOSAPIFactory;
@@ -37,6 +41,12 @@ public class PhoneCandidateExtractor implements ITask {
 
     private static final Logger logger = Logger.getLogger(PhoneCandidateExtractor.class);
 
+    /**
+     * Constructor
+     * @param dataSource injected idOS SQL data source
+     * @param utils injected utils bean
+     * @param mongo injected idOS NoSQL data source
+     */
     @Autowired
     public PhoneCandidateExtractor(IDataSource dataSource, IUtils utils, IMongoDataSource mongo) {
         this.dataSource = dataSource;
@@ -44,6 +54,10 @@ public class PhoneCandidateExtractor implements ITask {
         this.mongo = mongo;
     }
 
+    /**
+     * Run a phone candidates task
+     * @param params request parameters
+     */
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {

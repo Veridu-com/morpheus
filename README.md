@@ -12,3 +12,7 @@ a lightweight version of Skynet.
 
 # Operations manual
 [Operations manual](Operations.md)
+
+# Code documentation generation
+To generate the javadocs for the project run `mvn javadoc:javadoc` on the root folder.
+It will be available in the `target/site/apidocs/index.html` page.

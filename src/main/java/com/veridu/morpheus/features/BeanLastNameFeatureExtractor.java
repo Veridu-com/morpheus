@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.features;
 
 import com.veridu.idos.IdOSAPIFactory;
@@ -50,6 +55,17 @@ public class BeanLastNameFeatureExtractor implements IFeatureExtractor {
     private Instances twitterFeaturesHeader;
     private Instances paypalFeaturesHeader;
 
+    /**
+     * Constructor
+     *
+     * @param dataSource injected idOS SQL data source
+     * @param utils injected utils bean
+     * @param mongo injected idOS NoSQL data source
+     * @param facebookFeatureExtractor injected facebook feature extractor
+     * @param linkedinFeatureExtractor injected linkedin feature extractor
+     * @param twitterFeatureExtractor injected twitter feature extractor
+     * @param paypalFeatureExtractor injected paypal feature extractor
+     */
     @Autowired
     public BeanLastNameFeatureExtractor(IDataSource dataSource, IUtils utils, IMongoDataSource mongo,
             @Qualifier("facebookExtractor") IFeatureExtractor facebookFeatureExtractor,
@@ -86,6 +102,9 @@ public class BeanLastNameFeatureExtractor implements IFeatureExtractor {
     private ArrayList<Integer> ruleOperand2 = new ArrayList<>(); // index of the second provider of a rule
     private ArrayList<String> opCodes = new ArrayList<>(); // operator of the rule, e.g., =, <, >, <=, >=
 
+    /**
+     * called after bean construction
+     */
     @PostConstruct
     private void init() {
         this.factList = new ArrayList<>();
@@ -123,6 +142,14 @@ public class BeanLastNameFeatureExtractor implements IFeatureExtractor {
         this.paypalFeaturesHeader = this.utils.generateDatasetHeader(paypalFacts);
     }
 
+    /**
+     * Create an instance with last name features
+     *
+     * @param factory idOS API factory
+     * @param dataset data header
+     * @param user selected user
+     * @return an Instance object with the features regarding last name
+     */
     @Override
     public Instance createInstance(IdOSAPIFactory factory, Instances dataset, IUser user) {
         // System.err.println("======> going to extract features for user " + user.getId());

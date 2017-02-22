@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.features;
 
 import com.veridu.idos.IdOSAPIFactory;
@@ -32,12 +37,20 @@ public class BeanPaypalFeatureExtractor implements IFeatureExtractor {
     private ArrayList<IFact> binaryFacts;
     private ArrayList<IFact> facts;
 
+    /**
+     * Constructor
+     * @param dataSource injected idOS SQL data source
+     * @param utils injected utils bean
+     */
     @Autowired
     public BeanPaypalFeatureExtractor(IDataSource dataSource, IUtils utils) {
         this.dataSource = dataSource;
         this.utils = utils;
     }
 
+    /**
+     * called after bean construction
+     */
     @PostConstruct
     public void init() {
         this.binaryFacts = this.utils.getPaypalBinaryFacts();
@@ -51,6 +64,14 @@ public class BeanPaypalFeatureExtractor implements IFeatureExtractor {
         return this.facts;
     }
 
+    /**
+     * Create an instance with paypal features
+     *
+     * @param factory idOS API factory
+     * @param dataset data header
+     * @param user selected user
+     * @return an Instance object with the features regarding paypal
+     */
     @Override
     public Instance createInstance(IdOSAPIFactory factory, Instances dataset, IUser user) {
 

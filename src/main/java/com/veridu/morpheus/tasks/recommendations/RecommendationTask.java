@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
 package com.veridu.morpheus.tasks.recommendations;
 
 import com.google.gson.JsonArray;
@@ -30,6 +34,11 @@ public class RecommendationTask {
 
     private static final Logger log = Logger.getLogger(RecommendationTask.class);
 
+    /**
+     * Constructor
+     *
+     * @param utils injected utils bean
+     */
     @Autowired
     public RecommendationTask(IUtils utils) {
         this.utils = utils;
@@ -39,6 +48,11 @@ public class RecommendationTask {
         none, low, medium, high
     }
 
+    /**
+     * Run a recommendation task
+     *
+     * @param request recommendations task request encoded as json
+     */
     @Async
     public void runTask(JSONObject request) {
         String userName = request.getString("username");

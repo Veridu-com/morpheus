@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.controllers.candidates;
 
 import com.veridu.morpheus.impl.ModelResponse;
@@ -18,11 +23,21 @@ public class BirthdayCandidateController {
 
     private ITask birthdayCandidatesTask;
 
+    /**
+     * Constructor
+     * @param birthdayCandidatesTask injected task
+     */
     @Autowired
     public BirthdayCandidateController(@Qualifier("birthday-candidates") ITask birthdayCandidatesTask) {
         this.birthdayCandidatesTask = birthdayCandidatesTask;
     }
 
+    /**
+     * Handle Post requests
+     *
+     * @param params parameter list
+     * @return model response
+     */
     @PostMapping("/morpheus/birthday-candidates")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 

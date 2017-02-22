@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
 package com.veridu.morpheus.test.unit;
 
 import com.google.gson.JsonObject;
@@ -43,6 +47,9 @@ public class TestIdOSSQL extends MainTest {
         factory = mock(IdOSAPIFactory.class);
     }
 
+    /**
+     * Test whether we can load provider facts for a user
+     */
     @Test
     public void testObtainProviderFactsForUser() {
 
@@ -76,6 +83,9 @@ public class TestIdOSSQL extends MainTest {
         }
     }
 
+    /**
+     * Test if we can delete provider facts for a user
+     */
     @Test
     public void testDeleteProviderFactsForUser() {
         JsonObject response = loadJsonResponse("/delete-all-features-response.json"); // expected response

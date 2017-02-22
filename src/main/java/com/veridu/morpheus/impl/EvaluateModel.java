@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.impl;
 
 import com.veridu.morpheus.interfaces.models.IModel;
@@ -10,6 +15,14 @@ public class EvaluateModel {
 
     private static final boolean DEBUG = false;
 
+    /**
+     * Evaluates a trained model on a dataset
+     *
+     * @param model trained model
+     * @param dataset evaluation dataset
+     * @param threshold value in [0,1] on which to threshold for binary predictions
+     * @return evaluation result object
+     */
     public EvaluationResult evaluate(IModel model, Instances dataset, double threshold) {
         EvaluationResult evalResult = new EvaluationResult();
 
@@ -24,8 +37,8 @@ public class EvaluateModel {
                 trueClassValue = inst.classValue();
 
                 if (DEBUG)
-                    System.out
-                            .println(String.format("instance im analyzing isReal: %s prediction: %s realUserProb: %.2f",
+                    System.out.println(
+                            String.format("instance im analyzing isReal: %s prediction: %s realUserProb: %.2f",
                                     trueClassValue, predIsReal, predObj.realUserProbability()));
 
                 if (predIsReal && (trueClassValue == 1))

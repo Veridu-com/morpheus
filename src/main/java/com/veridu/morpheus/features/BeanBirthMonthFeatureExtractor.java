@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.features;
 
 import com.veridu.idos.IdOSAPIFactory;
@@ -46,6 +51,13 @@ public class BeanBirthMonthFeatureExtractor implements IFeatureExtractor {
 
     private IMongoDataSource mongo;
 
+    /**
+     * Constructor
+     * @param facebookFeatureExtractor injected facebook feature extractor
+     * @param dataSource injected idOS SQL data source
+     * @param utils injected utils bean
+     * @param mongo injected idOS NoSQL data source
+     */
     @Autowired
     public BeanBirthMonthFeatureExtractor(@Qualifier("facebookExtractor") IFeatureExtractor facebookFeatureExtractor,
             @Qualifier("idosSQL") IDataSource dataSource, IUtils utils, IMongoDataSource mongo) {
@@ -69,6 +81,9 @@ public class BeanBirthMonthFeatureExtractor implements IFeatureExtractor {
 
     private static RulesEngine rulesEngine = new RulesEngine(bMonthFactName, myProviderName, providers, true);
 
+    /**
+     * called after bean construction
+     */
     @PostConstruct
     private void init() {
         this.factList.addAll(this.facebookFeatureExtractor.obtainFactList());
@@ -77,6 +92,14 @@ public class BeanBirthMonthFeatureExtractor implements IFeatureExtractor {
         this.facebookHeader = this.utils.generateDatasetHeader(this.facebookFeatureExtractor.obtainFactList());
     }
 
+    /**
+     * Create an instance with birthday features
+     *
+     * @param factory idOS API factory
+     * @param dataset data header
+     * @param user selected user
+     * @return an Instance object with the features regarding birth month
+     */
     @Override
     public Instance createInstance(IdOSAPIFactory factory, Instances dataset, IUser user) {
 

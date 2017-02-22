@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2012-2017 Veridu Ltd <https://veridu.com>
+ * All rights reserved.
+ */
+
 package com.veridu.morpheus.controllers.candidates;
 
 import com.veridu.morpheus.impl.ModelResponse;
@@ -18,11 +23,20 @@ public class ZipcodeCandidateController {
 
     private ITask zipcodeCandidatesTask;
 
+    /**
+     * Constructor
+     * @param zipcodeCandidatesTask injected task
+     */
     @Autowired
     public ZipcodeCandidateController(@Qualifier("zipcode-candidates") ITask zipcodeCandidatesTask) {
         this.zipcodeCandidatesTask = zipcodeCandidatesTask;
     }
 
+    /**
+     * Handle post request
+     * @param params request parameters
+     * @return model response as json
+     */
     @PostMapping("/morpheus/zipcode-candidates")
     public ModelResponse makePrediction(@RequestBody Parameters params) {
 
