@@ -29,10 +29,10 @@ import weka.core.*;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @Scope("singleton")
@@ -99,6 +99,35 @@ public class BeanUtils implements IUtils {
     //        dataSource.setPassword(configBean.getObjectStringProperty("db", "password"));
     //        return dataSource;
     //    }
+
+    /**
+     * computes the time difference in seconds
+     *
+     * @param date1
+     * @param date2
+     * @return
+     */
+    @Override
+    public long computeDateDiffInSeconds(Date date1, Date date2) {
+        long diffInMillies = date2.getTime() - date1.getTime();
+        return Math.abs(TimeUnit.SECONDS.convert(diffInMillies, TimeUnit.MILLISECONDS));
+    }
+
+    @Override
+    public Date parseTwitterUTC(String date) {
+
+        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
+
+        // Important note. Only ENGLISH Locale works.
+        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
+        sf.setLenient(true);
+
+        try {
+            return sf.parse(date);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
 
     /**
      * Check if candidates exist for a given attribute

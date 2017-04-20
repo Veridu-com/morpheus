@@ -23,9 +23,10 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 import javax.annotation.PostConstruct;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
@@ -109,21 +110,6 @@ public class BeanTwitterFeatureExtractor implements IFeatureExtractor {
         automatedTools.add("tweet-u-later");
         automatedTools.add("tweetfunnel");
         automatedTools.add("futuretweets");
-    }
-
-    private static Date parseTwitterUTC(String date) {
-
-        String twitterFormat = "EEE MMM dd HH:mm:ss ZZZZZ yyyy";
-
-        // Important note. Only ENGLISH Locale works.
-        SimpleDateFormat sf = new SimpleDateFormat(twitterFormat, Locale.ENGLISH);
-        sf.setLenient(true);
-
-        try {
-            return sf.parse(date);
-        } catch (ParseException e) {
-            return null;
-        }
     }
 
     /**
@@ -213,7 +199,7 @@ public class BeanTwitterFeatureExtractor implements IFeatureExtractor {
                 if (quoteBotsPattern.matcher(rawText).matches())
                     numOfQuoteBotsPatterns++;
 
-                Date currDate = parseTwitterUTC(tweet.get("created_at").getAsString());
+                Date currDate = this.utils.parseTwitterUTC(tweet.get("created_at").getAsString());
                 String source = tweet.get("source").getAsString().toLowerCase();
 
                 numFollowTricks += countNumFollowsTricks(txtMessage);
