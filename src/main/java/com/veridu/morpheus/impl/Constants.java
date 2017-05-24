@@ -130,4 +130,6 @@ public class Constants {
 
     public static final int NUM_TWEETS_AUTO_POSTING_THRESHOLD = 10;
 
+    public static final int MAX_GOOGLE_IMG_SIZE = 4000000;
+
 }
