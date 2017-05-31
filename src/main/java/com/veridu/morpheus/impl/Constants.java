@@ -132,4 +132,6 @@ public class Constants {
 
     public static final int MAX_GOOGLE_IMG_SIZE = 4000000;
 
+    public static final double AWS_MIN_PHOTO_SIMILARITY = 80;
+
 }

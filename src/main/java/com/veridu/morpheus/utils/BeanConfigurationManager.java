@@ -25,6 +25,22 @@ public class BeanConfigurationManager {
     }
 
     /**
+     * Obtain the access key for using AWS Rekognition
+     * @return
+     */
+    public String getAWSaccessKey() {
+        return env.getProperty("aws.ACCESS_KEY");
+    }
+
+    /**
+     * Obtain the secret for using AWS Rekognition
+     * @return
+     */
+    public String getAWSsecret() {
+        return env.getProperty("aws.SECRET");
+    }
+
+    /**
      * Obtain the handler private key
      * @return the key
      */
