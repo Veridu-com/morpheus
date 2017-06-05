@@ -126,4 +126,12 @@ public class Constants {
             PERSONAL_PROVIDER_NAME, SPOTIFY_PROVIDER_NAME, YAHOO_PROVIDER_NAME, CHECK_PROVIDER_NAME,
             DROPBOX_PROVIDER_NAME };
 
+    public static final double STRING_SIMILARITY_THRESHOLD = 0.8;
+
+    public static final int NUM_TWEETS_AUTO_POSTING_THRESHOLD = 10;
+
+    public static final int MAX_GOOGLE_IMG_SIZE = 4000000;
+
+    public static final double AWS_MIN_PHOTO_SIMILARITY = 80;
+
 }

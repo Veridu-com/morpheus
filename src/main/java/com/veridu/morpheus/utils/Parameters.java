@@ -11,8 +11,13 @@ public class Parameters {
 
     public String publicKey;
     public String userName;
-    public int processId;
-    public Integer sourceId;
+    public int processId = -1;
+    public Integer sourceId = -1;
     public boolean verbose = false;
 
+    @Override
+    public String toString() {
+        return String.format("publicKey: %s userName: %s processId: %d sourceId: %d verbose: %b", publicKey, userName,
+                processId, sourceId, verbose);
+    }
 }

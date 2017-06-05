@@ -15,12 +15,22 @@ import weka.core.Instance;
 import weka.core.Instances;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
  * Defines generic utilities methods the application may use
  */
 public interface IUtils {
+
+    /**
+     * Compute the time difference in seconds for two Date objects
+     *
+     * @param date1 first date object
+     * @param date2 second date object
+     * @return time difference in seconds
+     */
+    long computeDateDiffInSeconds(Date date1, Date date2);
 
     /**
      * Check if candidates exist for a given attribute
@@ -206,4 +216,10 @@ public interface IUtils {
      */
     IdOSAPIFactory getIdOSAPIFactory(HashMap<String, String> credentials);
 
+    /**
+     * Parse Twitter date into a Java Date object
+     * @param date a twitter UTC date string
+     * @return java Date object
+     */
+    Date parseTwitterUTC(String date);
 }
