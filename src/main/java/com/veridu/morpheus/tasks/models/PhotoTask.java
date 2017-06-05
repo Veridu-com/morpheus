@@ -112,7 +112,6 @@ public class PhotoTask implements ITask {
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {
-        long time1 = System.currentTimeMillis();
 
         String userId = params.userName;
         String pubKey = params.publicKey;
@@ -120,8 +119,6 @@ public class PhotoTask implements ITask {
         IUser user = new User(userId);
 
         IdOSAPIFactory factory = utils.getIdOSAPIFactory(utils.generateCredentials(pubKey, userId));
-
-        PhotoParameters photoParams = (PhotoParameters) params;
 
         if (!(params instanceof PhotoParameters)) {
             log.error("Photo recognition task did not receive parameters for handling user " + user.getId());
@@ -187,6 +184,10 @@ public class PhotoTask implements ITask {
         featureJson.add("socialPicMatchesWithSelfie", socialPicsMatchesArr);
 
         this.dao.insertFactForUser(factory, user, fact, featureJson.toString());
+
+        if (verbose) {
+            log.info("PhotoTask for user " + user.getId() + " => " + featureJson.toString());
+        }
 
     }
 

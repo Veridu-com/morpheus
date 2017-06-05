@@ -98,16 +98,13 @@ public class OCRTask implements ITask {
     @Async
     @Override
     public void runTask(@RequestBody Parameters params) {
-        long time1 = System.currentTimeMillis();
 
         String userId = params.userName;
         String pubKey = params.publicKey;
-        boolean verbose = params.verbose;
         IUser user = new User(userId);
+        boolean verbose = params.verbose;
 
         IdOSAPIFactory factory = utils.getIdOSAPIFactory(utils.generateCredentials(pubKey, userId));
-
-        OCRParameters ocrParams = (OCRParameters) params;
 
         if (!(params instanceof OCRParameters)) {
             log.error("OCR Task did not receive parameters for handling user " + user.getId());
@@ -129,10 +126,10 @@ public class OCRTask implements ITask {
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 ImageIO.write(imgIO, "jpg", baos);
                 imgDecoded = baos.toByteArray();
-
             } catch (IOException e) {
+                log.error("OCR Task error during image resize for handling user " + user.getId());
                 e.printStackTrace();
-                break;
+                return;
             }
         }
 
@@ -152,15 +149,12 @@ public class OCRTask implements ITask {
             BatchAnnotateImagesResponse response = vision.batchAnnotateImages(requests);
             List<AnnotateImageResponse> responses = response.getResponsesList();
 
-            for (AnnotateImageResponse res : responses) {
-                if (res.hasError()) {
-                    log.error("Problem during Google Vision API call: " + res.getError());
-                    return;
-                }
-            }
+            JsonObject featureJson = new JsonObject();
 
-            if (responses.size() < 1 || !responses.get(0).hasFullTextAnnotation()) {
+            if (responses.size() < 1 || responses.get(0).hasError() || !responses.get(0).hasFullTextAnnotation()) {
                 log.error("Could not get any text annotation from Google Vision.");
+                featureJson.addProperty("ocrStatus", false);
+                this.dao.insertFactForUser(factory, user, fact, featureJson.toString());
                 return;
             }
 
@@ -174,8 +168,6 @@ public class OCRTask implements ITask {
             for (int i = 0; i < similarities.length; i++)
                 similarities[i] = checkName(normalizedText, StringUtils.stripAccents(names[i].toLowerCase()), 3);
 
-            JsonObject featureJson = new JsonObject();
-
             JsonArray namesArr = new JsonArray();
             JsonArray similaritiesArr = new JsonArray();
 
@@ -184,10 +176,15 @@ public class OCRTask implements ITask {
                 similaritiesArr.add(similarities[i]);
             }
 
+            featureJson.addProperty("ocrStatus", true);
             featureJson.add("names", namesArr);
             featureJson.add("similarities", similaritiesArr);
 
             this.dao.insertFactForUser(factory, user, fact, featureJson.toString());
+
+            if (verbose) {
+                log.info("OCR for user " + user.getId() + " => " + featureJson.toString());
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
