@@ -11,9 +11,15 @@ import com.veridu.morpheus.impl.Fact;
 import com.veridu.morpheus.interfaces.facts.ICandidate;
 import com.veridu.morpheus.interfaces.facts.IFact;
 import info.debatty.java.stringsimilarity.NormalizedLevenshtein;
+import org.imgscalr.Scalr;
 import weka.core.Instance;
 import weka.core.Utils;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.Normalizer;
 import java.text.ParseException;
@@ -24,6 +30,31 @@ import java.util.*;
  * Created by cassio on 10/2/16.
  */
 public class LocalUtils {
+
+    public static byte[] resize(byte[] img, int max_length) throws IOException {
+        double factor = ((double) img.length) / (max_length);
+
+        if (factor < 1)
+            return img;
+
+        factor += .01; // just to make sure of rounding
+
+        BufferedImage imgIO = ImageIO.read(new ByteArrayInputStream(img));
+        int height = imgIO.getHeight();
+        int width = imgIO.getWidth();
+
+        if (width < height) // image is in portrait mode
+            imgIO = Scalr.rotate(imgIO, Scalr.Rotation.CW_270);
+
+        int desiredHeight = (int) Math.round(height / factor);
+        int desiredWidth = (int) Math.round(width / factor);
+
+        imgIO = Scalr.resize(imgIO, Scalr.Method.AUTOMATIC, desiredWidth, desiredHeight);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(imgIO, "jpg", baos);
+        return baos.toByteArray();
+    }
 
     /**
      * Validate a json element is not null

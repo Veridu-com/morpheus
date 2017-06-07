@@ -19,16 +19,11 @@ import com.veridu.morpheus.utils.OCRParameters;
 import com.veridu.morpheus.utils.Parameters;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
-import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -113,27 +108,10 @@ public class OCRTask implements ITask {
 
         String[] names = ((OCRParameters) params).names;
         String base64Img = ((OCRParameters) params).image;
-        byte[] imgDecoded = Base64.getDecoder().decode(base64Img);
-
-        while (imgDecoded.length > Constants.MAX_GOOGLE_IMG_SIZE) {
-            // we have to rescale the image, as google cant handle large images
-            try {
-                BufferedImage imgIO = ImageIO.read(new ByteArrayInputStream(imgDecoded));
-                int height = imgIO.getHeight();
-                int width = imgIO.getWidth();
-                Scalr.resize(imgIO, Scalr.Method.AUTOMATIC, width / 2, height / 2);
-
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ImageIO.write(imgIO, "jpg", baos);
-                imgDecoded = baos.toByteArray();
-            } catch (IOException e) {
-                log.error("OCR Task error during image resize for handling user " + user.getId());
-                e.printStackTrace();
-                return;
-            }
-        }
 
         try {
+            byte[] imgDecoded = LocalUtils.resize(Base64.getDecoder().decode(base64Img), Constants.MAX_GOOGLE_IMG_SIZE);
+
             ImageAnnotatorClient vision = ImageAnnotatorClient.create();
 
             List<AnnotateImageRequest> requests = new ArrayList<>();
