@@ -134,4 +134,8 @@ public class Constants {
 
     public static final double AWS_MIN_PHOTO_SIMILARITY = 80;
 
+    public static final double PHOTO_BRIGHTNESS_PERCENTILE = 95;
+
+    public static final double PHOTO_MIN_BRIGHTNESS = 0.4;
+
 }
