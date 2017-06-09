@@ -29,11 +29,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -69,12 +72,14 @@ public class PhotoQualityCheckTask implements ITask {
     class QAresult {
         public boolean brightnessOK;
         public boolean landscapeOK;
-        public boolean faceOK;
+        public boolean fileFormatOK;
+        public boolean resolutionOK;
 
-        public QAresult(boolean brightnessOK, boolean landscapeOK, boolean faceOK) {
+        public QAresult(boolean brightnessOK, boolean landscapeOK, boolean fileFormatOK, boolean resolutionOK) {
             this.brightnessOK = brightnessOK;
             this.landscapeOK = landscapeOK;
-            this.faceOK = faceOK;
+            this.fileFormatOK = fileFormatOK;
+            this.resolutionOK = resolutionOK;
         }
     }
 
@@ -87,6 +92,12 @@ public class PhotoQualityCheckTask implements ITask {
 
     private static boolean evaluateLandscape(FImage image) {
         return image.getWidth() > image.getHeight() ? true : false;
+    }
+
+    private static boolean evaluateResolution(FImage image) {
+        return image.getWidth() > Constants.MIN_IMAGE_RESOLUTION && image.getHeight() > Constants.MIN_IMAGE_RESOLUTION ?
+                true :
+                false;
     }
 
     private static boolean evaluateFaceDetection(FImage image, int expectedNumFaces) {
@@ -105,22 +116,40 @@ public class PhotoQualityCheckTask implements ITask {
         return baos.toByteArray();
     }
 
+    private boolean evaluateFileFormat(byte[] image) {
+        try {
+            ImageInputStream is = ImageIO.createImageInputStream(new ByteArrayInputStream(image));
+            Iterator<ImageReader> readers = ImageIO.getImageReaders(is);
+            while (readers.hasNext()) {
+                ImageReader ir = readers.next();
+                String fmt = ir.getFormatName();
+                if (fmt.equals("JPEG") || fmt.equals("PNG"))
+                    return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     private MBFImage obtainMBFImage(byte[] img) throws IOException {
         return ImageUtilities.readMBF(new ByteArrayInputStream(img));
     }
 
-    private QAresult qaCheck(FImage img, double[] pixels, int numExpectedFaces) {
+    private QAresult qaCheck(FImage img, double[] pixels, byte[] bimg) {
         boolean bright = evaluateBrightness(pixels);
         boolean landscape = evaluateLandscape(img);
-        boolean faces = evaluateFaceDetection(img, numExpectedFaces);
-        return new QAresult(bright, landscape, faces);
+        boolean fileFormat = evaluateFileFormat(bimg);
+        boolean resolution = evaluateResolution(img);
+        return new QAresult(bright, landscape, fileFormat, resolution);
     }
 
     private void appendResults(JsonObject featureJson, String prop, QAresult qaResults) {
         JsonObject obj = new JsonObject();
         obj.addProperty("brightnessOK", qaResults.brightnessOK);
         obj.addProperty("landscapeOK", qaResults.landscapeOK);
-        obj.addProperty("facesOK", qaResults.faceOK);
+        obj.addProperty("fileFormatOK", qaResults.fileFormatOK);
+        obj.addProperty("resolutionOK", qaResults.resolutionOK);
         featureJson.add(prop, obj);
     }
 
@@ -159,8 +188,8 @@ public class PhotoQualityCheckTask implements ITask {
             double[] selfiePixels = selfieGray.getDoublePixelVector();
             double[] docPixels = docGray.getDoublePixelVector();
 
-            QAresult selfieResults = qaCheck(selfieGray, selfiePixels, 2);
-            QAresult docResults = qaCheck(docGray, docPixels, 1);
+            QAresult selfieResults = qaCheck(selfieGray, selfiePixels, selfieDecoded);
+            QAresult docResults = qaCheck(docGray, docPixels, docDecoded);
 
             // write results
             JsonObject featureJson = new JsonObject();
