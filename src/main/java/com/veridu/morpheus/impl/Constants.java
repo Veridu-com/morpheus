@@ -138,4 +138,6 @@ public class Constants {
 
     public static final double PHOTO_MIN_BRIGHTNESS = 0.4;
 
+    public static final int MIN_IMAGE_RESOLUTION = 500;
+
 }
