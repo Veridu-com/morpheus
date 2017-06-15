@@ -22,6 +22,9 @@ export SPRING_APPLICATION_JSON='{"server":{"address":"127.0.0.1", "port": 8080},
     * `ACCESS_KEY`: access key for using the Amazon Rekognition service.
     * `SECRET`: secret for using the Amazon Rekognition service.
 
+* You will also need to set an environment variable named `GOOGLE_APPLICATION_CREDENTIALS` that
+points to the Google Cloud Vision credentials file, as explained in the Setup manual.
+
 # Running the project
 
 * Set the `SPRING_APPLICATION_JSON` environment variable, as explained in the [Configuration](#configuration) section.
