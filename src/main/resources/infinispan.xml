@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<infinispan xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="urn:infinispan:config:8.2 http://www.infinispan.org/schemas/infinispan-config-8.2.xsd"
+            xmlns="urn:infinispan:config:8.2">
+
+    <cache-container default-cache="default">
+        <!-- template configurations -->
+        <local-cache-configuration name="base-template">
+            <expiration interval="10000" lifespan="20000"/>
+        </local-cache-configuration>
+
+        <!-- cache definitions -->
+        <local-cache name="latest-sourceid-provider" configuration="base-template"/>
+        <local-cache name="obtain-prov-facts" configuration="base-template"/>
+        <local-cache name="obtain-facts-user" configuration="base-template"/>
+        <local-cache name="obtain-single-facts" configuration="base-template"/>
+        <local-cache name="obtain-numeric-facts" configuration="base-template"/>
+        <local-cache name="obtain-binary-facts" configuration="base-template"/>
+        <local-cache name="obtain-json-feature-value" configuration="base-template"/>
+        <local-cache name="obtain-boolean-feature-value" configuration="base-template"/>
+        <local-cache name="obtain-double-feature-value" configuration="base-template"/>
+        <local-cache name="obtain-string-feature-value" configuration="base-template"/>
+        <local-cache name="obtain-facebook-email" configuration="base-template"/>
+        <local-cache name="obtain-specific-fact" configuration="base-template"/>
+        <local-cache name="obtain-fact-paypal-verified" configuration="base-template"/>
+        <local-cache name="get-facebook-birthday" configuration="base-template"/>
+        <local-cache name="get-provider-collection" configuration="base-template"/>
+        <local-cache name="get-provider-collection-array" configuration="base-template"/>
+        <local-cache name="get-provider-collection-document" configuration="base-template"/>
+        <local-cache name="get-facebook-profile" configuration="base-template"/>
+        <local-cache name="does-facebook-first-name-match-email" configuration="base-template"/>
+        <local-cache name="get-amazon-profile" configuration="base-template"/>
+        <local-cache name="get-dropbox-profile" configuration="base-template"/>
+        <local-cache name="get-google-profile" configuration="base-template"/>
+        <local-cache name="get-linkedin-profile" configuration="base-template"/>
+        <local-cache name="get-twitter-profile" configuration="base-template"/>
+        <local-cache name="get-paypal-profile" configuration="base-template"/>
+        <local-cache name="get-number-fbk-posts-birthday" configuration="base-template"/>
+        <local-cache name="get-fbk-array-count-birthday" configuration="base-template"/>
+        <local-cache name="get-number-fbk-tags-birthday" configuration="base-template"/>
+        <local-cache name="get-number-fbk-status-birthday" configuration="base-template"/>
+        <local-cache name="get-number-fbk-photos-birthday" configuration="base-template"/>
+        <local-cache name="get-number-fbk-likes-birthday" configuration="base-template"/>
+        <local-cache name="get-number-fbk-events-birthday" configuration="base-template"/>
+        <local-cache name="get-number-fbk-posts" configuration="base-template"/>
+        <local-cache name="get-provider-array" configuration="base-template"/>
+        <local-cache name="get-fbk-collection-count" configuration="base-template"/>
+        <local-cache name="get-fbk-family" configuration="base-template"/>
+        <local-cache name="get-fbk-posts-array" configuration="base-template"/>
+        <local-cache name="get-tweets" configuration="base-template"/>
+        <local-cache name="get-gmail-messages" configuration="base-template"/>
+    </cache-container>
+
+</infinispan>

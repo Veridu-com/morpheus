@@ -5,6 +5,7 @@
 
 package com.veridu.morpheus.interfaces.beans;
 
+import com.google.gson.JsonElement;
 import com.veridu.idos.IdOSAPIFactory;
 import com.veridu.morpheus.interfaces.facts.ICandidate;
 import com.veridu.morpheus.interfaces.facts.IFact;
@@ -54,6 +55,15 @@ public interface IDataSource {
      */
     int insertAttributeCandidatesForUser(IdOSAPIFactory factory, IUser user, String attName,
             ArrayList<ICandidate> candidates);
+
+    /**
+     * Obtain the latest source id for a provider
+     * @param factory idOS API factory
+     * @param userId the given user id
+     * @param provider a provider name
+     * @return the source id that has been created at the latest time
+     */
+    int getLatestSourceIdForProvider(IdOSAPIFactory factory, String userId, String provider);
 
     /**
      * Obtain the facts for a given user and provider. The return is a map of Facts.
@@ -161,6 +171,50 @@ public interface IDataSource {
      * @return the numeric facts
      */
     HashMap<IFact, Double> obtainBinaryFactsForProfile(IdOSAPIFactory factory, IUser user, String provider);
+
+    /**
+     * Obtain a feature value as json
+     *
+     * @param factory idOS API factory
+     * @param user user to obtain a feature value
+     * @param provider provider name
+     * @param featureName feature name
+     * @return the feature value as a json element
+     */
+    JsonElement obtainFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName);
+
+    /**
+     * Obtain a feature value as boolean
+     *
+     * @param factory idOS API factory
+     * @param user user to obtain a feature value
+     * @param provider provider name
+     * @param featureName feature name
+     * @return feature as boolean value
+     */
+    Boolean obtainBooleanFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName);
+
+    /**
+     * Obtain a feature value as a double
+     *
+     * @param factory idOS API factory
+     * @param user user to obtain a feature value
+     * @param provider provider name
+     * @param featureName feature name
+     * @return feature as double value
+     */
+    double obtainDoubleFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName);
+
+    /**
+     * Obtain a feature value as a string
+     *
+     * @param factory idOS API factory
+     * @param user user to obtain a feature value
+     * @param provider provider name
+     * @param featureName feature name
+     * @return feature as a string value
+     */
+    String obtainStringFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName);
 
     /**
      * Get facebook email

@@ -50,4 +50,15 @@ public class User implements IUser {
         return this.profiles;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof User)
+            return ((User) obj).getId().equals(this.getId());
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getId().hashCode();
+    }
 }

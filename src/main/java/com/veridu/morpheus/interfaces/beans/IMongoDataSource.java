@@ -36,6 +36,19 @@ public interface IMongoDataSource {
     int getNumberOfFacebookPostsOnBirthday(IdOSAPIFactory factory, IUser user, Date fbkBirthday);
 
     /**
+     * Get the length of a facebook data array in a collection in the users birthday.
+     *
+     * @param factory idOS API factory
+     * @param user selected user
+     * @param facebookBday the users birthday on facebook
+     * @param collection the desired collection to extract the data field
+     * @param timeTag name of the time field, e.g., created_at or updated_at
+     * @return the array length
+     */
+    int getFacebookArrayCountBirthday(IdOSAPIFactory factory, IUser user, Date facebookBday, String collection,
+            String timeTag);
+
+    /**
      * Get the number of times the user was tagged on posts in his/her birthday
      *
      * @param factory idOS API factory
@@ -84,6 +97,40 @@ public interface IMongoDataSource {
      * @return the number of events
      */
     int getNumberOfFacebookEventsOnBirthday(IdOSAPIFactory factory, IUser user, Date facebookBirthday);
+
+    /**
+     * Get a specific collection for a specific provider of a user. The most recent collection of that
+     * provider is returned.
+     *
+     * @param factory idOS API factory
+     * @param user the user to find the collection for
+     * @param provider selected provider for the collection
+     * @param collection desired collection
+     * @return the most recent collection for that provider
+     */
+    JsonObject getProviderCollection(IdOSAPIFactory factory, IUser user, String provider, String collection);
+
+    /**
+     * Get a collection data element as a json array
+     *
+     * @param factory idOS API factory
+     * @param user the selected user
+     * @param provider provider name
+     * @param collection desired coleection, e.g., posts
+     * @return collection data as a json array
+     */
+    JsonArray getProviderCollectionAsArray(IdOSAPIFactory factory, IUser user, String provider, String collection);
+
+    /**
+     * Get provider collection data field as a json object
+     *
+     * @param factory idOS API factory
+     * @param user selected user
+     * @param provider provider name
+     * @param collection provider collection
+     * @return collection data field as a json object
+     */
+    JsonObject getProviderCollectionAsDocument(IdOSAPIFactory factory, IUser user, String provider, String collection);
 
     /**
      * Get facebook profile
