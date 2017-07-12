@@ -7,7 +7,7 @@
     <cache-container default-cache="default">
         <!-- template configurations -->
         <local-cache-configuration name="base-template">
-            <expiration interval="10000" lifespan="20000"/>
+            <expiration interval="2500" lifespan="5000"/>
         </local-cache-configuration>
 
         <!-- cache definitions -->
