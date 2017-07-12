@@ -23,6 +23,7 @@ import com.veridu.morpheus.interfaces.users.IProfile;
 import com.veridu.morpheus.interfaces.users.IUser;
 import com.veridu.morpheus.utils.LocalUtils;
 import org.apache.log4j.Logger;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.io.UnsupportedEncodingException;
@@ -45,7 +46,9 @@ public class IdOSAccess implements IDataSource {
      * @param provider provider name
      * @return integer value with id
      */
-    private int getLatestSourceIdForProvider(IdOSAPIFactory factory, String userId, String provider) {
+    @Override
+    @Cacheable(cacheNames = "latest-sourceid-provider")
+    public int getLatestSourceIdForProvider(IdOSAPIFactory factory, String userId, String provider) {
         try {
             factory.getSource().setAuthType(IdOSAuthType.HANDLER);
             JsonObject response = factory.getSource().listAll(userId,
@@ -74,6 +77,7 @@ public class IdOSAccess implements IDataSource {
      *            desired provider of facts
      * @return the facts as a hashmap of IFact - String
      */
+    @Cacheable(cacheNames = "obtain-prov-facts")
     @Override
     public HashMap<IFact, String> obtainProviderFactsForUser(IdOSAPIFactory factory, IUser user, String provider) {
         HashMap<IFact, String> facts = new HashMap<>();
@@ -262,6 +266,7 @@ public class IdOSAccess implements IDataSource {
      * @return facts as a hashmap: IFact - String
      */
     @Override
+    @Cacheable(cacheNames = "obtain-facts-user")
     public HashMap<IFact, String> obtainFactsForUser(IdOSAPIFactory factory, IUser user) {
         HashMap<IFact, String> facts = new HashMap<>();
 
@@ -300,6 +305,7 @@ public class IdOSAccess implements IDataSource {
      * @return a list with all profiles
      */
     @Override
+    @Cacheable(cacheNames = "obtain-single-facts")
     public ArrayList<IProfile> obtainSingleUserProfiles(IdOSAPIFactory factory, IUser user) {
         ArrayList<IProfile> profiles = new ArrayList<>();
         try {
@@ -333,6 +339,7 @@ public class IdOSAccess implements IDataSource {
      * @return the numeric facts
      */
     @Override
+    @Cacheable(cacheNames = "obtain-numeric-facts")
     public HashMap<IFact, Double> obtainNumericFactsForProfile(IdOSAPIFactory factory, IUser user, String provider) {
         int sourceId = getLatestSourceIdForProvider(factory, user.getId(), provider);
         HashMap<IFact, Double> facts = new HashMap<>();
@@ -368,6 +375,7 @@ public class IdOSAccess implements IDataSource {
      * @return the numeric facts
      */
     @Override
+    @Cacheable(cacheNames = "obtain-binary-facts")
     public HashMap<IFact, Double> obtainBinaryFactsForProfile(IdOSAPIFactory factory, IUser user, String provider) {
         int sourceId = getLatestSourceIdForProvider(factory, user.getId(), provider);
         HashMap<IFact, Double> facts = new HashMap<>();
@@ -416,7 +424,9 @@ public class IdOSAccess implements IDataSource {
      *
      * @return a json with the feature
      */
-    private JsonElement obtainFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName) {
+    @Override
+    @Cacheable(cacheNames = "obtain-json-feature-value")
+    public JsonElement obtainFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName) {
         int sourceId = getLatestSourceIdForProvider(factory, user.getId(), provider);
         JsonObject response;
 
@@ -453,7 +463,9 @@ public class IdOSAccess implements IDataSource {
      * @param featureName feature name
      * @return boolean json value
      */
-    private Boolean obtainBooleanFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName) {
+    @Override
+    @Cacheable(cacheNames = "obtain-boolean-feature-value")
+    public Boolean obtainBooleanFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName) {
         JsonElement element = obtainFeatureValue(factory, user, provider, featureName);
         if (LocalUtils.validateJsonElement(element))
             return element.getAsBoolean();
@@ -470,7 +482,9 @@ public class IdOSAccess implements IDataSource {
      *
      * @return double value
      */
-    private double obtainDoubleFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName) {
+    @Override
+    @Cacheable(cacheNames = "obtain-double-feature-value")
+    public double obtainDoubleFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName) {
         JsonElement element = obtainFeatureValue(factory, user, provider, featureName);
         if (LocalUtils.validateJsonElement(element))
             return element.getAsDouble();
@@ -487,7 +501,9 @@ public class IdOSAccess implements IDataSource {
      *
      * @return String feature value
      */
-    private String obtainStringFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName) {
+    @Override
+    @Cacheable(cacheNames = "obtain-string-feature-value")
+    public String obtainStringFeatureValue(IdOSAPIFactory factory, IUser user, String provider, String featureName) {
         JsonElement element = obtainFeatureValue(factory, user, provider, featureName);
         if (LocalUtils.validateJsonElement(element))
             return element.getAsString();
@@ -502,6 +518,7 @@ public class IdOSAccess implements IDataSource {
      * @return the email
      */
     @Override
+    @Cacheable(cacheNames = "obtain-facebook-email")
     public String obtainFacebookEmail(IdOSAPIFactory factory, IUser user) {
         return obtainStringFeatureValue(factory, user, "facebook", "emailAddress");
     }
@@ -515,6 +532,7 @@ public class IdOSAccess implements IDataSource {
      * @return a hashmap of fact - value
      */
     @Override
+    @Cacheable(cacheNames = "obtain-specific-fact")
     public HashMap<IFact, String> obtainSpecificFactForUser(IdOSAPIFactory factory, IUser user, String factName) {
         HashMap<IFact, String> facts = new HashMap<>();
 
@@ -548,6 +566,7 @@ public class IdOSAccess implements IDataSource {
      * @return a boolean with the answer
      */
     @Override
+    @Cacheable(cacheNames = "obtain-fact-paypal-verified")
     public Boolean obtainFactValueIsPaypalVerified(IdOSAPIFactory factory, IUser user) {
         return obtainBooleanFeatureValue(factory, user, "paypal", "verifiedProfile");
     }

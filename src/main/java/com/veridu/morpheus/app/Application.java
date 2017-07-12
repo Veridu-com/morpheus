@@ -7,6 +7,7 @@ package com.veridu.morpheus.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -21,6 +22,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @SpringBootApplication
 @ComponentScan(basePackages = "com.veridu.morpheus")
 @EnableAsync
+@EnableCaching
 public class Application extends AsyncConfigurerSupport {
 
     /**

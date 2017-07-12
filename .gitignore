@@ -3,5 +3,4 @@
 target/
 *.log
 src/main/resources/config/config.json
-src/main/resources/application.properties
 

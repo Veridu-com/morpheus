@@ -15,6 +15,7 @@ import com.veridu.idos.utils.IdOSAuthType;
 import com.veridu.morpheus.interfaces.beans.IMongoDataSource;
 import com.veridu.morpheus.interfaces.users.IUser;
 import com.veridu.morpheus.utils.LocalUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -33,6 +34,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return birthday as a java Date object
      */
     @Override
+    @Cacheable(cacheNames = "get-facebook-birthday")
     public Date getFacebookBirthday(IdOSAPIFactory factory, IUser user) {
         JsonObject profile = this.getFacebookProfile(factory, user);
         if (LocalUtils.validateJsonField(profile, "birthday"))
@@ -50,7 +52,9 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @param collection desired collection
      * @return the most recent collection for that provider
      */
-    private JsonObject getProviderCollection(IdOSAPIFactory factory, IUser user, String provider, String collection) {
+    @Override
+    @Cacheable(cacheNames = "get-provider-collection")
+    public JsonObject getProviderCollection(IdOSAPIFactory factory, IUser user, String provider, String collection) {
 
         try {
             factory.getRaw().setAuthType(IdOSAuthType.HANDLER);
@@ -89,7 +93,9 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @param collection desired coleection, e.g., posts
      * @return collection data as a json array
      */
-    private JsonArray getProviderCollectionAsArray(IdOSAPIFactory factory, IUser user, String provider,
+    @Override
+    @Cacheable(cacheNames = "get-provider-collection-array")
+    public JsonArray getProviderCollectionAsArray(IdOSAPIFactory factory, IUser user, String provider,
             String collection) {
 
         JsonObject response = getProviderCollection(factory, user, provider, collection);
@@ -113,7 +119,9 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @param collection provider collection
      * @return collection data field as a json object
      */
-    private JsonObject getProviderCollectionAsDocument(IdOSAPIFactory factory, IUser user, String provider,
+    @Override
+    @Cacheable(cacheNames = "get-provider-collection-document")
+    public JsonObject getProviderCollectionAsDocument(IdOSAPIFactory factory, IUser user, String provider,
             String collection) {
 
         JsonObject response = getProviderCollection(factory, user, provider, collection);
@@ -133,6 +141,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @param user selected user
      * @return the facebook profile as a json object
      */
+    @Cacheable(cacheNames = "get-facebook-profile")
     @Override
     public JsonObject getFacebookProfile(IdOSAPIFactory factory, IUser user) {
         return getProviderCollectionAsDocument(factory, user, "facebook", "profile");
@@ -146,6 +155,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return true if first name is in the user field of the e-mail
      */
     @Override
+    @Cacheable(cacheNames = "does-facebook-first-name-match-email")
     public Boolean doesFacebookFirstNameMatchEmail(IdOSAPIFactory factory, IUser user) {
         JsonObject facebookProfile = getFacebookProfile(factory, user);
         if (LocalUtils.validateJsonField(facebookProfile, "email") && LocalUtils
@@ -167,6 +177,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return the amazon profile as a json object
      */
     @Override
+    @Cacheable(cacheNames = "get-amazon-profile")
     public JsonObject getAmazonProfile(IdOSAPIFactory factory, IUser user) {
         return getProviderCollectionAsDocument(factory, user, "amazon", "profile");
     }
@@ -178,6 +189,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return the dropbox profile as a json object
      */
     @Override
+    @Cacheable(cacheNames = "get-dropbox-profile")
     public JsonObject getDropboxProfile(IdOSAPIFactory factory, IUser user) {
         return getProviderCollectionAsDocument(factory, user, "dropbox", "profile");
     }
@@ -189,6 +201,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return the google profile as a json object
      */
     @Override
+    @Cacheable(cacheNames = "get-google-profile")
     public JsonObject getGoogleProfile(IdOSAPIFactory factory, IUser user) {
         return getProviderCollectionAsDocument(factory, user, "google", "profile");
     }
@@ -200,6 +213,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return the linkedin profile as a json object
      */
     @Override
+    @Cacheable(cacheNames = "get-linkedin-profile")
     public JsonObject getLinkedinProfile(IdOSAPIFactory factory, IUser user) {
         return getProviderCollectionAsDocument(factory, user, "linkedin", "profile");
     }
@@ -211,6 +225,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return the twitter profile as a json object
      */
     @Override
+    @Cacheable(cacheNames = "get-twitter-profile")
     public JsonObject getTwitterProfile(IdOSAPIFactory factory, IUser user) {
         return getProviderCollectionAsDocument(factory, user, "twitter", "profile");
     }
@@ -222,6 +237,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return the paypal profile as a json object
      */
     @Override
+    @Cacheable(cacheNames = "get-paypal-profile")
     public JsonObject getPaypalProfile(IdOSAPIFactory factory, IUser user) {
         return getProviderCollectionAsDocument(factory, user, "paypal", "profile");
     }
@@ -234,6 +250,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return the number of facebook posts on that date
      */
     @Override
+    @Cacheable(cacheNames = "get-number-fbk-posts-birthday")
     public int getNumberOfFacebookPostsOnBirthday(IdOSAPIFactory factory, IUser user, Date fbkBirthday) {
         return getFacebookArrayCountBirthday(factory, user, fbkBirthday, "posts", "created_time");
     }
@@ -248,7 +265,9 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @param timeTag name of the time field, e.g., created_at or updated_at
      * @return the array length
      */
-    private int getFacebookArrayCountBirthday(IdOSAPIFactory factory, IUser user, Date facebookBday, String collection,
+    @Override
+    @Cacheable(cacheNames = "get-fbk-array-count-birthday")
+    public int getFacebookArrayCountBirthday(IdOSAPIFactory factory, IUser user, Date facebookBday, String collection,
             String timeTag) {
 
         int count = 0;
@@ -283,6 +302,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return the number of tags
      */
     @Override
+    @Cacheable(cacheNames = "get-number-fbk-tags-birthday")
     public int getNumberOfFacebookTagsOnBirthday(IdOSAPIFactory factory, IUser user, Date facebookBirthday) {
         return getFacebookArrayCountBirthday(factory, user, facebookBirthday, "tagged", "created_time");
     }
@@ -296,6 +316,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return the number of status updates
      */
     @Override
+    @Cacheable(cacheNames = "get-number-fbk-status-birthday")
     public int getNumberOfFacebookStatusOnBirthday(IdOSAPIFactory factory, IUser user, Date facebookBirthday) {
         return getFacebookArrayCountBirthday(factory, user, facebookBirthday, "statuses", "updated_time");
     }
@@ -309,6 +330,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return the number of photos
      */
     @Override
+    @Cacheable(cacheNames = "get-number-fbk-photos-birthday")
     public int getNumberOfFacebookPhotosOnBirthday(IdOSAPIFactory factory, IUser user, Date facebookBirthday) {
         return getFacebookArrayCountBirthday(factory, user, facebookBirthday, "photos", "created_time");
     }
@@ -322,6 +344,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return the number of status updates
      */
     @Override
+    @Cacheable(cacheNames = "get-number-fbk-likes-birthday")
     public int getNumberOfFacebookLikesOnBirthday(IdOSAPIFactory factory, IUser user, Date facebookBirthday) {
         return getFacebookArrayCountBirthday(factory, user, facebookBirthday, "likes", "created_time");
     }
@@ -335,6 +358,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return the number of events
      */
     @Override
+    @Cacheable(cacheNames = "get-number-fbk-events-birthday")
     public int getNumberOfFacebookEventsOnBirthday(IdOSAPIFactory factory, IUser user, Date facebookBirthday) {
         return getFacebookArrayCountBirthday(factory, user, facebookBirthday, "events", "start_time");
     }
@@ -347,6 +371,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return the number of posts the user has
      */
     @Override
+    @Cacheable(cacheNames = "get-number-fbk-posts")
     public int getNumberOfFacebookPosts(IdOSAPIFactory factory, IUser user) {
         return getFacebookCollectionCount(factory, user, "posts");
     }
@@ -361,6 +386,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return the provider collection as a json object
      */
     @Override
+    @Cacheable(cacheNames = "get-provider-array")
     public JsonObject getProviderArray(IdOSAPIFactory factory, IUser user, String provider, String collection) {
         try {
             factory.getRaw().setAuthType(IdOSAuthType.HANDLER);
@@ -382,6 +408,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return the length of the elements in the data section of the facebook collection
      */
     @Override
+    @Cacheable(cacheNames = "get-fbk-collection-count")
     public int getFacebookCollectionCount(IdOSAPIFactory factory, IUser user, String collection) {
         JsonObject response = getProviderArray(factory, user, "facebook", collection);
 
@@ -402,6 +429,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return family members as a json array
      */
     @Override
+    @Cacheable(cacheNames = "get-fbk-family")
     public JsonArray getFacebookFamily(IdOSAPIFactory factory, IUser user) {
         return this.getProviderCollectionAsArray(factory, user, "facebook", "family");
     }
@@ -414,6 +442,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return the users facebook posts
      */
     @Override
+    @Cacheable(cacheNames = "get-fbk-posts-array")
     public JsonArray getFacebookPosts(IdOSAPIFactory factory, IUser user) {
         return this.getProviderCollectionAsArray(factory, user, "facebook", "posts");
     }
@@ -426,6 +455,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return the users tweets
      */
     @Override
+    @Cacheable(cacheNames = "get-tweets")
     public JsonArray getTweets(IdOSAPIFactory factory, IUser user) {
         return this.getProviderCollectionAsArray(factory, user, "twitter", "statuses");
     }
@@ -438,6 +468,7 @@ public class NOSQLIDOSAccess implements IMongoDataSource {
      * @return the users gmail messages
      */
     @Override
+    @Cacheable(cacheNames = "get-gmail-messages")
     public JsonArray getGmailMessages(IdOSAPIFactory factory, IUser user) {
         return this.getProviderCollectionAsArray(factory, user, "google", "messages");
     }
