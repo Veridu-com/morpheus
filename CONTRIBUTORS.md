@@ -1,0 +1,2 @@
+- [Cassio M. M. Pereira](https://github.com/cmmp)
+- [Rafael Andreatta](https://github.com/rafaame)
